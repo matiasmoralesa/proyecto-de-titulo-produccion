@@ -48,12 +48,12 @@ redis==5.0.1
 django-celery-beat==2.5.0
 django-celery-results==2.5.1
 
-# NLP (for bot)
-spacy==3.7.2
+# NLP (for bot) - Comentado temporalmente para deployment
+# spacy==3.7.2
 
-# Visualization
-matplotlib==3.8.2
-seaborn==0.13.0
+# Visualization - Comentado temporalmente para deployment
+# matplotlib==3.8.2
+# seaborn==0.13.0
 
 # Production dependencies
 gunicorn==21.2.0
