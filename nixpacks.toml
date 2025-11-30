@@ -1,9 +1,0 @@
-# Configuración de Nixpacks para Railway
-[phases.setup]
-nixPkgs = ["python310", "postgresql"]
-
-[phases.install]
-cmds = ["pip install -r backend/requirements-production.txt"]
-
-[start]
-cmd = "python backend/manage.py migrate --settings=config.settings.railway && python backend/manage.py collectstatic --noinput --settings=config.settings.railway && gunicorn wsgi:application --bind 0.0.0.0:$PORT --workers 3"
