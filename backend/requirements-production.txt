@@ -38,6 +38,9 @@ numpy==1.26.2
 scikit-learn==1.3.2
 pandas==2.1.4
 
+# HTTP Requests (required by omnichannel_bot)
+requests==2.31.0
+
 # Production dependencies
 gunicorn==21.2.0
 whitenoise==6.6.0
