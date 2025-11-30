@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando Celery Beat (Programador de Tareas)...
+celery -A config beat -l info
