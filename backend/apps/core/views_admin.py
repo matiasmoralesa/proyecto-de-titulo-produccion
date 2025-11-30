@@ -3,6 +3,7 @@ Admin views for data management
 """
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
 from django.contrib.auth.decorators import user_passes_test
 import os
@@ -12,7 +13,8 @@ def is_superuser(user):
     return user.is_authenticated and user.is_superuser
 
 
-@require_http_methods(["POST"])
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
 def load_backup_data(request):
     """
     Load data from backup file.
