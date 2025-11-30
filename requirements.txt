@@ -1,0 +1,2 @@
+# Este archivo redirige a las dependencias de producción en backend/
+-r backend/requirements-production.txt
