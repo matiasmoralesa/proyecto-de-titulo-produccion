@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
 from django.contrib.auth.decorators import user_passes_test
 import os
+import subprocess
+import sys
 
 
 def is_superuser(user):
@@ -38,4 +40,44 @@ def load_backup_data(request):
         return JsonResponse({
             'success': False,
             'error': f'Error loading data: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
+def seed_database(request):
+    """
+    Seed database with sample data using seed scripts.
+    This endpoint is public for initial setup, but should be removed after use.
+    """
+    try:
+        # Run seed_all_data.py script
+        result = subprocess.run(
+            [sys.executable, 'backend/seed_all_data.py'],
+            capture_output=True,
+            text=True,
+            timeout=300  # 5 minutes timeout
+        )
+        
+        if result.returncode == 0:
+            return JsonResponse({
+                'success': True,
+                'message': '✅ Database seeded successfully!',
+                'output': result.stdout
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': f'Seed script failed: {result.stderr}',
+                'output': result.stdout
+            }, status=500)
+    except subprocess.TimeoutExpired:
+        return JsonResponse({
+            'success': False,
+            'error': 'Seed script timed out after 5 minutes'
+        }, status=500)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error seeding database: {str(e)}'
         }, status=500)
