@@ -3,10 +3,22 @@ Django settings for Railway deployment.
 """
 from .base import *
 import dj_database_url
+import os
 
 # SECURITY
 DEBUG = False
-ALLOWED_HOSTS = ['*']  # Railway will handle this
+ALLOWED_HOSTS = [
+    'proyecto-de-titulo-produccion-production.up.railway.app',
+    '*.railway.app',
+    'localhost',
+    '127.0.0.1'
+]
+
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://proyecto-de-titulo-produccion-production.up.railway.app',
+    'https://*.railway.app',
+]
 
 # Database
 # Railway provides DATABASE_URL automatically
@@ -29,3 +41,4 @@ MEDIA_URL = '/media/'
 SECURE_SSL_REDIRECT = False  # Railway handles SSL
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
