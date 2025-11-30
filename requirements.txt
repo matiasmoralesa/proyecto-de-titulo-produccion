@@ -36,10 +36,10 @@ django-cors-headers==4.3.1
 # Logging
 python-json-logger==2.0.7
 
-# Machine Learning
+# Machine Learning - Versiones más ligeras
 scikit-learn==1.3.2
 pandas==2.1.4
-numpy==1.26.2
+numpy==1.24.3
 joblib==1.3.2
 
 # Async Tasks
