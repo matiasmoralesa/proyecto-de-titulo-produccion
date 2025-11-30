@@ -32,6 +32,12 @@ redis==5.0.1
 django-celery-beat==2.5.0
 django-celery-results==2.5.1
 
+# Machine Learning (required by ml_predictions app)
+joblib==1.3.2
+numpy==1.26.2
+scikit-learn==1.3.2
+pandas==2.1.4
+
 # Production dependencies
 gunicorn==21.2.0
 whitenoise==6.6.0
