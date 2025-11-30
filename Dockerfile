@@ -20,6 +20,9 @@ RUN pip install --no-cache-dir -r backend/requirements-production.txt
 # Copy the entire project
 COPY . /app/
 
+# Make start script executable
+RUN chmod +x /app/start.sh
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=config.settings.railway
@@ -27,5 +30,5 @@ ENV DJANGO_SETTINGS_MODULE=config.settings.railway
 # Expose port
 EXPOSE 8000
 
-# Start command (will be overridden by railway.json)
-CMD ["gunicorn", "wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Start command
+CMD ["/app/start.sh"]
