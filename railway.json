@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python backend/manage.py migrate --settings=config.settings.base && python backend/manage.py collectstatic --noinput --settings=config.settings.base && gunicorn wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120",
+    "startCommand": "python backend/manage.py migrate --settings=config.settings.railway && python backend/manage.py collectstatic --noinput --settings=config.settings.railway && gunicorn wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
