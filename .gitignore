@@ -20,6 +20,7 @@ db.sqlite3-journal
 /staticfiles
 .env
 .env.production
+!frontend/.env.production
 
 # Node
 node_modules/
