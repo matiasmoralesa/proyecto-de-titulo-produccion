@@ -142,7 +142,9 @@ class TelegramChannel(BaseChannel):
     
     def format_message(self, title: str, message: str) -> str:
         """Formatea el mensaje para Telegram con Markdown"""
-        return f"*{title}*\n\n{message}"
+        if title:
+            return f"*{title}*\n\n{message}"
+        return message
     
     def send_document(self, chat_id: str, document_path: str, caption: str = "") -> Dict:
         """Envía un documento (PDF, imagen, etc.)"""

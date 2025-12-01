@@ -60,51 +60,74 @@ def handle_message(message: dict, telegram: TelegramChannel):
     
     logger.info(f"Message from {chat_id}: {text}")
     
-    # Buscar usuario del sistema asociado a este chat_id
     try:
-        preference = UserChannelPreference.objects.get(
-            channel_type='TELEGRAM',
-            channel_user_id=chat_id
-        )
-        user = preference.user
-    except UserChannelPreference.DoesNotExist:
-        user = None
-        logger.warning(f"No user found for chat_id {chat_id}")
-    
-    # Procesar comando
-    if text.startswith('/'):
-        handler = BotCommandHandler()
-        response = handler.handle_command(text, user)
+        # Buscar usuario del sistema asociado a este chat_id
+        try:
+            preference = UserChannelPreference.objects.get(
+                channel_type='TELEGRAM',
+                channel_user_id=chat_id
+            )
+            user = preference.user
+            logger.info(f"User found: {user.username}")
+        except UserChannelPreference.DoesNotExist:
+            user = None
+            logger.warning(f"No user found for chat_id {chat_id}")
         
-        # Enviar respuesta
-        telegram.send_message(
-            chat_id=chat_id,
-            title='',
-            message=response['text'],
-            reply_markup={'inline_keyboard': response.get('buttons', [])} if response.get('buttons') else None
-        )
-    else:
-        # Mensaje no es comando
-        if not user:
-            telegram.send_message(
+        # Procesar comando
+        if text.startswith('/'):
+            handler = BotCommandHandler()
+            response = handler.handle_command(text, user)
+            
+            logger.info(f"Command response: {response['text'][:50]}...")
+            
+            # Enviar respuesta
+            result = telegram.send_message(
                 chat_id=chat_id,
                 title='',
-                message=(
-                    '👋 ¡Hola!\n\n'
-                    'Para usar este bot, necesitas que un administrador configure tu cuenta.\n\n'
-                    f'Tu Chat ID es: `{chat_id}`\n\n'
-                    'Proporciona este ID al administrador para que te configure.'
-                )
+                message=response['text'],
+                reply_markup={'inline_keyboard': response.get('buttons', [])} if response.get('buttons') else None
             )
+            
+            if result.get('success'):
+                logger.info(f"Message sent successfully to {chat_id}")
+            else:
+                logger.error(f"Failed to send message: {result.get('error')}")
         else:
+            # Mensaje no es comando
+            if not user:
+                telegram.send_message(
+                    chat_id=chat_id,
+                    title='',
+                    message=(
+                        '👋 ¡Hola!\n\n'
+                        'Para usar este bot, necesitas que un administrador configure tu cuenta.\n\n'
+                        f'Tu Chat ID es: `{chat_id}`\n\n'
+                        'Proporciona este ID al administrador para que te configure.'
+                    )
+                )
+            else:
+                telegram.send_message(
+                    chat_id=chat_id,
+                    title='',
+                    message=(
+                        'Usa /help para ver los comandos disponibles.\n\n'
+                        'O usa los botones del menú para navegar.'
+                    )
+                )
+    
+    except Exception as e:
+        logger.error(f"Error in handle_message: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
+        # Intentar enviar mensaje de error al usuario
+        try:
             telegram.send_message(
                 chat_id=chat_id,
                 title='',
-                message=(
-                    'Usa /help para ver los comandos disponibles.\n\n'
-                    'O usa los botones del menú para navegar.'
-                )
+                message='❌ Error procesando tu mensaje. Por favor intenta de nuevo.'
             )
+        except:
+            pass
 
 
 def handle_callback(callback_query: dict, telegram: TelegramChannel):
