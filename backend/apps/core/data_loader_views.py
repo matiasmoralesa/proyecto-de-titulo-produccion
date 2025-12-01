@@ -76,20 +76,21 @@ def setup_telegram_bot(request):
     
     try:
         # Crear o actualizar configuración de Telegram
+        webhook_url = 'https://proyecto-de-titulo-produccion-production.up.railway.app/api/v1/bot/webhook/telegram/'
+        
         config, created = ChannelConfig.objects.update_or_create(
             channel_type='TELEGRAM',
             defaults={
                 'is_enabled': True,
                 'config': {
                     'bot_token': telegram_token,
-                    'webhook_url': f'https://proyecto-de-titulo-produccion-production.up.railway.app/api/v1/bot/telegram/webhook/'
+                    'webhook_url': webhook_url
                 }
             }
         )
         
         # Configurar webhook en Telegram
         import requests
-        webhook_url = f'https://proyecto-de-titulo-produccion-production.up.railway.app/api/v1/bot/telegram/webhook/'
         
         response = requests.post(
             f'https://api.telegram.org/bot{telegram_token}/setWebhook',
