@@ -27,50 +27,14 @@ def load_production_data(request):
         'summary': {}
     }
     
-    # Lista de fixtures a cargar en orden
-    # Usar las fixtures originales del proyecto que están limpias
-    fixtures = [
-        ('apps/checklists/fixtures/checklist_templates.json', 'Plantillas de Checklist'),
-    ]
-    
-    for fixture_file, description in fixtures:
-        try:
-            fixture_path = f'backend/{fixture_file}'
-            
-            # Verificar que el archivo existe
-            if not os.path.exists(fixture_path):
-                results['errors'].append(f'{description}: Archivo no encontrado ({fixture_path})')
-                results['success'] = False
-                continue
-            
-            # Cargar el fixture directamente
-            # Django maneja el encoding automáticamente
-            import sys
-            from io import StringIO
-            
-            # Capturar output y errores
-            old_stdout = sys.stdout
-            old_stderr = sys.stderr
-            sys.stdout = StringIO()
-            sys.stderr = StringIO()
-            
-            try:
-                call_command('loaddata', fixture_path, verbosity=2)
-                results['loaded'].append(description)
-            finally:
-                stdout_value = sys.stdout.getvalue()
-                stderr_value = sys.stderr.getvalue()
-                sys.stdout = old_stdout
-                sys.stderr = old_stderr
-                
-                if stderr_value:
-                    results['errors'].append(f'{description}: {stderr_value}')
-                    results['success'] = False
-            
-        except Exception as e:
-            import traceback
-            results['errors'].append(f'{description}: {str(e)} - {traceback.format_exc()}')
-            results['success'] = False
+    # Cargar plantillas de checklist usando el comando existente
+    try:
+        call_command('load_checklist_templates')
+        results['loaded'].append('Plantillas de Checklist')
+    except Exception as e:
+        import traceback
+        results['errors'].append(f'Plantillas de Checklist: {str(e)} - {traceback.format_exc()}')
+        results['success'] = False
     
     # Generar resumen
     from apps.authentication.models import Role
