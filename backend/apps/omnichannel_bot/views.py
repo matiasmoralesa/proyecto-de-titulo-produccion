@@ -307,7 +307,9 @@ def link_user_telegram(request):
             defaults={
                 'channel_user_id': chat_id,
                 'is_enabled': True,
-                'preferences': {}
+                'notify_work_orders': True,
+                'notify_predictions': True,
+                'notify_critical_only': False
             }
         )
         
