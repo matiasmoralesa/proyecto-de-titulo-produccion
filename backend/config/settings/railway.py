@@ -10,6 +10,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'proyecto-de-titulo-produccion-production.up.railway.app',
     '*.railway.app',
+    'proyecto-de-titulo-produccion-btez6tjht.vercel.app',
+    '*.vercel.app',
     'localhost',
     '127.0.0.1'
 ]
@@ -18,7 +20,16 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://proyecto-de-titulo-produccion-production.up.railway.app',
     'https://*.railway.app',
+    'https://proyecto-de-titulo-produccion-btez6tjht.vercel.app',
+    'https://*.vercel.app',
 ]
+
+# CORS Settings
+CORS_ALLOWED_ORIGINS = [
+    'https://proyecto-de-titulo-produccion-btez6tjht.vercel.app',
+    'https://proyecto-de-titulo-produccion-production.up.railway.app',
+]
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # Railway provides DATABASE_URL automatically
