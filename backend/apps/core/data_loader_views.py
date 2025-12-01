@@ -47,22 +47,9 @@ def load_production_data(request):
                 results['success'] = False
                 continue
             
-            # Leer el archivo JSON con encoding UTF-8
-            import json
-            with open(fixture_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            # Guardar temporalmente con encoding correcto
-            temp_path = f'{fixture_path}.temp'
-            with open(temp_path, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            
-            # Cargar el fixture
-            call_command('loaddata', temp_path, verbosity=0)
-            
-            # Eliminar archivo temporal
-            os.remove(temp_path)
-            
+            # Cargar el fixture directamente
+            # Django maneja el encoding automáticamente
+            call_command('loaddata', fixture_path, verbosity=0)
             results['loaded'].append(description)
             
         except Exception as e:
