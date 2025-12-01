@@ -57,6 +57,87 @@ def load_production_data(request):
     return Response(results)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def fix_vehicle_types(request):
+    """
+    Endpoint para corregir los vehicle_types de los activos.
+    """
+    from apps.assets.models import Asset
+    
+    # Mapeo de valores incorrectos a correctos
+    VEHICLE_TYPE_MAPPING = {
+        'EXCAVADORA': 'Retroexcavadora MDO',
+        'RETROEXCAVADORA': 'Retroexcavadora MDO',
+        'CARGADOR_FRONTAL': 'Cargador Frontal MDO',
+        'CARGADOR FRONTAL': 'Cargador Frontal MDO',
+        'MINICARGADOR': 'Minicargador MDO',
+        'CAMION_SUPERSUCKER': 'Camión Supersucker',
+        'CAMION SUPERSUCKER': 'Camión Supersucker',
+        'CAMIONETA_MDO': 'Camioneta MDO',
+        'CAMIONETA MDO': 'Camioneta MDO',
+        'VOLQUETE': 'Camión Supersucker',
+    }
+    
+    updated = []
+    skipped = []
+    errors = []
+    
+    for asset in Asset.objects.all():
+        old_type = asset.vehicle_type
+        
+        # Si el tipo ya es correcto, skip
+        if old_type in [
+            'Camión Supersucker',
+            'Camioneta MDO',
+            'Retroexcavadora MDO',
+            'Cargador Frontal MDO',
+            'Minicargador MDO'
+        ]:
+            skipped.append(f"{asset.name} ({old_type})")
+            continue
+        
+        # Buscar el mapeo correcto
+        new_type = VEHICLE_TYPE_MAPPING.get(old_type.upper().replace(' ', '_'))
+        
+        if not new_type:
+            # Intentar match parcial
+            if 'EXCAVADORA' in old_type.upper():
+                new_type = 'Retroexcavadora MDO'
+            elif 'CARGADOR' in old_type.upper() and 'FRONTAL' in old_type.upper():
+                new_type = 'Cargador Frontal MDO'
+            elif 'MINICARGADOR' in old_type.upper():
+                new_type = 'Minicargador MDO'
+            elif 'CAMION' in old_type.upper() or 'SUPERSUCKER' in old_type.upper():
+                new_type = 'Camión Supersucker'
+            elif 'CAMIONETA' in old_type.upper():
+                new_type = 'Camioneta MDO'
+            else:
+                errors.append(f"{asset.name} ({old_type}) - No se pudo mapear")
+                continue
+        
+        # Actualizar
+        try:
+            asset.vehicle_type = new_type
+            asset.save()
+            updated.append(f"{asset.name}: {old_type} → {new_type}")
+        except Exception as e:
+            errors.append(f"{asset.name}: {str(e)}")
+    
+    return Response({
+        'success': len(errors) == 0,
+        'updated': updated,
+        'skipped': skipped,
+        'errors': errors,
+        'summary': {
+            'updated_count': len(updated),
+            'skipped_count': len(skipped),
+            'error_count': len(errors),
+            'total_assets': Asset.objects.count()
+        }
+    })
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def debug_admin_user(request):
