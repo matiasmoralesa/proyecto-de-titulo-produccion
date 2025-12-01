@@ -27,9 +27,9 @@ def load_production_data(request):
         'summary': {}
     }
     
-    # Cargar plantillas de checklist usando el comando existente
+    # Cargar plantillas de checklist directamente
     try:
-        call_command('load_checklist_templates')
+        call_command('create_checklist_templates')
         results['loaded'].append('Plantillas de Checklist')
     except Exception as e:
         import traceback
