@@ -169,16 +169,22 @@ def handle_callback(callback_query: dict, telegram: TelegramChannel):
         )
         logger.info(f"Answer callback response: {answer_response.status_code}")
         
+        # Preparar payload para editar mensaje
+        edit_payload = {
+            'chat_id': chat_id,
+            'message_id': message_id,
+            'text': response['text'],
+            'parse_mode': 'Markdown',
+        }
+        
+        # Solo agregar reply_markup si hay botones
+        if response.get('buttons'):
+            edit_payload['reply_markup'] = {'inline_keyboard': response['buttons']}
+        
         # Editar el mensaje con la nueva respuesta
         edit_response = requests.post(
             f"https://api.telegram.org/bot{bot_token}/editMessageText",
-            json={
-                'chat_id': chat_id,
-                'message_id': message_id,
-                'text': response['text'],
-                'parse_mode': 'Markdown',
-                'reply_markup': {'inline_keyboard': response.get('buttons', [])} if response.get('buttons') else None
-            },
+            json=edit_payload,
             timeout=10
         )
         
@@ -187,12 +193,14 @@ def handle_callback(callback_query: dict, telegram: TelegramChannel):
         else:
             logger.error(f"Error editing message: {edit_response.text}")
             # Si falla la edición, enviar nuevo mensaje
-            telegram.send_message(
-                chat_id=chat_id,
-                title='',
-                message=response['text'],
-                reply_markup={'inline_keyboard': response.get('buttons', [])} if response.get('buttons') else None
-            )
+            send_kwargs = {
+                'chat_id': chat_id,
+                'title': '',
+                'message': response['text']
+            }
+            if response.get('buttons'):
+                send_kwargs['reply_markup'] = {'inline_keyboard': response['buttons']}
+            telegram.send_message(**send_kwargs)
     
     except Exception as e:
         logger.error(f"Error in handle_callback: {str(e)}")
