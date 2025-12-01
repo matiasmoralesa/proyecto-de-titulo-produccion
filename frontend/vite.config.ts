@@ -10,9 +10,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  define: {
-    global: 'globalThis',
-  },
   server: {
     port: 5173,
     proxy: {
@@ -23,40 +20,7 @@ export default defineConfig({
     },
   },
   build: {
-    // Optimize build
     target: 'es2015',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-      },
-    },
-    // Code splitting
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Vendor chunks
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['react-hot-toast', 'react-icons'],
-          // Feature chunks
-          'assets': ['./src/pages/Assets.tsx', './src/components/assets/AssetForm.tsx'],
-          'work-orders': ['./src/pages/WorkOrders.tsx', './src/components/workOrders/WorkOrderForm.tsx'],
-          'reports': ['./src/pages/ReportsPage.tsx'],
-        },
-      },
-    },
-    // Chunk size warnings
     chunkSizeWarningLimit: 1000,
-  },
-  // Optimize dependencies
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'zustand'],
-  },
-  test: {
-    globals: true,
-    environment: 'happy-dom',
-    setupFiles: './src/test/setup.ts',
-    css: true,
   },
 })
