@@ -73,6 +73,30 @@ class UserChannelPreference(models.Model):
         return f"{self.user.username} - {self.channel_type}"
 
 
+class TelegramLinkCode(models.Model):
+    """
+    Códigos temporales para vincular usuarios con Telegram
+    """
+    code = models.CharField(max_length=6, unique=True, db_index=True)
+    user = models.ForeignKey('authentication.User', on_delete=models.CASCADE)
+    chat_id = models.CharField(max_length=200, blank=True)
+    is_used = models.BooleanField(default=False)
+    expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'telegram_link_codes'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.code} - {self.user.username}"
+    
+    def is_valid(self):
+        """Verifica si el código es válido"""
+        from django.utils import timezone
+        return not self.is_used and self.expires_at > timezone.now()
+
+
 class MessageLog(models.Model):
     """
     Registro de mensajes enviados

@@ -24,6 +24,7 @@ class BotCommandHandler:
             '/predictions': self.cmd_predictions,
             '/assets': self.cmd_assets,
             '/myinfo': self.cmd_myinfo,
+            '/vincular': self.cmd_vincular,
         }
     
     def handle_command(self, command: str, user: Optional[User] = None) -> Dict:
@@ -378,3 +379,164 @@ class BotCommandHandler:
         
         except WorkOrder.DoesNotExist:
             return {'text': '❌ Orden de trabajo no encontrada'}
+
+    
+    def cmd_vincular(self, user: Optional[User] = None, chat_id: str = None, full_command: str = None) -> Dict:
+        """
+        Comando /vincular - Vincula un usuario con Telegram
+        
+        Uso:
+        /vincular username password - Vincula con credenciales
+        /vincular CODIGO - Vincula con código temporal
+        """
+        if not full_command or not chat_id:
+            return {
+                'text': (
+                    '🔗 *Vincular Cuenta*\n\n'
+                    'Para vincular tu cuenta de CMMS con Telegram, usa uno de estos métodos:\n\n'
+                    '*Método 1: Con credenciales*\n'
+                    '`/vincular username password`\n\n'
+                    '*Método 2: Con código*\n'
+                    '`/vincular CODIGO`\n\n'
+                    'El código lo puedes generar desde la aplicación web.'
+                )
+            }
+        
+        # Parsear el comando
+        parts = full_command.strip().split()
+        
+        if len(parts) < 2:
+            return {
+                'text': (
+                    '❌ *Formato incorrecto*\n\n'
+                    'Usa:\n'
+                    '`/vincular username password`\n'
+                    'o\n'
+                    '`/vincular CODIGO`'
+                )
+            }
+        
+        # Si ya está vinculado
+        if user:
+            return {
+                'text': (
+                    f'✅ Ya estás vinculado como *{user.username}*\n\n'
+                    f'Nombre: {user.get_full_name()}\n'
+                    f'Rol: {user.role.name if user.role else "Sin rol"}'
+                )
+            }
+        
+        # Método 1: Con credenciales (username password)
+        if len(parts) == 3:
+            username = parts[1]
+            password = parts[2]
+            
+            from django.contrib.auth import authenticate
+            user_auth = authenticate(username=username, password=password)
+            
+            if user_auth:
+                # Vincular usuario
+                from apps.omnichannel_bot.models import UserChannelPreference
+                preference, created = UserChannelPreference.objects.update_or_create(
+                    user=user_auth,
+                    channel_type='TELEGRAM',
+                    defaults={
+                        'channel_user_id': chat_id,
+                        'is_enabled': True,
+                        'notify_work_orders': True,
+                        'notify_predictions': True,
+                        'notify_critical_only': False
+                    }
+                )
+                
+                return {
+                    'text': (
+                        f'✅ *¡Vinculación exitosa!*\n\n'
+                        f'Usuario: {user_auth.username}\n'
+                        f'Nombre: {user_auth.get_full_name()}\n'
+                        f'Rol: {user_auth.role.name if user_auth.role else "Sin rol"}\n\n'
+                        f'Ahora recibirás notificaciones de:\n'
+                        f'• Órdenes de trabajo\n'
+                        f'• Predicciones de fallos\n'
+                        f'• Alertas críticas\n\n'
+                        f'Usa /help para ver los comandos disponibles.'
+                    )
+                }
+            else:
+                return {
+                    'text': (
+                        '❌ *Credenciales incorrectas*\n\n'
+                        'Verifica tu username y contraseña.\n\n'
+                        'También puedes usar un código temporal:\n'
+                        '`/vincular CODIGO`'
+                    )
+                }
+        
+        # Método 2: Con código temporal
+        elif len(parts) == 2:
+            code = parts[1].upper()
+            
+            from apps.omnichannel_bot.models import TelegramLinkCode, UserChannelPreference
+            
+            try:
+                link_code = TelegramLinkCode.objects.get(code=code)
+                
+                if not link_code.is_valid():
+                    return {
+                        'text': (
+                            '❌ *Código inválido o expirado*\n\n'
+                            'El código debe usarse dentro de 5 minutos.\n\n'
+                            'Genera un nuevo código desde la aplicación web.'
+                        )
+                    }
+                
+                # Marcar código como usado
+                link_code.is_used = True
+                link_code.chat_id = chat_id
+                link_code.save()
+                
+                # Vincular usuario
+                preference, created = UserChannelPreference.objects.update_or_create(
+                    user=link_code.user,
+                    channel_type='TELEGRAM',
+                    defaults={
+                        'channel_user_id': chat_id,
+                        'is_enabled': True,
+                        'notify_work_orders': True,
+                        'notify_predictions': True,
+                        'notify_critical_only': False
+                    }
+                )
+                
+                return {
+                    'text': (
+                        f'✅ *¡Vinculación exitosa!*\n\n'
+                        f'Usuario: {link_code.user.username}\n'
+                        f'Nombre: {link_code.user.get_full_name()}\n'
+                        f'Rol: {link_code.user.role.name if link_code.user.role else "Sin rol"}\n\n'
+                        f'Ahora recibirás notificaciones de:\n'
+                        f'• Órdenes de trabajo\n'
+                        f'• Predicciones de fallos\n'
+                        f'• Alertas críticas\n\n'
+                        f'Usa /help para ver los comandos disponibles.'
+                    )
+                }
+            
+            except TelegramLinkCode.DoesNotExist:
+                return {
+                    'text': (
+                        '❌ *Código no encontrado*\n\n'
+                        'Verifica que el código sea correcto.\n\n'
+                        'Puedes generar un nuevo código desde la aplicación web.'
+                    )
+                }
+        
+        return {
+            'text': (
+                '❌ *Formato incorrecto*\n\n'
+                'Usa:\n'
+                '`/vincular username password`\n'
+                'o\n'
+                '`/vincular CODIGO`'
+            )
+        }

@@ -76,7 +76,12 @@ def handle_message(message: dict, telegram: TelegramChannel):
         # Procesar comando
         if text.startswith('/'):
             handler = BotCommandHandler()
-            response = handler.handle_command(text, user)
+            
+            # Si es el comando /vincular, pasar parámetros adicionales
+            if text.lower().startswith('/vincular'):
+                response = handler.cmd_vincular(user=user, chat_id=chat_id, full_command=text)
+            else:
+                response = handler.handle_command(text, user)
             
             logger.info(f"Command response: {response['text'][:50]}...")
             
@@ -404,6 +409,81 @@ def get_my_chat_id(request):
         }, status=404)
     except Exception as e:
         logger.error(f"Error getting chat IDs: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def generate_link_code(request):
+    """
+    Genera un código temporal para vincular usuario con Telegram
+    """
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+        user_id = data.get('user_id')
+        username = data.get('username')
+        
+        if not user_id and not username:
+            return JsonResponse({
+                'success': False,
+                'error': 'Debes proporcionar user_id o username'
+            }, status=400)
+        
+        from apps.authentication.models import User
+        from apps.omnichannel_bot.models import TelegramLinkCode
+        from django.utils import timezone
+        from datetime import timedelta
+        import random
+        import string
+        
+        # Buscar usuario
+        try:
+            if user_id:
+                user = User.objects.get(id=user_id)
+            else:
+                user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            identifier = f'id {user_id}' if user_id else f'username {username}'
+            return JsonResponse({
+                'success': False,
+                'error': f'Usuario con {identifier} no encontrado'
+            }, status=404)
+        
+        # Generar código único de 6 caracteres
+        while True:
+            code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            if not TelegramLinkCode.objects.filter(code=code).exists():
+                break
+        
+        # Crear código con expiración de 5 minutos
+        link_code = TelegramLinkCode.objects.create(
+            code=code,
+            user=user,
+            expires_at=timezone.now() + timedelta(minutes=5)
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'code': code,
+            'user': {
+                'id': str(user.id),
+                'username': user.username,
+                'full_name': user.get_full_name()
+            },
+            'expires_in_minutes': 5,
+            'instructions': (
+                f'Envía este código al bot de Telegram:\n'
+                f'/vincular {code}\n\n'
+                f'El código expira en 5 minutos.'
+            )
+        })
+    
+    except Exception as e:
+        logger.error(f"Error generating link code: {str(e)}")
         return JsonResponse({
             'success': False,
             'error': str(e)
