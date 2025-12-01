@@ -1,0 +1,151 @@
+╔══════════════════════════════════════════════════════════════╗
+║  SOLUCIÓN: BOTONES DE TELEGRAM Y RECONOCIMIENTO DE USUARIO  ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│ PASO 1: DESPLEGAR CORRECCIONES                              │
+└──────────────────────────────────────────────────────────────┘
+
+  Ejecuta en tu terminal:
+  
+  > deploy_telegram_fix.bat
+  
+  O manualmente:
+  
+  > git add backend/apps/omnichannel_bot/views.py
+  > git add backend/apps/omnichannel_bot/urls.py
+  > git commit -m "Fix: Telegram bot"
+  > git push origin main
+  
+  ⏱️  Espera 2-3 minutos a que Railway despliegue
+
+┌──────────────────────────────────────────────────────────────┐
+│ PASO 2: OBTENER TU CHAT ID                                  │
+└──────────────────────────────────────────────────────────────┘
+
+  1. Abre Telegram
+  2. Busca tu bot
+  3. Envía: /start
+  4. Abre en navegador:
+     
+     https://tu-app.up.railway.app/api/omnichannel/get-chat-id/
+  
+  5. Copia tu chat_id de la respuesta JSON
+     
+     Ejemplo: "chat_id": "123456789"
+
+┌──────────────────────────────────────────────────────────────┐
+│ PASO 3: VINCULAR TU USUARIO                                 │
+└──────────────────────────────────────────────────────────────┘
+
+  Opción A - Usando curl:
+  
+  > curl -X POST https://tu-app.up.railway.app/api/omnichannel/link-user/ ^
+      -H "Content-Type: application/json" ^
+      -d "{\"user_id\": 1, \"chat_id\": \"TU_CHAT_ID\"}"
+  
+  Opción B - Usando navegador (F12 → Consola):
+  
+  fetch('https://tu-app.up.railway.app/api/omnichannel/link-user/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      user_id: 1,
+      chat_id: 'TU_CHAT_ID'
+    })
+  })
+  .then(r => r.json())
+  .then(console.log)
+
+┌──────────────────────────────────────────────────────────────┐
+│ PASO 4: VERIFICAR QUE FUNCIONA                              │
+└──────────────────────────────────────────────────────────────┘
+
+  1. Abre Telegram
+  2. Envía /start al bot
+  3. Presiona cualquier botón
+  4. ✅ Debería responder correctamente
+
+┌──────────────────────────────────────────────────────────────┐
+│ VERIFICACIÓN ADICIONAL                                       │
+└──────────────────────────────────────────────────────────────┘
+
+  Ver usuarios vinculados:
+  > curl https://tu-app.up.railway.app/api/omnichannel/link-user/
+  
+  Ver estado del bot:
+  > curl https://tu-app.up.railway.app/api/omnichannel/status/
+  
+  Ver logs:
+  > railway logs
+
+╔══════════════════════════════════════════════════════════════╗
+║  ¿QUÉ SE CORRIGIÓ?                                          ║
+╚══════════════════════════════════════════════════════════════╝
+
+  ✅ Botones ahora responden correctamente
+  ✅ Manejo robusto de errores en callbacks
+  ✅ Sistema de vinculación de usuarios implementado
+  ✅ Endpoints para gestionar vinculaciones
+  ✅ Logging detallado para debugging
+  ✅ Respuesta de fallback si falla la edición
+
+╔══════════════════════════════════════════════════════════════╗
+║  ENDPOINTS NUEVOS                                            ║
+╚══════════════════════════════════════════════════════════════╝
+
+  GET  /api/omnichannel/get-chat-id/
+       → Obtener chat IDs de mensajes recientes
+  
+  POST /api/omnichannel/link-user/
+       → Vincular usuario con chat_id
+       Body: {"user_id": 1, "chat_id": "123456789"}
+  
+  GET  /api/omnichannel/link-user/
+       → Listar usuarios vinculados
+
+╔══════════════════════════════════════════════════════════════╗
+║  SOLUCIÓN DE PROBLEMAS                                       ║
+╚══════════════════════════════════════════════════════════════╝
+
+  ❌ Los botones siguen sin responder
+     → Revisa logs: railway logs
+     → Busca errores en handle_callback
+  
+  ❌ No encuentras tu chat_id
+     → Asegúrate de enviar /start al bot
+     → Espera 10 segundos y recarga
+  
+  ❌ Error al vincular usuario
+     → Verifica que user_id sea correcto
+     → Verifica que chat_id sea string
+     → Revisa logs de Railway
+
+╔══════════════════════════════════════════════════════════════╗
+║  DOCUMENTACIÓN COMPLETA                                      ║
+╚══════════════════════════════════════════════════════════════╝
+
+  📄 GUIA_RAPIDA_TELEGRAM.md
+     → Guía rápida de 3 pasos
+  
+  📄 SOLUCION_BOTONES_TELEGRAM.md
+     → Solución detallada con ejemplos
+  
+  📄 RESUMEN_CORRECCION_TELEGRAM.md
+     → Resumen técnico de cambios
+  
+  🐍 backend/link_telegram_user.py
+     → Script interactivo de vinculación
+
+╔══════════════════════════════════════════════════════════════╗
+║  ¡LISTO!                                                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+  Después de seguir estos pasos:
+  
+  ✅ Los botones funcionarán correctamente
+  ✅ El sistema reconocerá tu usuario
+  ✅ Podrás navegar por los menús
+  ✅ Podrás gestionar órdenes de trabajo desde Telegram
+  
+  ¡Disfruta tu bot de Telegram funcional! 🎉
