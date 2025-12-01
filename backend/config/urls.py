@@ -15,6 +15,7 @@ urlpatterns = [
     # Admin utilities (temporary - remove after use)
     path('api/admin/load-data/', load_backup_data, name='load-backup-data'),
     path('api/admin/seed-data/', seed_database, name='seed-database'),
+    path('api/v1/admin/', include('apps.core.data_loader_urls')),
     
     # API v1
     path('api/v1/auth/', include('apps.authentication.urls')),
