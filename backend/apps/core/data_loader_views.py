@@ -84,13 +84,21 @@ def activate_admin_user(request):
     Endpoint temporal para activar el usuario admin.
     DEBE SER REMOVIDO DESPUÉS DE USAR.
     """
-    from apps.authentication.models import User
+    from apps.authentication.models import User, Role
     
     try:
+        # Obtener o crear el rol ADMIN
+        admin_role, _ = Role.objects.get_or_create(
+            name='ADMIN',
+            defaults={'description': 'Administrador del sistema'}
+        )
+        
+        # Obtener el usuario admin
         admin = User.objects.get(username='admin')
         admin.is_active = True
         admin.is_staff = True
         admin.is_superuser = True
+        admin.role = admin_role
         admin.save()
         
         return Response({
@@ -101,7 +109,8 @@ def activate_admin_user(request):
                 'email': admin.email,
                 'is_active': admin.is_active,
                 'is_staff': admin.is_staff,
-                'is_superuser': admin.is_superuser
+                'is_superuser': admin.is_superuser,
+                'role': admin.role.name
             }
         })
     except User.DoesNotExist:
