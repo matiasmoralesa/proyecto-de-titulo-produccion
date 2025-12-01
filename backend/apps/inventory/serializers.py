@@ -187,11 +187,21 @@ class StockAdjustmentSerializer(serializers.Serializer):
     )
     
     def validate_quantity_change(self, value):
-        """Validate that quantity_change is not zero."""
+        """
+        Validate that quantity_change is not zero.
+        Also validate reasonable limits.
+        """
         if value == 0:
             raise serializers.ValidationError(
                 "El cambio de cantidad no puede ser cero."
             )
+        
+        # Validate reasonable limits
+        if abs(value) > 10000:
+            raise serializers.ValidationError(
+                "El cambio de cantidad no puede exceder 10,000 unidades en una sola operación."
+            )
+        
         return value
     
     def validate(self, data):

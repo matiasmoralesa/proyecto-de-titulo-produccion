@@ -137,10 +137,30 @@ class MaintenancePlanPauseSerializer(serializers.Serializer):
 class MaintenancePlanCompleteSerializer(serializers.Serializer):
     """Serializer for completing maintenance."""
     completion_date = serializers.DateField(required=False)
-    usage_value = serializers.IntegerField(required=False, allow_null=True)
+    usage_value = serializers.IntegerField(required=False, allow_null=True, min_value=0)
     notes = serializers.CharField(required=False, allow_blank=True)
+    
+    def validate_usage_value(self, value):
+        """
+        Validate that usage value is not negative.
+        """
+        if value is not None and value < 0:
+            raise serializers.ValidationError(
+                'El valor de uso no puede ser negativo.'
+            )
+        return value
 
 
 class MaintenancePlanUsageUpdateSerializer(serializers.Serializer):
     """Serializer for updating usage value."""
-    current_usage = serializers.IntegerField(required=True)
+    current_usage = serializers.IntegerField(required=True, min_value=0)
+    
+    def validate_current_usage(self, value):
+        """
+        Validate that current usage is not negative.
+        """
+        if value < 0:
+            raise serializers.ValidationError(
+                'El uso actual no puede ser negativo.'
+            )
+        return value

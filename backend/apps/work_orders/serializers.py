@@ -48,6 +48,18 @@ class WorkOrderCreateSerializer(serializers.ModelSerializer):
         fields = [
             'title', 'description', 'priority', 'asset', 'assigned_to', 'scheduled_date'
         ]
+    
+    def validate_scheduled_date(self, value):
+        """
+        Validate that scheduled date is not in the past.
+        """
+        from django.utils import timezone
+        
+        if value < timezone.now():
+            raise serializers.ValidationError(
+                'La fecha programada no puede ser anterior a la fecha actual.'
+            )
+        return value
 
 
 class WorkOrderUpdateSerializer(serializers.ModelSerializer):
@@ -65,9 +77,43 @@ class WorkOrderUpdateSerializer(serializers.ModelSerializer):
                 f"Cannot transition from {instance.status} to {value}"
             )
         return value
+    
+    def validate_scheduled_date(self, value):
+        """
+        Validate that scheduled date is not in the past.
+        Only validate if the work order is not yet completed.
+        """
+        from django.utils import timezone
+        
+        instance = self.instance
+        
+        # Allow past dates for completed work orders
+        if instance and instance.status == 'Completada':
+            return value
+        
+        # For pending/in-progress work orders, don't allow past dates
+        if value < timezone.now():
+            raise serializers.ValidationError(
+                'La fecha programada no puede ser anterior a la fecha actual.'
+            )
+        return value
 
 
 class WorkOrderCompleteSerializer(serializers.Serializer):
     """Serializer for completing work orders."""
     completion_notes = serializers.CharField(required=True)
-    actual_hours = serializers.DecimalField(max_digits=5, decimal_places=2, required=True)
+    actual_hours = serializers.DecimalField(max_digits=5, decimal_places=2, required=True, min_value=0.01)
+    
+    def validate_actual_hours(self, value):
+        """
+        Validate that actual hours is positive.
+        """
+        if value <= 0:
+            raise serializers.ValidationError(
+                'Las horas trabajadas deben ser un número positivo mayor a cero.'
+            )
+        if value > 999.99:
+            raise serializers.ValidationError(
+                'Las horas trabajadas no pueden exceder 999.99 horas.'
+            )
+        return value

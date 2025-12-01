@@ -66,6 +66,17 @@ export default function Dashboard() {
     }
   };
 
+  // Helper function to check user role
+  // Validates: Requirements 10.1, 10.2, 10.3
+  const hasRole = (roles: string[]) => {
+    if (!user || !user.role) return false;
+    return roles.includes(user.role.name);
+  };
+
+  const isOperador = hasRole(['OPERADOR']);
+  const isSupervisor = hasRole(['SUPERVISOR']);
+  const isAdmin = hasRole(['ADMIN']);
+
   if (loading) {
     return (
       <MainLayout>
@@ -89,14 +100,19 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Assets Stats */}
+        {/* Assets Stats - Visible to all roles */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Estado de Activos</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+            {isOperador ? 'Mis Activos' : 'Estado de Activos'}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Activos Totales</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {isOperador ? 'Mis Activos' : 'Activos Totales'}
+                  </p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stats?.total_assets || 0}</p>
                 </div>
                 <div className="bg-blue-500 p-3 rounded-lg">
@@ -143,9 +159,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Work Orders Stats */}
+        {/* Work Orders Stats - Visible to all roles */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Órdenes de Trabajo</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+            {isOperador ? 'Mis Órdenes de Trabajo' : isSupervisor ? 'Órdenes del Equipo' : 'Órdenes de Trabajo'}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between">
@@ -169,6 +188,11 @@ export default function Dashboard() {
                   <FiClock className="w-6 h-6 text-white" />
                 </div>
               </div>
+              {isOperador && stats && stats.pending_work_orders > 0 && (
+                <p className="text-xs text-orange-600 mt-2 font-medium">
+                  ¡Tienes órdenes pendientes!
+                </p>
+              )}
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">
@@ -197,40 +221,51 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ML Predictions Stats */}
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">Predicciones ML</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Predicciones</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats?.total_predictions || 0}</p>
-                </div>
-                <div className="bg-indigo-500 p-3 rounded-lg">
-                  <FaRobot className="w-6 h-6 text-white" />
+        {/* ML Predictions Stats - Only for Supervisors and Admins */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
+        {(isSupervisor || isAdmin) && (
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">Predicciones ML</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Total Predicciones</p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">{stats?.total_predictions || 0}</p>
+                  </div>
+                  <div className="bg-indigo-500 p-3 rounded-lg">
+                    <FaRobot className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Alto Riesgo</p>
-                  <p className="text-3xl font-bold text-red-600 mt-2">{stats?.high_risk_predictions || 0}</p>
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Alto Riesgo</p>
+                    <p className="text-3xl font-bold text-red-600 mt-2">{stats?.high_risk_predictions || 0}</p>
+                  </div>
+                  <div className="bg-red-500 p-3 rounded-lg">
+                    <FiAlertTriangle className="w-6 h-6 text-white" />
+                  </div>
                 </div>
-                <div className="bg-red-500 p-3 rounded-lg">
-                  <FiAlertTriangle className="w-6 h-6 text-white" />
-                </div>
+                {stats && stats.high_risk_predictions > 0 && (
+                  <p className="text-xs text-red-600 mt-2 font-medium">
+                    ¡Requiere atención inmediata!
+                  </p>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* KPIs Section */}
-        {stats?.kpis && (
+        {/* KPIs Section - Only for Supervisors and Admins */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
+        {(isSupervisor || isAdmin) && stats?.kpis && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Indicadores Clave de Desempeño (KPIs)</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">
+              {isSupervisor ? 'KPIs del Equipo' : 'Indicadores Clave de Desempeño (KPIs)'}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Availability Rate */}
               <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
@@ -315,21 +350,58 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Info Cards */}
+        {/* Role-specific Info Cards */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6">
-            <div className="flex items-start space-x-3">
-              <FiCheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-blue-900 mb-2">Sistema Operativo</h3>
-                <p className="text-sm text-blue-700">
-                  El sistema de autenticación con JWT está funcionando correctamente.
-                  Todos los módulos principales están listos para usar.
-                </p>
+          {/* Operador-specific card */}
+          {isOperador && (
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-lg p-6">
+              <div className="flex items-start space-x-3">
+                <FiActivity className="w-6 h-6 text-orange-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-orange-900 mb-2">Tus Tareas</h3>
+                  <p className="text-sm text-orange-700">
+                    Tienes acceso a tus órdenes de trabajo asignadas y los activos relacionados.
+                    Mantén tus órdenes actualizadas para un mejor seguimiento.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
+          {/* Supervisor-specific card */}
+          {isSupervisor && (
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6">
+              <div className="flex items-start space-x-3">
+                <FiUsers className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-purple-900 mb-2">Gestión de Equipo</h3>
+                  <p className="text-sm text-purple-700">
+                    Puedes ver y gestionar todas las órdenes de trabajo de tu equipo.
+                    Accede a reportes y predicciones ML para mejor planificación.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Admin-specific card */}
+          {isAdmin && (
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6">
+              <div className="flex items-start space-x-3">
+                <FiSettings className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-blue-900 mb-2">Control Total</h3>
+                  <p className="text-sm text-blue-700">
+                    Tienes acceso completo al sistema. Puedes gestionar usuarios, configuración,
+                    y ver todas las estadísticas globales del CMMS.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* User Profile Card - All roles */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6">
             <div className="flex items-start space-x-3">
               <FiUser className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
@@ -345,24 +417,56 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Role-based */}
+        {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* All roles can view assets */}
             <button
               onClick={() => (window.location.href = '/assets')}
               className="flex items-center space-x-3 p-4 border-2 border-primary-200 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-colors"
             >
               <FiTruck className="w-6 h-6 text-primary-600" />
-              <span className="font-medium text-gray-900">Ver Activos</span>
+              <span className="font-medium text-gray-900">
+                {isOperador ? 'Mis Activos' : 'Ver Activos'}
+              </span>
             </button>
+            
+            {/* All roles can view work orders */}
             <button
               onClick={() => (window.location.href = '/work-orders')}
               className="flex items-center space-x-3 p-4 border-2 border-primary-200 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-colors"
             >
               <FiActivity className="w-6 h-6 text-primary-600" />
-              <span className="font-medium text-gray-900">Ver Órdenes</span>
+              <span className="font-medium text-gray-900">
+                {isOperador ? 'Mis Órdenes' : 'Ver Órdenes'}
+              </span>
             </button>
+
+            {/* Supervisors and Admins can view reports */}
+            {(isSupervisor || isAdmin) && (
+              <button
+                onClick={() => (window.location.href = '/reports')}
+                className="flex items-center space-x-3 p-4 border-2 border-primary-200 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-colors"
+              >
+                <FiBarChart2 className="w-6 h-6 text-primary-600" />
+                <span className="font-medium text-gray-900">Ver Reportes</span>
+              </button>
+            )}
+
+            {/* Admins can access configuration */}
+            {isAdmin && (
+              <button
+                onClick={() => (window.location.href = '/configuration')}
+                className="flex items-center space-x-3 p-4 border-2 border-primary-200 rounded-lg hover:border-primary-400 hover:bg-primary-50 transition-colors"
+              >
+                <FiSettings className="w-6 h-6 text-primary-600" />
+                <span className="font-medium text-gray-900">Configuración</span>
+              </button>
+            )}
+
+            {/* Placeholder for future features */}
             <button className="flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors opacity-50 cursor-not-allowed">
               <FiCheckCircle className="w-6 h-6 text-gray-400" />
               <span className="font-medium text-gray-500">Nuevo Checklist</span>

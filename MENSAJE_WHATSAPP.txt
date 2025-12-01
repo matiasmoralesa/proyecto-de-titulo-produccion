@@ -1,0 +1,17 @@
+Hola 👋
+
+Ya puedes recibir notificaciones del CMMS en Telegram:
+
+1️⃣ Abre Telegram
+2️⃣ Busca: @Somacorbot
+3️⃣ Envía: /vincular tu_usuario tu_contraseña
+
+Ejemplo:
+/vincular operador1 mipassword123
+
+Recibirás notificaciones de:
+✅ Órdenes de trabajo
+⚠️ Predicciones de fallos
+🚨 Alertas críticas
+
+¿Dudas? Escríbeme.

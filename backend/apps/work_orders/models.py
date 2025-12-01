@@ -2,6 +2,7 @@
 Work Order models.
 """
 from django.db import models
+from django.core.validators import MinValueValidator
 from apps.core.models import TimeStampedModel
 from apps.assets.models import Asset
 from apps.authentication.models import User
@@ -55,7 +56,13 @@ class WorkOrder(TimeStampedModel):
     scheduled_date = models.DateTimeField()
     completed_date = models.DateTimeField(null=True, blank=True)
     completion_notes = models.TextField(blank=True)
-    actual_hours = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    actual_hours = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2, 
+        null=True, 
+        blank=True,
+        validators=[MinValueValidator(0.01)]
+    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,

@@ -218,3 +218,76 @@ class AuditLog(models.Model):
     
     def __str__(self):
         return f"{self.timestamp} - {self.user} - {self.action} - {self.model_name}"
+
+
+
+class AccessLog(models.Model):
+    """
+    Model for logging access attempts to resources.
+    Used for security auditing and compliance.
+    
+    Validates: Requirements 9.1, 9.2, 9.3
+    """
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='access_logs',
+        verbose_name='Usuario'
+    )
+    resource_type = models.CharField(
+        max_length=100,
+        verbose_name='Tipo de Recurso',
+        help_text='Tipo de recurso accedido (workorder, asset, etc.)'
+    )
+    resource_id = models.CharField(
+        max_length=100,
+        verbose_name='ID del Recurso',
+        help_text='ID del recurso específico'
+    )
+    action = models.CharField(
+        max_length=50,
+        verbose_name='Acción',
+        help_text='Acción realizada (view, create, update, delete)'
+    )
+    success = models.BooleanField(
+        default=True,
+        verbose_name='Éxito',
+        help_text='Si el acceso fue exitoso o denegado'
+    )
+    ip_address = models.GenericIPAddressField(
+        null=True,
+        blank=True,
+        verbose_name='Dirección IP'
+    )
+    user_agent = models.TextField(
+        blank=True,
+        verbose_name='User Agent'
+    )
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Fecha y Hora'
+    )
+    details = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name='Detalles',
+        help_text='Información adicional sobre el acceso'
+    )
+    
+    class Meta:
+        db_table = 'access_logs'
+        verbose_name = 'Registro de Acceso'
+        verbose_name_plural = 'Registros de Acceso'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['user', 'timestamp']),
+            models.Index(fields=['resource_type', 'resource_id']),
+            models.Index(fields=['success', 'timestamp']),
+            models.Index(fields=['timestamp']),
+        ]
+    
+    def __str__(self):
+        status = 'Exitoso' if self.success else 'Denegado'
+        user_str = self.user.username if self.user else 'Anónimo'
+        return f"{user_str} - {self.action} {self.resource_type} - {status}"

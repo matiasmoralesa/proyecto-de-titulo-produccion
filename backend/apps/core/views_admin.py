@@ -81,3 +81,43 @@ def seed_database(request):
             'success': False,
             'error': f'Error seeding database: {str(e)}'
         }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
+def generate_checklists(request):
+    """
+    Generate sample checklist templates and responses.
+    This endpoint is public for initial setup, but should be removed after use.
+    """
+    try:
+        # Run generate_sample_checklists.py script
+        result = subprocess.run(
+            [sys.executable, 'backend/generate_sample_checklists.py'],
+            capture_output=True,
+            text=True,
+            timeout=300  # 5 minutes timeout
+        )
+        
+        if result.returncode == 0:
+            return JsonResponse({
+                'success': True,
+                'message': '✅ Checklists generated successfully!',
+                'output': result.stdout
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': f'Checklist generation failed: {result.stderr}',
+                'output': result.stdout
+            }, status=500)
+    except subprocess.TimeoutExpired:
+        return JsonResponse({
+            'success': False,
+            'error': 'Checklist generation timed out after 5 minutes'
+        }, status=500)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error generating checklists: {str(e)}'
+        }, status=500)

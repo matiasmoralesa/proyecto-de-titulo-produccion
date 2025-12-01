@@ -42,22 +42,30 @@ export default function MainLayout({ children }: MainLayoutProps) {
     navigate('/login');
   };
 
-  const menuItems = [
-    { icon: FiHome, label: 'Dashboard', path: '/dashboard' },
-    { icon: FiTruck, label: 'Activos', path: '/assets' },
-    { icon: FiClipboard, label: 'Órdenes de Trabajo', path: '/work-orders' },
-    { icon: FiTool, label: 'Mantenimiento', path: '/maintenance' },
-    { icon: FiPackage, label: 'Inventario', path: '/inventory' },
-    { icon: FiCheckSquare, label: 'Checklists', path: '/checklists' },
-    { icon: FiActivity, label: 'Estado de Máquinas', path: '/machine-status' },
-    { icon: FaRobot, label: 'Predicciones ML', path: '/ml-predictions' },
-    { icon: FaClock, label: 'Monitor Celery', path: '/celery-monitor' },
-    { icon: FiBell, label: 'Notificaciones', path: '/notifications' },
-    { icon: FiBarChart2, label: 'Reportes', path: '/reports' },
-    { icon: FiMapPin, label: 'Ubicaciones', path: '/locations' },
-    { icon: FiUsers, label: 'Usuarios', path: '/users' },
-    { icon: FiSettings, label: 'Configuración', path: '/configuration' },
+  // Menu items with role requirements
+  // Validates: Requirements 10.4
+  const allMenuItems = [
+    { icon: FiHome, label: 'Dashboard', path: '/dashboard', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiTruck, label: 'Activos', path: '/assets', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiClipboard, label: 'Órdenes de Trabajo', path: '/work-orders', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiTool, label: 'Mantenimiento', path: '/maintenance', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiPackage, label: 'Inventario', path: '/inventory', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiCheckSquare, label: 'Checklists', path: '/checklists', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiActivity, label: 'Estado de Máquinas', path: '/machine-status', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FaRobot, label: 'Predicciones ML', path: '/ml-predictions', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FaClock, label: 'Monitor Celery', path: '/celery-monitor', roles: ['ADMIN'] },
+    { icon: FiBell, label: 'Notificaciones', path: '/notifications', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiBarChart2, label: 'Reportes', path: '/reports', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    { icon: FiMapPin, label: 'Ubicaciones', path: '/locations', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiUsers, label: 'Usuarios', path: '/users', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiSettings, label: 'Configuración', path: '/configuration', roles: ['ADMIN'] },
   ];
+
+  // Filter menu items based on user role
+  const menuItems = allMenuItems.filter(item => {
+    if (!user || !user.role) return false;
+    return item.roles.includes(user.role.name);
+  });
 
   const isActive = (path: string) => location.pathname === path;
 

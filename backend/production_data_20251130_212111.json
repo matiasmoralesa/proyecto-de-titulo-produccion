@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "exported_at": "2025-11-30T21:21:11.101087",
+    "version": "1.0"
+  },
+  "roles": [
+    {
+      "name": "ADMIN",
+      "description": "Administrador del sistema con acceso completo",
+      "code": "ADMIN"
+    },
+    {
+      "name": "SUPERVISOR",
+      "description": "Supervisor de mantenimiento con acceso a gestión de órdenes y reportes",
+      "code": "SUPERVISOR"
+    },
+    {
+      "name": "OPERADOR",
+      "description": "Operador con acceso limitado a órdenes asignadas",
+      "code": "OPERADOR"
+    }
+  ],
+  "checklist_templates": [
+    {
+      "code": "F-PR-020-CH01",
+      "name": "Check List Camionetas MDO",
+      "description": "Checklist diario para inspección de camionetas MDO antes del inicio de operaciones",
+      "vehicle_type": "CAMIONETA_MDO",
+      "is_system_template": true,
+      "passing_score": 80,
+      "items": 

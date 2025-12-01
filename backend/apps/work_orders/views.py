@@ -6,6 +6,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from apps.core.permissions import IsOperadorOrAbove, IsOwnerOrSupervisor
+from apps.core.mixins import RoleBasedQuerySetMixin
+from apps.authentication.models import Role
 from .models import WorkOrder
 from .serializers import (
     WorkOrderListSerializer,
@@ -16,10 +19,10 @@ from .serializers import (
 )
 
 
-class WorkOrderViewSet(viewsets.ModelViewSet):
-    """ViewSet for WorkOrder model."""
+class WorkOrderViewSet(RoleBasedQuerySetMixin, viewsets.ModelViewSet):
+    """ViewSet for WorkOrder model with role-based access control."""
     queryset = WorkOrder.objects.select_related('asset', 'assigned_to', 'created_by')
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOperadorOrAbove]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'priority', 'asset', 'assigned_to']
     search_fields = ['work_order_number', 'title', 'description']
@@ -38,20 +41,71 @@ class WorkOrderViewSet(viewsets.ModelViewSet):
             return WorkOrderCompleteSerializer
         return WorkOrderDetailSerializer
     
-    def get_queryset(self):
-        """Filter queryset based on user role."""
-        queryset = super().get_queryset()
-        user = self.request.user
+    def filter_by_role(self, queryset, user):
+        """
+        Apply role-based filtering to work orders.
         
-        # Operadores only see their assigned work orders
-        if user.role.name == 'OPERADOR':
-            queryset = queryset.filter(assigned_to=user)
+        - ADMIN: See all work orders
+        - SUPERVISOR: See all work orders (can be customized by team/area)
+        - OPERADOR: See only assigned work orders
+        """
+        if user.role.name == Role.SUPERVISOR:
+            # Supervisors see all work orders
+            # TODO: Filter by team/area when team structure is implemented
+            return queryset
+        
+        elif user.role.name == Role.OPERADOR:
+            # Operators only see their assigned work orders
+            return queryset.filter(assigned_to=user)
         
         return queryset
     
+    def get_permissions(self):
+        """
+        Set permissions based on action.
+        
+        - create: Any authenticated user with valid role
+        - update/partial_update: Owner or supervisor/admin
+        - destroy: Admin only (inherited from IsOperadorOrAbove + object check)
+        """
+        if self.action in ['update', 'partial_update', 'complete', 'transition_status']:
+            return [IsAuthenticated(), IsOwnerOrSupervisor()]
+        return super().get_permissions()
+    
     def perform_create(self, serializer):
-        """Set created_by on creation."""
+        """
+        Set created_by on creation.
+        
+        Validates: Requirements 1.4, 7.3
+        """
+        # All authenticated users with valid roles can create work orders
         serializer.save(created_by=self.request.user)
+    
+    def perform_update(self, serializer):
+        """
+        Validate permissions before updating.
+        
+        Validates: Requirements 1.4, 7.4
+        """
+        # Permission check is handled by get_permissions() -> IsOwnerOrSupervisor
+        # This ensures only the assigned user, supervisors, or admins can update
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        """
+        Validate permissions before deleting.
+        Only admins can delete work orders.
+        
+        Validates: Requirements 7.5
+        """
+        user = self.request.user
+        
+        # Only admins can delete work orders
+        if user.role.name != Role.ADMIN:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied('Only administrators can delete work orders.')
+        
+        instance.delete()
     
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):

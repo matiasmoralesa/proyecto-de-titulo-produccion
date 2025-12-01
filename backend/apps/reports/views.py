@@ -10,6 +10,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from apps.core.permissions import IsOperadorOrAbove
+from apps.authentication.models import Role
 from apps.reports.services import ReportService
 from apps.reports.serializers import (
     DateRangeSerializer,
@@ -23,9 +25,37 @@ from apps.reports.serializers import (
 
 class ReportViewSet(viewsets.ViewSet):
     """
-    ViewSet for report generation and KPI calculations.
+    ViewSet for report generation and KPI calculations with role-based access.
+    
+    - ADMIN: Ve estadísticas globales
+    - SUPERVISOR: Ve estadísticas de su equipo
+    - OPERADOR: Ve solo sus propias estadísticas
+    
+    Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOperadorOrAbove]
+    
+    def _get_user_filter(self):
+        """
+        Get user filter based on role.
+        
+        Returns user_id for operators, None for supervisors/admins.
+        Validates: Requirements 4.1, 4.2, 4.3
+        """
+        user = self.request.user
+        
+        if user.role.name == Role.OPERADOR:
+            # Operators only see their own statistics
+            return user.id
+        elif user.role.name == Role.SUPERVISOR:
+            # Supervisors see team statistics (all for now)
+            # TODO: Filter by team when team structure is implemented
+            return None
+        elif user.role.name == Role.ADMIN:
+            # Admins see global statistics
+            return None
+        
+        return user.id  # Default to user's own data
     
     def _parse_date_params(self, request):
         """Parse and validate date parameters from request."""
@@ -59,24 +89,32 @@ class ReportViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def kpis(self, request):
-        """Get all KPIs (MTBF, MTTR, OEE)."""
+        """
+        Get all KPIs (MTBF, MTTR, OEE) filtered by role.
+        
+        Validates: Requirements 4.1, 4.2, 4.3
+        """
         start_date, end_date, asset_id = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
         
         kpis = {
             'mtbf': ReportService.calculate_mtbf(
                 asset_id=asset_id,
                 start_date=start_date,
-                end_date=end_date
+                end_date=end_date,
+                user_id=user_filter
             ),
             'mttr': ReportService.calculate_mttr(
                 asset_id=asset_id,
                 start_date=start_date,
-                end_date=end_date
+                end_date=end_date,
+                user_id=user_filter
             ),
             'oee': ReportService.calculate_oee(
                 asset_id=asset_id,
                 start_date=start_date,
-                end_date=end_date
+                end_date=end_date,
+                user_id=user_filter
             ),
         }
         
@@ -85,13 +123,19 @@ class ReportViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def work_order_summary(self, request):
-        """Get work order summary report."""
+        """
+        Get work order summary report filtered by role.
+        
+        Validates: Requirements 4.1, 4.2, 4.3, 4.4
+        """
         start_date, end_date, asset_id = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
         
         summary = ReportService.get_work_order_summary(
             start_date=start_date,
             end_date=end_date,
-            asset_id=asset_id
+            asset_id=asset_id,
+            user_id=user_filter
         )
         
         serializer = WorkOrderSummarySerializer(summary)
@@ -150,13 +194,19 @@ class ReportViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def export_work_orders(self, request):
-        """Export work order summary as CSV."""
+        """
+        Export work order summary as CSV filtered by role.
+        
+        Validates: Requirements 4.5
+        """
         start_date, end_date, asset_id = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
         
         summary = ReportService.get_work_order_summary(
             start_date=start_date,
             end_date=end_date,
-            asset_id=asset_id
+            asset_id=asset_id,
+            user_id=user_filter
         )
         
         # Create CSV response

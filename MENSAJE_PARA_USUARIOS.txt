@@ -1,0 +1,65 @@
+═══════════════════════════════════════════════════════════
+  CÓMO RECIBIR NOTIFICACIONES DEL CMMS EN TELEGRAM
+═══════════════════════════════════════════════════════════
+
+Hola,
+
+Ya puedes recibir notificaciones del sistema CMMS directamente 
+en Telegram. Es muy fácil:
+
+PASOS:
+──────
+
+1. Abre Telegram
+
+2. Busca el bot: @Somacorbot
+   O usa este link: https://t.me/Somacorbot
+
+3. Envía este comando (reemplaza con tus datos):
+   
+   /vincular tu_usuario tu_contraseña
+
+   Ejemplo:
+   /vincular operador1 mipassword123
+
+4. ¡Listo! El bot te confirmará que estás vinculado.
+
+
+QUÉ RECIBIRÁS:
+──────────────
+
+• Notificaciones de órdenes de trabajo asignadas
+• Alertas de predicciones de fallos
+• Avisos críticos del sistema
+• Recordatorios de mantenimiento
+
+
+COMANDOS ÚTILES:
+────────────────
+
+/start      - Ver menú principal
+/help       - Ver ayuda
+/workorders - Ver tus órdenes de trabajo
+/predictions - Ver predicciones
+/status     - Ver estado del sistema
+
+
+SEGURIDAD:
+──────────
+
+✓ Tu contraseña solo se usa para verificar tu identidad
+✓ No se guarda en ningún lugar
+✓ Puedes borrar el mensaje después de enviarlo
+✓ Telegram encripta todos los mensajes
+
+
+¿PROBLEMAS?
+───────────
+
+Si tienes algún problema, contáctame.
+
+
+Saludos,
+[Tu nombre]
+
+═══════════════════════════════════════════════════════════

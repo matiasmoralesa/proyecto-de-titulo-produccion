@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, CreateUserData, UpdateUserData } from '../../services/userManagementService';
+import { useAuthStore } from '../../store/authStore';
+import { FiInfo } from 'react-icons/fi';
 
 interface UserFormProps {
   user?: User | null;
@@ -8,6 +10,7 @@ interface UserFormProps {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
+  const { user: currentUser } = useAuthStore();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -21,6 +24,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+
+  // Check if current user is supervisor
+  const isSupervisor = currentUser?.role?.name === 'SUPERVISOR';
+  const isAdmin = currentUser?.role?.name === 'ADMIN';
 
   useEffect(() => {
     if (user) {
@@ -223,10 +230,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value={1}>Administrador</option>
+            {/* Supervisors cannot create admin users */}
+            {!isSupervisor && <option value={1}>Administrador</option>}
             <option value={2}>Supervisor</option>
             <option value={3}>Operador</option>
           </select>
+          {isSupervisor && (
+            <div className="flex items-start space-x-1 mt-1">
+              <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-blue-600">
+                Los supervisores no pueden crear usuarios administradores
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Password fields - only for new users */}

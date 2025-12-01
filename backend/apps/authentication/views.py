@@ -21,19 +21,70 @@ from .permissions import IsAdmin
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for listing users (read-only)."""
+    """
+    ViewSet for listing users (read-only) with role-based access.
+    
+    - ADMIN: Ve todos los usuarios
+    - SUPERVISOR: Ve solo su equipo
+    - OPERADOR: 403 Forbidden
+    
+    Validates: Requirements 5.1, 5.2, 5.3
+    """
     queryset = User.objects.filter(is_active=True).select_related('role')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        """
+        Filter users based on role.
+        
+        Validates: Requirements 5.1, 5.2, 5.3
+        """
+        from apps.core.permissions import IsSupervisorOrAbove
+        from apps.authentication.models import Role
+        
+        queryset = super().get_queryset()
+        user = self.request.user
+        
+        # Operators cannot list users
+        if user.role.name == Role.OPERADOR:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied('Los operadores no pueden listar usuarios.')
+        
+        # Admins see all users
+        if user.role.name == Role.ADMIN:
+            return queryset
+        
+        # Supervisors see their team
+        # TODO: Filter by team when team structure is implemented
+        if user.role.name == Role.SUPERVISOR:
+            return queryset
+        
+        return queryset.none()
 
 
 class UserManagementViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for user management (ADMIN only).
+    ViewSet for user management (ADMIN and SUPERVISOR).
     Provides CRUD operations for user accounts.
+    
+    - ADMIN: Full CRUD on all users
+    - SUPERVISOR: Can create users but with restrictions
+    
+    Validates: Requirements 5.4, 5.5
     """
     queryset = User.objects.all().select_related('role').order_by('-created_at')
-    permission_classes = [IsAuthenticated, IsAdmin]
+    
+    def get_permissions(self):
+        """
+        Set permissions based on action.
+        Only supervisors and admins can create/manage users.
+        """
+        from apps.core.permissions import IsSupervisorOrAbove
+        
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'activate', 'deactivate', 'reset_password']:
+            return [IsAuthenticated(), IsSupervisorOrAbove()]
+        return [IsAuthenticated(), IsAdmin()]
     
     def get_serializer_class(self):
         """Return appropriate serializer based on action."""
@@ -70,9 +121,27 @@ class UserManagementViewSet(viewsets.ModelViewSet):
         return queryset
     
     def create(self, request, *args, **kwargs):
-        """Create a new user with hashed password."""
+        """
+        Create a new user with hashed password.
+        
+        Validation: Only supervisors and admins can create users.
+        Supervisors cannot create admin users.
+        """
+        from rest_framework.exceptions import PermissionDenied
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        
+        # Supervisors cannot create admin users
+        if request.user.role.name == Role.SUPERVISOR:
+            role_id = request.data.get('role')
+            if role_id:
+                try:
+                    role = Role.objects.get(id=role_id)
+                    if role.name == Role.ADMIN:
+                        raise PermissionDenied('Los supervisores no pueden crear usuarios administradores.')
+                except Role.DoesNotExist:
+                    pass
         
         # Create user
         user = serializer.save()

@@ -1,10 +1,12 @@
 /**
  * Asset Form Component
+ * Validates: Requirements 10.5
  */
 import { useState, useEffect } from 'react';
-import { FiX, FiSave } from 'react-icons/fi';
+import { FiX, FiSave, FiInfo } from 'react-icons/fi';
 import { Asset } from '../../types/asset.types';
 import assetService from '../../services/assetService';
+import { useAuthStore } from '../../store/authStore';
 import api from '../../services/api';
 
 interface AssetFormProps {
@@ -19,6 +21,7 @@ interface Location {
 }
 
 export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps) {
+  const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState<Location[]>([]);
   const [formData, setFormData] = useState({
@@ -34,6 +37,18 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
     status: asset?.status || 'Operando',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Role-based permissions
+  // Validates: Requirements 10.5
+  const isOperador = user?.role?.name === 'OPERADOR';
+  const isSupervisor = user?.role?.name === 'SUPERVISOR';
+  const isAdmin = user?.role?.name === 'ADMIN';
+
+  // Field permissions - Only supervisors and admins can edit critical fields
+  const canEditStatus = isSupervisor || isAdmin;
+  const canEditLocation = isSupervisor || isAdmin;
+  const canEditVehicleType = isAdmin; // Only admins can change vehicle type
+  const canEditSerialNumber = isAdmin; // Only admins can change serial number
 
   const vehicleTypes = [
     'Camión Supersucker',
@@ -91,6 +106,15 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
     }
     if (!formData.installation_date) {
       newErrors.installation_date = 'La fecha de instalación es requerida';
+    } else {
+      // Validate that installation date is not in the future
+      const installationDate = new Date(formData.installation_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to compare only dates
+      
+      if (installationDate > today) {
+        newErrors.installation_date = 'La fecha de instalación no puede ser posterior a la fecha actual';
+      }
     }
 
     setErrors(newErrors);
@@ -192,16 +216,23 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           </div>
 
           {/* Vehicle Type and Status */}
+          {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Tipo de Vehículo <span className="text-red-500">*</span>
+                {!canEditVehicleType && (
+                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                )}
               </label>
               <select
                 name="vehicle_type"
                 value={formData.vehicle_type}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                disabled={!canEditVehicleType}
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+                  !canEditVehicleType ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
               >
                 {vehicleTypes.map((type) => (
                   <option key={type} value={type}>
@@ -209,17 +240,31 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                   </option>
                 ))}
               </select>
+              {!canEditVehicleType && (
+                <div className="flex items-start space-x-1 mt-1">
+                  <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-blue-600">
+                    Solo administradores pueden cambiar el tipo de vehículo
+                  </p>
+                </div>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Estado <span className="text-red-500">*</span>
+                {!canEditStatus && (
+                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                )}
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                disabled={!canEditStatus}
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+                  !canEditStatus ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>
@@ -227,27 +272,48 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                   </option>
                 ))}
               </select>
+              {!canEditStatus && (
+                <div className="flex items-start space-x-1 mt-1">
+                  <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-blue-600">
+                    Solo supervisores y administradores pueden cambiar el estado
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Serial Number and Installation Date */}
+          {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Número de Serie <span className="text-red-500">*</span>
+                {!canEditSerialNumber && (
+                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                )}
               </label>
               <input
                 type="text"
                 name="serial_number"
                 value={formData.serial_number}
                 onChange={handleChange}
+                disabled={!canEditSerialNumber}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
                   errors.serial_number ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } ${!canEditSerialNumber ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 placeholder="Ej: SN123456789"
               />
               {errors.serial_number && (
                 <p className="text-red-500 text-sm mt-1">{errors.serial_number}</p>
+              )}
+              {!canEditSerialNumber && (
+                <div className="flex items-start space-x-1 mt-1">
+                  <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-blue-600">
+                    Solo administradores pueden cambiar el número de serie
+                  </p>
+                </div>
               )}
             </div>
 
@@ -271,6 +337,7 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           </div>
 
           {/* License Plate and Location */}
+          {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Placa</label>
@@ -287,14 +354,18 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Ubicación <span className="text-red-500">*</span>
+                {!canEditLocation && (
+                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                )}
               </label>
               <select
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
+                disabled={!canEditLocation}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
                   errors.location ? 'border-red-500' : 'border-gray-300'
-                }`}
+                } ${!canEditLocation ? 'bg-gray-100 cursor-not-allowed' : ''}`}
               >
                 <option value="">Seleccionar ubicación...</option>
                 {locations.map((location) => (
@@ -304,6 +375,14 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 ))}
               </select>
               {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
+              {!canEditLocation && (
+                <div className="flex items-start space-x-1 mt-1">
+                  <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-blue-600">
+                    Solo supervisores y administradores pueden cambiar la ubicación
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

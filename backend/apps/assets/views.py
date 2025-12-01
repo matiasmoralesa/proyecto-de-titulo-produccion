@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.core.permissions import IsAdmin, IsSupervisorOrAdmin
+from apps.authentication.permissions import IsAdmin, IsSupervisorOrAdmin
 from .models import Location, Asset, AssetDocument
 from .serializers import (
     LocationSerializer,
@@ -51,8 +51,13 @@ class LocationViewSet(viewsets.ModelViewSet):
 
 class AssetViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for Asset model.
-    Supports filtering, searching, and pagination.
+    ViewSet for Asset model with role-based access control.
+    
+    - ADMIN: See all assets
+    - SUPERVISOR: See all assets (can be customized by area)
+    - OPERADOR: See only assets from their assigned work orders
+    
+    Validates: Requirements 2.1, 2.2, 2.3, 2.4
     """
     queryset = Asset.objects.select_related('location', 'created_by').prefetch_related('documents')
     permission_classes = [IsAuthenticated]
@@ -71,14 +76,54 @@ class AssetViewSet(viewsets.ModelViewSet):
         return AssetDetailSerializer
     
     def get_queryset(self):
-        """Filter queryset based on user role."""
+        """
+        Filter queryset based on user role.
+        
+        Validates: Requirements 2.1, 2.2, 2.3, 2.5
+        """
+        from apps.authentication.models import Role
+        from apps.work_orders.models import WorkOrder
+        
         queryset = super().get_queryset()
+        user = self.request.user
         
         # By default, exclude archived assets
         if self.request.query_params.get('include_archived') != 'true':
             queryset = queryset.filter(is_archived=False)
         
+        # Apply role-based filtering
+        if user.role.name == Role.ADMIN:
+            # Admins see all assets
+            return queryset
+        
+        elif user.role.name == Role.SUPERVISOR:
+            # Supervisors see all assets
+            # TODO: Filter by area/department when structure is implemented
+            return queryset
+        
+        elif user.role.name == Role.OPERADOR:
+            # Operators only see assets from their assigned work orders
+            accessible_asset_ids = WorkOrder.objects.filter(
+                assigned_to=user
+            ).values_list('asset_id', flat=True).distinct()
+            
+            return queryset.filter(id__in=accessible_asset_ids)
+        
         return queryset
+    
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Retrieve asset details with permission check.
+        
+        Returns 404 instead of 403 to not reveal asset existence.
+        Validates: Requirements 2.4
+        """
+        try:
+            return super().retrieve(request, *args, **kwargs)
+        except Exception:
+            # Return 404 for any error to not reveal existence
+            from rest_framework.exceptions import NotFound
+            raise NotFound('Asset not found.')
     
     def perform_create(self, serializer):
         """Set created_by on creation."""

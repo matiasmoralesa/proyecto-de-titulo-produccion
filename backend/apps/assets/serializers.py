@@ -112,6 +112,18 @@ class AssetCreateUpdateSerializer(serializers.ModelSerializer):
             return value.upper()
         return value
     
+    def validate_installation_date(self, value):
+        """
+        Validate that installation date is not in the future.
+        """
+        from django.utils import timezone
+        
+        if value > timezone.now().date():
+            raise serializers.ValidationError(
+                'La fecha de instalación no puede ser posterior a la fecha actual.'
+            )
+        return value
+    
     def validate(self, attrs):
         """Additional validation."""
         # Check for duplicate serial number (excluding current instance on update)

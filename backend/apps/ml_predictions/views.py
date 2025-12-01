@@ -7,18 +7,27 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from datetime import timedelta
+from apps.core.mixins import AssetAccessMixin
+from apps.core.permissions import IsOperadorOrAbove, IsSupervisorOrAbove
 from .models import FailurePrediction
 from .serializers import FailurePredictionSerializer
 from .tasks import run_daily_predictions, predict_single_asset
 
 
-class FailurePredictionViewSet(viewsets.ReadOnlyModelViewSet):
+class FailurePredictionViewSet(AssetAccessMixin, viewsets.ReadOnlyModelViewSet):
     """
-    ViewSet para predicciones de fallos
+    ViewSet para predicciones de fallos con control de acceso basado en roles.
+    
+    - ADMIN: Ve todas las predicciones
+    - SUPERVISOR: Ve todas las predicciones
+    - OPERADOR: Ve solo predicciones de activos de sus work orders
+    
+    Validates: Requirements 3.1, 3.2, 3.3
     """
     queryset = FailurePrediction.objects.all().select_related('asset').order_by('-prediction_date')
     serializer_class = FailurePredictionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOperadorOrAbove]
+    asset_field = 'asset'  # Field that links to Asset model
     
     @action(detail=False, methods=['get'])
     def high_risk(self, request):
@@ -54,10 +63,13 @@ class FailurePredictionViewSet(viewsets.ReadOnlyModelViewSet):
             'work_order_percentage': (with_wo / total * 100) if total > 0 else 0
         })
     
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated, IsSupervisorOrAbove])
     def run_predictions(self, request):
         """
-        Ejecutar predicciones manualmente
+        Ejecutar predicciones manualmente.
+        Solo supervisores y admins pueden ejecutar predicciones.
+        
+        Validates: Requirements 3.3
         """
         task = run_daily_predictions.delay()
         return Response({
@@ -65,10 +77,13 @@ class FailurePredictionViewSet(viewsets.ReadOnlyModelViewSet):
             'task_id': task.id
         }, status=status.HTTP_202_ACCEPTED)
     
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated, IsSupervisorOrAbove])
     def predict_asset(self, request):
         """
-        Predecir un activo específico
+        Predecir un activo específico.
+        Solo supervisores y admins pueden ejecutar predicciones.
+        
+        Validates: Requirements 3.3
         """
         asset_id = request.data.get('asset_id')
         if not asset_id:
