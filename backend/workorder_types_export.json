@@ -1,11 +1,11 @@
-[
+ï»¿[
 {
   "model": "configuration.workordertype",
   "pk": "2438af7e-2abf-4170-bbe1-d4c192df9ec7",
   "fields": {
     "created_at": "2025-11-28T01:54:44.278Z",
     "updated_at": "2025-11-28T01:54:44.278Z",
-    "name": "Modificación",
+    "name": "Modificaciâ‰¤n",
     "description": "Cambios o mejoras en el activo",
     "code": "MODI",
     "requires_approval": true,
@@ -19,8 +19,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.295Z",
     "updated_at": "2025-11-28T01:54:44.295Z",
-    "name": "Calibración",
-    "description": "Ajuste y calibración de equipos",
+    "name": "Calibraciâ‰¤n",
+    "description": "Ajuste y calibraciâ‰¤n de equipos",
     "code": "CALI",
     "requires_approval": false,
     "is_active": true,
@@ -33,8 +33,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.287Z",
     "updated_at": "2025-11-28T01:54:44.287Z",
-    "name": "Instalación",
-    "description": "Instalación de nuevos equipos o componentes",
+    "name": "Instalaciâ‰¤n",
+    "description": "Instalaciâ‰¤n de nuevos equipos o componentes",
     "code": "INST",
     "requires_approval": true,
     "is_active": true,
@@ -48,7 +48,7 @@
     "created_at": "2025-11-28T01:54:44.248Z",
     "updated_at": "2025-11-28T01:54:44.248Z",
     "name": "Mantenimiento Correctivo",
-    "description": "Reparación de fallas o averías",
+    "description": "Reparaciâ‰¤n de fallas o averÏ†as",
     "code": "CORR",
     "requires_approval": false,
     "is_active": true,
@@ -61,8 +61,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.271Z",
     "updated_at": "2025-11-28T01:54:44.271Z",
-    "name": "Inspección",
-    "description": "Revisión y evaluación del estado del activo",
+    "name": "Inspecciâ‰¤n",
+    "description": "Revisiâ‰¤n y evaluaciâ‰¤n del estado del activo",
     "code": "INSP",
     "requires_approval": false,
     "is_active": true,
@@ -76,7 +76,7 @@
     "created_at": "2025-11-28T01:54:44.263Z",
     "updated_at": "2025-11-28T01:54:44.263Z",
     "name": "Emergencia",
-    "description": "Atención inmediata a fallas críticas",
+    "description": "Atenciâ‰¤n inmediata a fallas crÏ†ticas",
     "code": "EMRG",
     "requires_approval": true,
     "is_active": true,
@@ -104,7 +104,7 @@
     "created_at": "2025-11-28T01:54:44.255Z",
     "updated_at": "2025-11-28T01:54:44.255Z",
     "name": "Mantenimiento Predictivo",
-    "description": "Basado en predicciones de ML y análisis de datos",
+    "description": "Basado en predicciones de ML y anÃŸlisis de datos",
     "code": "PRED",
     "requires_approval": false,
     "is_active": true,

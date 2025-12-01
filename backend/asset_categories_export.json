@@ -1,11 +1,11 @@
-[
+ï»¿[
 {
   "model": "configuration.assetcategory",
   "pk": "069cdfb7-a034-4e8f-b0e5-9a24c7fe5a36",
   "fields": {
     "created_at": "2025-11-28T01:54:44.189Z",
     "updated_at": "2025-11-28T01:54:44.189Z",
-    "name": "Sistemas de Información",
+    "name": "Sistemas de Informaciâ‰¤n",
     "description": "Servidores, redes y sistemas IT",
     "code": "SIS-INF",
     "is_active": true,
@@ -18,8 +18,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.174Z",
     "updated_at": "2025-11-28T01:54:44.174Z",
-    "name": "Vehículos Ligeros",
-    "description": "Camionetas, autos y vehículos de transporte ligero",
+    "name": "VehÏ†culos Ligeros",
+    "description": "Camionetas, autos y vehÏ†culos de transporte ligero",
     "code": "VEH-LIG",
     "is_active": true,
     "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
@@ -44,8 +44,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.151Z",
     "updated_at": "2025-11-28T01:54:44.151Z",
-    "name": "Maquinaria Agrícola",
-    "description": "Tractores, cosechadoras y equipos agrícolas",
+    "name": "Maquinaria AgrÏ†cola",
+    "description": "Tractores, cosechadoras y equipos agrÏ†colas",
     "code": "MAQ-AGR",
     "is_active": true,
     "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
@@ -71,7 +71,7 @@
     "created_at": "2025-11-28T01:54:44.167Z",
     "updated_at": "2025-11-28T01:54:44.167Z",
     "name": "Herramientas Menores",
-    "description": "Herramientas eléctricas y manuales",
+    "description": "Herramientas elÎ˜ctricas y manuales",
     "code": "HER-MEN",
     "is_active": true,
     "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
@@ -83,7 +83,7 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.142Z",
     "updated_at": "2025-11-28T01:54:44.142Z",
-    "name": "Maquinaria de Construcción",
+    "name": "Maquinaria de Construcciâ‰¤n",
     "description": "Excavadoras, retroexcavadoras, cargadores frontales",
     "code": "MAQ-CON",
     "is_active": true,
@@ -96,8 +96,8 @@
   "fields": {
     "created_at": "2025-11-28T01:54:44.132Z",
     "updated_at": "2025-11-28T01:54:44.132Z",
-    "name": "Vehículos Pesados",
-    "description": "Camiones, volquetes y vehículos de carga pesada",
+    "name": "VehÏ†culos Pesados",
+    "description": "Camiones, volquetes y vehÏ†culos de carga pesada",
     "code": "VEH-PES",
     "is_active": true,
     "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"

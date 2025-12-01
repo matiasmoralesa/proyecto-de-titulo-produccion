@@ -1,4 +1,4 @@
-[
+ï»¿[
 {
   "model": "assets.location",
   "pk": "09c04d71-9a78-4ed2-860b-b7cc0893dec3",
@@ -6,7 +6,7 @@
     "name": "Zona de Carga",
     "address": "Av. Transporte 321, Callao",
     "coordinates": "",
-    "description": "Área de carga y descarga",
+    "description": "â”´rea de carga y descarga",
     "created_at": "2025-11-28T01:36:09.008Z",
     "updated_at": "2025-11-28T01:36:09.008Z"
   }
@@ -27,10 +27,10 @@
   "model": "assets.location",
   "pk": "517bcdd4-3fde-44ee-84ee-f8fe90a5d913",
   "fields": {
-    "name": "Almacén Central",
+    "name": "AlmacÎ˜n Central",
     "address": "Jr. Los Almacenes 456, Lima",
     "coordinates": "-12.0500,-77.0500",
-    "description": "Almacén central de repuestos y equipos",
+    "description": "AlmacÎ˜n central de repuestos y equipos",
     "created_at": "2025-11-26T20:52:18.618Z",
     "updated_at": "2025-11-26T20:52:18.618Z"
   }

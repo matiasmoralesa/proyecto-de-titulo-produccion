@@ -1,11 +1,11 @@
-[
+ï»¿[
 {
   "model": "checklists.checklisttemplate",
   "pk": 1,
   "fields": {
     "code": "SUPERSUCKER-CH01",
-    "name": "Check List Camión Supersucker",
-    "description": "Checklist diario para inspección de camión supersucker antes del inicio de operaciones",
+    "name": "Check List Camiâ‰¤n Supersucker",
+    "description": "Checklist diario para inspecciâ‰¤n de camiâ‰¤n supersucker antes del inicio de operaciones",
     "vehicle_type": "CAMION_SUPERSUCKER",
     "is_system_template": true,
     "passing_score": 80,
@@ -21,7 +21,7 @@
   "fields": {
     "code": "F-PR-020-CH01",
     "name": "Check List Camionetas MDO",
-    "description": "Checklist diario para inspección de camionetas MDO antes del inicio de operaciones",
+    "description": "Checklist diario para inspecciâ‰¤n de camionetas MDO antes del inicio de operaciones",
     "vehicle_type": "CAMIONETA_MDO",
     "is_system_template": true,
     "passing_score": 80,
@@ -37,7 +37,7 @@
   "fields": {
     "code": "F-PR-034-CH01",
     "name": "Check Retroexcavadora MDO",
-    "description": "Checklist diario para inspección de retroexcavadora MDO antes del inicio de operaciones",
+    "description": "Checklist diario para inspecciâ‰¤n de retroexcavadora MDO antes del inicio de operaciones",
     "vehicle_type": "RETROEXCAVADORA_MDO",
     "is_system_template": true,
     "passing_score": 80,
@@ -53,7 +53,7 @@
   "fields": {
     "code": "F-PR-037-CH01",
     "name": "Check List Cargador Frontal MDO",
-    "description": "Checklist diario para inspección de cargador frontal MDO antes del inicio de operaciones",
+    "description": "Checklist diario para inspecciâ‰¤n de cargador frontal MDO antes del inicio de operaciones",
     "vehicle_type": "CARGADOR_FRONTAL_MDO",
     "is_system_template": true,
     "passing_score": 80,
@@ -69,7 +69,7 @@
   "fields": {
     "code": "F-PR-040-CH01",
     "name": "Check List Minicargador MDO",
-    "description": "Checklist diario para inspección de minicargador MDO antes del inicio de operaciones",
+    "description": "Checklist diario para inspecciâ‰¤n de minicargador MDO antes del inicio de operaciones",
     "vehicle_type": "MINICARGADOR_MDO",
     "is_system_template": true,
     "passing_score": 80,
