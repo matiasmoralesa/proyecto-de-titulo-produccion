@@ -49,11 +49,31 @@ def load_production_data(request):
             
             # Cargar el fixture directamente
             # Django maneja el encoding automáticamente
-            call_command('loaddata', fixture_path, verbosity=0)
-            results['loaded'].append(description)
+            import sys
+            from io import StringIO
+            
+            # Capturar output y errores
+            old_stdout = sys.stdout
+            old_stderr = sys.stderr
+            sys.stdout = StringIO()
+            sys.stderr = StringIO()
+            
+            try:
+                call_command('loaddata', fixture_path, verbosity=2)
+                results['loaded'].append(description)
+            finally:
+                stdout_value = sys.stdout.getvalue()
+                stderr_value = sys.stderr.getvalue()
+                sys.stdout = old_stdout
+                sys.stderr = old_stderr
+                
+                if stderr_value:
+                    results['errors'].append(f'{description}: {stderr_value}')
+                    results['success'] = False
             
         except Exception as e:
-            results['errors'].append(f'{description}: {str(e)}')
+            import traceback
+            results['errors'].append(f'{description}: {str(e)} - {traceback.format_exc()}')
             results['success'] = False
     
     # Generar resumen
