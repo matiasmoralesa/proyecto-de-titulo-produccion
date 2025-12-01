@@ -28,13 +28,9 @@ def load_production_data(request):
     }
     
     # Lista de fixtures a cargar en orden
+    # Usar las fixtures originales del proyecto que están limpias
     fixtures = [
-        ('roles_export.json', 'Roles'),
-        ('checklist_templates_export.json', 'Plantillas de Checklist'),
-        ('priorities_export.json', 'Prioridades'),
-        ('workorder_types_export.json', 'Tipos de Orden de Trabajo'),
-        ('asset_categories_export.json', 'Categorías de Activos'),
-        ('locations_export.json', 'Ubicaciones'),
+        ('apps/checklists/fixtures/checklist_templates.json', 'Plantillas de Checklist'),
     ]
     
     for fixture_file, description in fixtures:
