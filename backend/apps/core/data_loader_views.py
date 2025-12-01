@@ -122,11 +122,13 @@ def activate_admin_user(request):
         admin.is_staff = True
         admin.is_superuser = True
         admin.role = admin_role
+        # Resetear password para asegurar que está hasheado correctamente
+        admin.set_password('admin123')
         admin.save()
         
         return Response({
             'success': True,
-            'message': 'Usuario admin activado correctamente',
+            'message': 'Usuario admin activado correctamente con password reseteado',
             'user': {
                 'username': admin.username,
                 'email': admin.email,
@@ -134,6 +136,10 @@ def activate_admin_user(request):
                 'is_staff': admin.is_staff,
                 'is_superuser': admin.is_superuser,
                 'role': admin.role.name
+            },
+            'credentials': {
+                'username': 'admin',
+                'password': 'admin123'
             }
         })
     except User.DoesNotExist:
