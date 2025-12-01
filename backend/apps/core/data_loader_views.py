@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from apps.authentication.permissions import IsAdmin
 import os
@@ -74,6 +74,46 @@ def load_production_data(request):
         results['errors'].append(f'Error al generar resumen: {str(e)}')
     
     return Response(results)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@csrf_exempt
+def activate_admin_user(request):
+    """
+    Endpoint temporal para activar el usuario admin.
+    DEBE SER REMOVIDO DESPUÉS DE USAR.
+    """
+    from apps.authentication.models import User
+    
+    try:
+        admin = User.objects.get(username='admin')
+        admin.is_active = True
+        admin.is_staff = True
+        admin.is_superuser = True
+        admin.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Usuario admin activado correctamente',
+            'user': {
+                'username': admin.username,
+                'email': admin.email,
+                'is_active': admin.is_active,
+                'is_staff': admin.is_staff,
+                'is_superuser': admin.is_superuser
+            }
+        })
+    except User.DoesNotExist:
+        return Response({
+            'success': False,
+            'error': 'Usuario admin no existe'
+        }, status=404)
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 
 
 @api_view(['GET'])
