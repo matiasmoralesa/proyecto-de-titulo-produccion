@@ -270,23 +270,34 @@ def link_user_telegram(request):
     try:
         data = json.loads(request.body.decode('utf-8'))
         user_id = data.get('user_id')
+        username = data.get('username')
         chat_id = str(data.get('chat_id'))
         
-        if not user_id or not chat_id:
+        if not chat_id:
             return JsonResponse({
                 'success': False,
-                'error': 'user_id y chat_id son requeridos'
+                'error': 'chat_id es requerido'
+            }, status=400)
+        
+        if not user_id and not username:
+            return JsonResponse({
+                'success': False,
+                'error': 'Debes proporcionar user_id o username'
             }, status=400)
         
         from apps.authentication.models import User
         
-        # Buscar usuario
+        # Buscar usuario por ID o username
         try:
-            user = User.objects.get(id=user_id)
+            if user_id:
+                user = User.objects.get(id=user_id)
+            else:
+                user = User.objects.get(username=username)
         except User.DoesNotExist:
+            identifier = f'id {user_id}' if user_id else f'username {username}'
             return JsonResponse({
                 'success': False,
-                'error': f'Usuario con id {user_id} no encontrado'
+                'error': f'Usuario con {identifier} no encontrado'
             }, status=404)
         
         # Crear o actualizar preferencia
