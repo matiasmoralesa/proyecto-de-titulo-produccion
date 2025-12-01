@@ -22,49 +22,59 @@ git push origin main
 
 ## 🔄 Paso 3: Cargar Datos en Railway
 
-### Opción A: Usando Railway CLI (Recomendado)
+### Opción A: Usando el Dashboard de Railway (Más Fácil)
+
+1. **Ve al Dashboard de Railway**: https://railway.app/
+2. **Selecciona tu proyecto**
+3. **Haz clic en tu servicio de backend**
+4. **Ve a la pestaña "Settings"**
+5. **Busca la sección "Deploy"**
+6. **Haz clic en "Redeploy"** para que Railway descargue los nuevos archivos de Git
+
+Una vez que el deploy termine:
+
+7. **Ve a la pestaña "Deployments"**
+8. **Haz clic en el deployment activo**
+9. **Haz clic en "View Logs"**
+10. **Haz clic en el botón "Shell" (terminal icon)**
+
+En el shell de Railway, ejecuta estos comandos uno por uno:
 
 ```bash
-# 1. Cargar Roles (primero, porque otros modelos dependen de ellos)
-railway run python manage.py loaddata backend/roles_export.json
+# 1. Cargar Roles
+python backend/manage.py loaddata backend/roles_export.json
 
 # 2. Cargar Plantillas de Checklist
-railway run python manage.py loaddata backend/checklist_templates_export.json
+python backend/manage.py loaddata backend/checklist_templates_export.json
 
 # 3. Cargar Prioridades
-railway run python manage.py loaddata backend/priorities_export.json
+python backend/manage.py loaddata backend/priorities_export.json
 
 # 4. Cargar Tipos de Orden de Trabajo
-railway run python manage.py loaddata backend/workorder_types_export.json
+python backend/manage.py loaddata backend/workorder_types_export.json
 
 # 5. Cargar Categorías de Activos
-railway run python manage.py loaddata backend/asset_categories_export.json
+python backend/manage.py loaddata backend/asset_categories_export.json
 
 # 6. Cargar Ubicaciones
-railway run python manage.py loaddata backend/locations_export.json
+python backend/manage.py loaddata backend/locations_export.json
 ```
 
-### Opción B: Script Todo-en-Uno
+### Opción B: Usando Railway CLI
 
-Crea un archivo `load_all_data.sh` en Railway:
+Si tienes Railway CLI instalado:
 
 ```bash
-#!/bin/bash
-echo "Cargando datos en producción..."
+# Conectarse al shell de Railway
+railway shell
 
-python manage.py loaddata backend/roles_export.json
-python manage.py loaddata backend/checklist_templates_export.json
-python manage.py loaddata backend/priorities_export.json
-python manage.py loaddata backend/workorder_types_export.json
-python manage.py loaddata backend/asset_categories_export.json
-python manage.py loaddata backend/locations_export.json
-
-echo "✅ Datos cargados exitosamente!"
-```
-
-Luego ejecuta:
-```bash
-railway run bash load_all_data.sh
+# Luego ejecutar los comandos de carga
+python backend/manage.py loaddata backend/roles_export.json
+python backend/manage.py loaddata backend/checklist_templates_export.json
+python backend/manage.py loaddata backend/priorities_export.json
+python backend/manage.py loaddata backend/workorder_types_export.json
+python backend/manage.py loaddata backend/asset_categories_export.json
+python backend/manage.py loaddata backend/locations_export.json
 ```
 
 ## 🔍 Paso 4: Verificar la Carga
