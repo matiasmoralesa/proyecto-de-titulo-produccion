@@ -51,13 +51,19 @@ class TelegramChannel(BaseChannel):
         Returns:
             Dict con resultado del envío
         """
+        logger.info(f"[TELEGRAM] Intentando enviar mensaje a chat_id: {chat_id}")
+        logger.info(f"[TELEGRAM] Bot token configurado: {bool(self.bot_token)}")
+        logger.info(f"[TELEGRAM] Canal configurado: {self.is_configured}")
+        
         if not self.is_configured:
+            logger.error("[TELEGRAM] Canal no configurado correctamente")
             return {
                 'success': False,
                 'error': 'Canal de Telegram no configurado correctamente'
             }
         
         formatted_message = self.format_message(title, message)
+        logger.info(f"[TELEGRAM] Mensaje formateado (primeros 100 chars): {formatted_message[:100]}")
         
         payload = {
             'chat_id': chat_id,
@@ -68,16 +74,25 @@ class TelegramChannel(BaseChannel):
         # Agregar teclado inline si se proporciona
         if 'reply_markup' in kwargs:
             payload['reply_markup'] = kwargs['reply_markup']
+            logger.info(f"[TELEGRAM] Botones agregados: {len(kwargs['reply_markup'].get('inline_keyboard', []))} filas")
+        
+        logger.info(f"[TELEGRAM] URL de API: {self.api_url}/sendMessage")
+        logger.info(f"[TELEGRAM] Payload: {payload}")
         
         try:
+            logger.info("[TELEGRAM] Enviando petición POST a Telegram API...")
             response = requests.post(
                 f"{self.api_url}/sendMessage",
                 json=payload,
                 timeout=10
             )
             
+            logger.info(f"[TELEGRAM] Status code de respuesta: {response.status_code}")
+            logger.info(f"[TELEGRAM] Respuesta completa: {response.text}")
+            
             if response.status_code == 200:
                 result = response.json()
+                logger.info(f"[TELEGRAM] ✅ Mensaje enviado exitosamente. Message ID: {result['result']['message_id']}")
                 return {
                     'success': True,
                     'message_id': str(result['result']['message_id']),
@@ -85,14 +100,29 @@ class TelegramChannel(BaseChannel):
                 }
             else:
                 error_msg = response.json().get('description', 'Error desconocido')
-                logger.error(f"Error al enviar mensaje de Telegram: {error_msg}")
+                logger.error(f"[TELEGRAM] ❌ Error al enviar mensaje: {error_msg}")
+                logger.error(f"[TELEGRAM] Respuesta completa: {response.text}")
                 return {
                     'success': False,
                     'error': error_msg
                 }
         
+        except requests.exceptions.Timeout:
+            logger.error("[TELEGRAM] ❌ Timeout al enviar mensaje a Telegram API")
+            return {
+                'success': False,
+                'error': 'Timeout al conectar con Telegram'
+            }
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"[TELEGRAM] ❌ Error de conexión: {str(e)}")
+            return {
+                'success': False,
+                'error': f'Error de conexión: {str(e)}'
+            }
         except Exception as e:
-            logger.error(f"Excepción al enviar mensaje de Telegram: {str(e)}")
+            logger.error(f"[TELEGRAM] ❌ Excepción al enviar mensaje: {str(e)}")
+            import traceback
+            logger.error(f"[TELEGRAM] Traceback: {traceback.format_exc()}")
             return {
                 'success': False,
                 'error': str(e)
