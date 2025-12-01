@@ -1,0 +1,114 @@
+[
+{
+  "model": "configuration.workordertype",
+  "pk": "2438af7e-2abf-4170-bbe1-d4c192df9ec7",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.278Z",
+    "updated_at": "2025-11-28T01:54:44.278Z",
+    "name": "Modificación",
+    "description": "Cambios o mejoras en el activo",
+    "code": "MODI",
+    "requires_approval": true,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "49ac99e7-7f31-462c-9d7b-943ba4e26a99",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.295Z",
+    "updated_at": "2025-11-28T01:54:44.295Z",
+    "name": "Calibración",
+    "description": "Ajuste y calibración de equipos",
+    "code": "CALI",
+    "requires_approval": false,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "539ff4ef-0656-43c9-bb94-653823763b1b",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.287Z",
+    "updated_at": "2025-11-28T01:54:44.287Z",
+    "name": "Instalación",
+    "description": "Instalación de nuevos equipos o componentes",
+    "code": "INST",
+    "requires_approval": true,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "6131c110-7741-414e-bc86-c11dd12915f3",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.248Z",
+    "updated_at": "2025-11-28T01:54:44.248Z",
+    "name": "Mantenimiento Correctivo",
+    "description": "Reparación de fallas o averías",
+    "code": "CORR",
+    "requires_approval": false,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "79245164-73bb-4e72-aa49-ad8be448d287",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.271Z",
+    "updated_at": "2025-11-28T01:54:44.271Z",
+    "name": "Inspección",
+    "description": "Revisión y evaluación del estado del activo",
+    "code": "INSP",
+    "requires_approval": false,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "9d7a3a60-e761-4d91-9dc7-5a201110b981",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.263Z",
+    "updated_at": "2025-11-28T01:54:44.263Z",
+    "name": "Emergencia",
+    "description": "Atención inmediata a fallas críticas",
+    "code": "EMRG",
+    "requires_approval": true,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "cb219e78-f19a-4ac8-a8c3-90a616d80887",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.239Z",
+    "updated_at": "2025-11-28T01:54:44.239Z",
+    "name": "Mantenimiento Preventivo",
+    "description": "Mantenimiento programado para prevenir fallas",
+    "code": "PREV",
+    "requires_approval": false,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.workordertype",
+  "pk": "d181be5d-be14-4c09-bda1-5ac2d89dbdf0",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.255Z",
+    "updated_at": "2025-11-28T01:54:44.255Z",
+    "name": "Mantenimiento Predictivo",
+    "description": "Basado en predicciones de ML y análisis de datos",
+    "code": "PRED",
+    "requires_approval": false,
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+}
+]

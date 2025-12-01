@@ -1,0 +1,32 @@
+[
+{
+  "model": "authentication.role",
+  "pk": 1,
+  "fields": {
+    "name": "ADMIN",
+    "description": "Administrador del sistema con acceso completo",
+    "created_at": "2025-11-26T20:52:07.443Z",
+    "updated_at": "2025-11-26T20:52:07.443Z"
+  }
+},
+{
+  "model": "authentication.role",
+  "pk": 2,
+  "fields": {
+    "name": "SUPERVISOR",
+    "description": "Supervisor de mantenimiento con acceso a gestión de órdenes y reportes",
+    "created_at": "2025-11-26T20:52:07.469Z",
+    "updated_at": "2025-11-26T20:52:07.469Z"
+  }
+},
+{
+  "model": "authentication.role",
+  "pk": 3,
+  "fields": {
+    "name": "OPERADOR",
+    "description": "Operador con acceso limitado a órdenes asignadas",
+    "created_at": "2025-11-26T20:52:07.485Z",
+    "updated_at": "2025-11-26T20:52:07.485Z"
+  }
+}
+]

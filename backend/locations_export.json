@@ -1,0 +1,74 @@
+[
+{
+  "model": "assets.location",
+  "pk": "09c04d71-9a78-4ed2-860b-b7cc0893dec3",
+  "fields": {
+    "name": "Zona de Carga",
+    "address": "Av. Transporte 321, Callao",
+    "coordinates": "",
+    "description": "Área de carga y descarga",
+    "created_at": "2025-11-28T01:36:09.008Z",
+    "updated_at": "2025-11-28T01:36:09.008Z"
+  }
+},
+{
+  "model": "assets.location",
+  "pk": "40b419d9-4afd-4fd5-998b-b7d6e91e57dd",
+  "fields": {
+    "name": "Sede Norte",
+    "address": "Av. Norte 321, Lima",
+    "coordinates": "-12.0400,-77.0400",
+    "description": "Sede operativa zona norte",
+    "created_at": "2025-11-26T20:52:18.629Z",
+    "updated_at": "2025-11-26T20:52:18.629Z"
+  }
+},
+{
+  "model": "assets.location",
+  "pk": "517bcdd4-3fde-44ee-84ee-f8fe90a5d913",
+  "fields": {
+    "name": "Almacén Central",
+    "address": "Jr. Los Almacenes 456, Lima",
+    "coordinates": "-12.0500,-77.0500",
+    "description": "Almacén central de repuestos y equipos",
+    "created_at": "2025-11-26T20:52:18.618Z",
+    "updated_at": "2025-11-26T20:52:18.618Z"
+  }
+},
+{
+  "model": "assets.location",
+  "pk": "70dfdc6a-024d-4c02-abb4-6a7cc8e2e9bd",
+  "fields": {
+    "name": "Planta Principal",
+    "address": "Av. Industrial 123, Lima",
+    "coordinates": "-12.0464,-77.0428",
+    "description": "Planta principal de operaciones",
+    "created_at": "2025-11-26T20:52:18.614Z",
+    "updated_at": "2025-11-26T20:52:18.614Z"
+  }
+},
+{
+  "model": "assets.location",
+  "pk": "791a22a6-24cb-4a06-8098-97d4a77b2ad8",
+  "fields": {
+    "name": "Taller de Mantenimiento",
+    "address": "Av. Talleres 789, Lima",
+    "coordinates": "-12.0550,-77.0550",
+    "description": "Taller principal de mantenimiento",
+    "created_at": "2025-11-26T20:52:18.623Z",
+    "updated_at": "2025-11-26T20:52:18.623Z"
+  }
+},
+{
+  "model": "assets.location",
+  "pk": "8d8172c3-63c0-4fbd-bdd7-06d36f848897",
+  "fields": {
+    "name": "Sede Sur",
+    "address": "Av. Sur 654, Lima",
+    "coordinates": "-12.0600,-77.0600",
+    "description": "Sede operativa zona sur",
+    "created_at": "2025-11-26T20:52:18.643Z",
+    "updated_at": "2025-11-26T20:52:18.643Z"
+  }
+}
+]

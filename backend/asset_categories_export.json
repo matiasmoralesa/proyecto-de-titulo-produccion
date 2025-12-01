@@ -1,0 +1,106 @@
+[
+{
+  "model": "configuration.assetcategory",
+  "pk": "069cdfb7-a034-4e8f-b0e5-9a24c7fe5a36",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.189Z",
+    "updated_at": "2025-11-28T01:54:44.189Z",
+    "name": "Sistemas de Información",
+    "description": "Servidores, redes y sistemas IT",
+    "code": "SIS-INF",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "278e567c-bed1-42cf-9b6b-69e0e4f7a63a",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.174Z",
+    "updated_at": "2025-11-28T01:54:44.174Z",
+    "name": "Vehículos Ligeros",
+    "description": "Camionetas, autos y vehículos de transporte ligero",
+    "code": "VEH-LIG",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "3e769e21-0871-4c9d-b645-b2e99d97511d",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.181Z",
+    "updated_at": "2025-11-28T01:54:44.181Z",
+    "name": "Equipos de Oficina",
+    "description": "Computadoras, impresoras y equipos de oficina",
+    "code": "EQP-OFI",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "74a7b61c-d9e4-4e70-ad6e-9662d91bdbe4",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.151Z",
+    "updated_at": "2025-11-28T01:54:44.151Z",
+    "name": "Maquinaria Agrícola",
+    "description": "Tractores, cosechadoras y equipos agrícolas",
+    "code": "MAQ-AGR",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "7845b288-a841-47f1-8160-aab2b1e44201",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.159Z",
+    "updated_at": "2025-11-28T01:54:44.159Z",
+    "name": "Equipos Industriales",
+    "description": "Compresores, generadores, bombas industriales",
+    "code": "EQP-IND",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "a1ab3b2c-6908-41de-bd38-76af755d0d89",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.167Z",
+    "updated_at": "2025-11-28T01:54:44.167Z",
+    "name": "Herramientas Menores",
+    "description": "Herramientas eléctricas y manuales",
+    "code": "HER-MEN",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "bf60ea2c-d989-4cfe-84a3-8c1be4c9c5c2",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.142Z",
+    "updated_at": "2025-11-28T01:54:44.142Z",
+    "name": "Maquinaria de Construcción",
+    "description": "Excavadoras, retroexcavadoras, cargadores frontales",
+    "code": "MAQ-CON",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+},
+{
+  "model": "configuration.assetcategory",
+  "pk": "db12d571-d794-4726-9721-0cae753bcb76",
+  "fields": {
+    "created_at": "2025-11-28T01:54:44.132Z",
+    "updated_at": "2025-11-28T01:54:44.132Z",
+    "name": "Vehículos Pesados",
+    "description": "Camiones, volquetes y vehículos de carga pesada",
+    "code": "VEH-PES",
+    "is_active": true,
+    "created_by": "72faf7b6-19ba-4238-bc65-0e99469703d0"
+  }
+}
+]
