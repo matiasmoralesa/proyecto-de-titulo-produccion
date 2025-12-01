@@ -76,6 +76,29 @@ def load_production_data(request):
     return Response(results)
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def debug_admin_user(request):
+    """
+    Endpoint para debug del usuario admin.
+    """
+    from apps.authentication.models import User
+    
+    try:
+        admin = User.objects.get(username='admin')
+        return Response({
+            'username': admin.username,
+            'email': admin.email,
+            'is_active': admin.is_active,
+            'is_staff': admin.is_staff,
+            'is_superuser': admin.is_superuser,
+            'role': admin.role.name if admin.role else None,
+            'password_set': bool(admin.password)
+        })
+    except User.DoesNotExist:
+        return Response({'error': 'Usuario no existe'}, status=404)
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 @csrf_exempt
