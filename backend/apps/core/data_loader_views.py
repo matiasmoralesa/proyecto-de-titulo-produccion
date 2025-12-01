@@ -59,6 +59,71 @@ def load_production_data(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsAdmin])
+def setup_telegram_bot(request):
+    """
+    Endpoint para configurar el bot de Telegram.
+    """
+    from apps.omnichannel_bot.models import ChannelConfig
+    import os
+    
+    telegram_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    
+    if not telegram_token:
+        return Response({
+            'success': False,
+            'error': 'TELEGRAM_BOT_TOKEN no está configurado en las variables de entorno'
+        }, status=400)
+    
+    try:
+        # Crear o actualizar configuración de Telegram
+        config, created = ChannelConfig.objects.update_or_create(
+            channel_type='TELEGRAM',
+            defaults={
+                'is_enabled': True,
+                'config': {
+                    'bot_token': telegram_token,
+                    'webhook_url': f'https://proyecto-de-titulo-produccion-production.up.railway.app/api/v1/bot/telegram/webhook/'
+                }
+            }
+        )
+        
+        # Configurar webhook en Telegram
+        import requests
+        webhook_url = f'https://proyecto-de-titulo-produccion-production.up.railway.app/api/v1/bot/telegram/webhook/'
+        
+        response = requests.post(
+            f'https://api.telegram.org/bot{telegram_token}/setWebhook',
+            json={'url': webhook_url}
+        )
+        
+        telegram_response = response.json()
+        
+        if telegram_response.get('ok'):
+            return Response({
+                'success': True,
+                'message': 'Bot de Telegram configurado correctamente',
+                'created': created,
+                'webhook_url': webhook_url,
+                'telegram_response': telegram_response
+            })
+        else:
+            return Response({
+                'success': False,
+                'error': 'Error al configurar webhook en Telegram',
+                'telegram_response': telegram_response
+            }, status=500)
+            
+    except Exception as e:
+        import traceback
+        return Response({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdmin])
 def fix_vehicle_types(request):
     """
     Endpoint para corregir los vehicle_types de los activos.
