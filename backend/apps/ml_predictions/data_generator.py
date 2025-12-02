@@ -11,11 +11,11 @@ class SyntheticDataGenerator:
     """Genera datos sintéticos realistas para entrenamiento"""
     
     VEHICLE_TYPES = [
-        'CAMION_SUPERSUCKER',
-        'CAMIONETA_MDO',
-        'RETROEXCAVADORA_MDO',
-        'CARGADOR_FRONTAL_MDO',
-        'MINICARGADOR_MDO'
+        'Camión Supersucker',
+        'Camioneta MDO',
+        'Retroexcavadora MDO',
+        'Cargador Frontal MDO',
+        'Minicargador MDO'
     ]
     
     FAILURE_TYPES = [
@@ -85,7 +85,7 @@ class SyntheticDataGenerator:
                 risk_score += 15
             
             # Tipo de vehículo (algunos más propensos)
-            if vehicle_type in ['CAMION_SUPERSUCKER', 'RETROEXCAVADORA_MDO']:
+            if vehicle_type in ['Camión Supersucker', 'Retroexcavadora MDO']:
                 risk_score += 10
             
             # Agregar ruido aleatorio
