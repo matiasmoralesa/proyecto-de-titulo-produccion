@@ -1,16 +1,24 @@
 #!/bin/bash
-set -e
+# Script de inicio para Railway que ejecuta Django + Celery Worker + Celery Beat
 
-echo "Starting deployment..."
+cd backend
 
-# Run migrations
+# Ejecutar migraciones
 echo "Running migrations..."
-python backend/manage.py migrate --settings=config.settings.railway --noinput
+python manage.py migrate --noinput
 
-# Collect static files
+# Recolectar archivos estáticos
 echo "Collecting static files..."
-python backend/manage.py collectstatic --settings=config.settings.railway --noinput
+python manage.py collectstatic --noinput
 
-# Start Gunicorn
+# Iniciar Celery Worker en segundo plano
+echo "Starting Celery Worker..."
+celery -A config worker -l info --pool=solo &
+
+# Iniciar Celery Beat en segundo plano
+echo "Starting Celery Beat..."
+celery -A config beat -l info &
+
+# Iniciar Gunicorn (proceso principal)
 echo "Starting Gunicorn..."
-exec gunicorn wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120 --log-level info --access-logfile - --error-logfile -
+gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3
