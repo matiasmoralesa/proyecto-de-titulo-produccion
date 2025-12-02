@@ -69,9 +69,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   // Filter menu items based on user role
   const menuItems = allMenuItems.filter(item => {
-    if (!user || !user.role) return false;
-    console.log('🔍 DEBUG - User role:', user.role.name, 'Item:', item.label, 'Allowed roles:', item.roles, 'Included:', item.roles.includes(user.role.name));
-    return item.roles.includes(user.role.name);
+    if (!user || !user.role_name) return false;
+    console.log('🔍 DEBUG - User role:', user.role_name, 'Item:', item.label, 'Allowed roles:', item.roles, 'Included:', item.roles.includes(user.role_name));
+    return item.roles.includes(user.role_name);
   });
 
   const isActive = (path: string) => location.pathname === path;

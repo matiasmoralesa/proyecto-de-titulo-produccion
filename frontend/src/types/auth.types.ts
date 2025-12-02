@@ -33,6 +33,7 @@ export interface LoginResponse {
     first_name: string;
     last_name: string;
     role: string;
+    role_name?: string;
     role_display: string;
     must_change_password: boolean;
   };

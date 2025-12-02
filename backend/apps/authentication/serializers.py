@@ -89,6 +89,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
             'role': self.user.role.name,
+            'role_name': self.user.role.name,
             'role_display': self.user.role.get_name_display(),
             'must_change_password': self.user.must_change_password,
         }

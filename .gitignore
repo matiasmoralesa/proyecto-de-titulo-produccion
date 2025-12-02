@@ -80,3 +80,5 @@ celerybeat.pid
 # Logs
 logs/
 *.log.*
+.vercel
+.env*.local
