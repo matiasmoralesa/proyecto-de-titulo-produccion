@@ -14,10 +14,26 @@ logger = logging.getLogger(__name__)
 def run_daily_predictions():
     """
     Tarea programada para ejecutar predicciones ML diariamente
+    
+    Validates: Requirements 3.1, 3.2, 3.3
     """
+    logger.info("=" * 60)
     logger.info("Iniciando predicciones ML diarias...")
+    logger.info(f"Timestamp: {timezone.now().isoformat()}")
+    logger.info("=" * 60)
     
     try:
+        # Verificar que el modelo existe
+        prediction_service = PredictionService()
+        if not prediction_service.is_model_available():
+            error_msg = "Modelo ML no disponible"
+            logger.error(error_msg)
+            return {
+                'status': 'error',
+                'error': error_msg,
+                'timestamp': timezone.now().isoformat()
+            }
+        
         # Obtener activos activos
         assets = Asset.objects.filter(
             is_archived=False,
@@ -25,19 +41,28 @@ def run_daily_predictions():
         )
         
         total_assets = assets.count()
-        logger.info(f"Analizando {total_assets} activos...")
+        logger.info(f"Activos a analizar: {total_assets}")
+        
+        if total_assets == 0:
+            logger.warning("No hay activos disponibles para predicciones")
+            return {
+                'status': 'success',
+                'message': 'No hay activos disponibles',
+                'total_predictions': 0,
+                'timestamp': timezone.now().isoformat()
+            }
         
         # Ejecutar predicciones
-        prediction_service = PredictionService()
         predictions = prediction_service.predict_batch(assets)
         
         # Estadísticas
         high_risk = sum(1 for p in predictions if p.risk_level in ['HIGH', 'CRITICAL'])
         
-        logger.info(
-            f"Predicciones completadas: {len(predictions)} total, "
-            f"{high_risk} de alto riesgo"
-        )
+        logger.info("=" * 60)
+        logger.info(f"Predicciones completadas exitosamente")
+        logger.info(f"Total: {len(predictions)}")
+        logger.info(f"Alto riesgo: {high_risk}")
+        logger.info("=" * 60)
         
         return {
             'status': 'success',
@@ -46,11 +71,29 @@ def run_daily_predictions():
             'timestamp': timezone.now().isoformat()
         }
     
+    except FileNotFoundError as e:
+        logger.error("=" * 60)
+        logger.error(f"ERROR: Modelo no encontrado")
+        logger.error(f"Detalles: {str(e)}")
+        logger.error("=" * 60)
+        return {
+            'status': 'error',
+            'error': 'Modelo no encontrado',
+            'details': str(e),
+            'timestamp': timezone.now().isoformat()
+        }
+    
     except Exception as e:
-        logger.error(f"Error en predicciones diarias: {str(e)}")
+        logger.error("=" * 60)
+        logger.error(f"ERROR en predicciones diarias")
+        logger.error(f"Tipo: {type(e).__name__}")
+        logger.error(f"Mensaje: {str(e)}")
+        logger.error("=" * 60)
+        logger.exception("Stack trace completo:")
         return {
             'status': 'error',
             'error': str(e),
+            'error_type': type(e).__name__,
             'timestamp': timezone.now().isoformat()
         }
 

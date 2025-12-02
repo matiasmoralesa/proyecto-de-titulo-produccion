@@ -20,12 +20,23 @@ interface Prediction {
   features_snapshot?: Record<string, any>;
 }
 
+interface ErrorState {
+  hasError: boolean;
+  errorMessage: string;
+  errorType: 'network' | 'server' | 'model' | 'unknown';
+}
+
 const MLPredictionsPage = () => {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [selectedPrediction, setSelectedPrediction] = useState<Prediction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [error, setError] = useState<ErrorState>({
+    hasError: false,
+    errorMessage: '',
+    errorType: 'unknown'
+  });
   const [stats, setStats] = useState({
     total: 0,
     high_risk: 0,
@@ -107,8 +118,57 @@ const MLPredictionsPage = () => {
     setSelectedPrediction(null);
   };
 
+  const handlePredictionError = (error: any) => {
+    if (error.response) {
+      // Server responded with error
+      const status = error.response.status;
+      const data = error.response.data;
+      
+      if (status === 503) {
+        setError({
+          hasError: true,
+          errorMessage: data.error || 'El modelo ML no está disponible. Por favor contacte al administrador.',
+          errorType: 'model'
+        });
+        toast.error('Modelo ML no disponible', { id: 'predictions' });
+      } else if (status === 500) {
+        setError({
+          hasError: true,
+          errorMessage: data.error || 'Error interno del servidor',
+          errorType: 'server'
+        });
+        toast.error('Error del servidor', { id: 'predictions' });
+      } else {
+        setError({
+          hasError: true,
+          errorMessage: data.error || 'Error desconocido',
+          errorType: 'unknown'
+        });
+        toast.error('Error al ejecutar predicciones', { id: 'predictions' });
+      }
+    } else if (error.request) {
+      // Network error
+      setError({
+        hasError: true,
+        errorMessage: 'Error de conexión. Verifique su conexión a internet.',
+        errorType: 'network'
+      });
+      toast.error('Error de conexión', { id: 'predictions' });
+    } else {
+      setError({
+        hasError: true,
+        errorMessage: error.message || 'Error desconocido',
+        errorType: 'unknown'
+      });
+      toast.error('Error inesperado', { id: 'predictions' });
+    }
+  };
+
   const runPredictions = async () => {
     try {
+      setLoading(true);
+      setError({ hasError: false, errorMessage: '', errorType: 'unknown' });
+      
       toast.loading('Ejecutando predicciones...', { id: 'predictions' });
       await api.post('/ml-predictions/predictions/run_predictions/');
       toast.success('Predicciones iniciadas. Se ejecutarán en segundo plano.', { id: 'predictions' });
@@ -119,7 +179,9 @@ const MLPredictionsPage = () => {
       }, 5000);
     } catch (error) {
       console.error('Error running predictions:', error);
-      toast.error('Error al ejecutar predicciones', { id: 'predictions' });
+      handlePredictionError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -216,6 +278,29 @@ const MLPredictionsPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error.hasError && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+          <div className="flex items-start">
+            <FaExclamationTriangle className="text-red-600 mt-1 mr-3" />
+            <div>
+              <p className="font-semibold text-red-800">Error</p>
+              <p className="text-red-700 mt-1">{error.errorMessage}</p>
+              {error.errorType === 'model' && (
+                <p className="text-red-600 text-sm mt-2">
+                  El modelo de Machine Learning necesita ser entrenado. Contacte al administrador del sistema.
+                </p>
+              )}
+              {error.errorType === 'network' && (
+                <p className="text-red-600 text-sm mt-2">
+                  Verifique su conexión a internet e intente nuevamente.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Predictions List */}
       <div className="bg-white rounded-lg shadow">

@@ -9,6 +9,9 @@ from .feature_engineering import FeatureEngineer
 from apps.work_orders.models import WorkOrder
 from apps.authentication.models import User, Role
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PredictionService:
@@ -21,16 +24,71 @@ class PredictionService:
         self._load_model()
     
     def _load_model(self):
-        """Load the trained ML model"""
+        """Load the trained ML model with error handling"""
         from .model_trainer import FailurePredictionTrainer
         from .data_generator import SyntheticDataGenerator
         
         try:
+            logger.info("Cargando modelo ML...")
             self.model_trainer = FailurePredictionTrainer()
+            
+            if not os.path.exists(self.model_trainer.model_path):
+                logger.error(f"Archivo del modelo no encontrado: {self.model_trainer.model_path}")
+                raise FileNotFoundError(
+                    f"No se encontró el modelo en: {self.model_trainer.model_path}. "
+                    "Por favor ejecute: python manage.py train_ml_model"
+                )
+            
             self.model_trainer.load_model()
             self.data_generator = SyntheticDataGenerator()
-        except FileNotFoundError:
-            raise Exception("No trained model found. Please run: python manage.py train_ml_model")
+            logger.info("Modelo ML cargado exitosamente")
+            
+        except FileNotFoundError as e:
+            logger.error(f"Modelo no encontrado: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Error al cargar modelo: {str(e)}", exc_info=True)
+            raise Exception(f"Error al cargar el modelo ML: {str(e)}")
+    
+    def is_model_available(self):
+        """
+        Verifica si el modelo está disponible
+        
+        Returns:
+            bool: True si el modelo existe y puede cargarse
+        """
+        try:
+            if self.model_trainer is None:
+                return False
+            return os.path.exists(self.model_trainer.model_path)
+        except Exception:
+            return False
+    
+    def get_model_info(self):
+        """
+        Obtiene información del modelo
+        
+        Returns:
+            dict: Información del modelo
+        """
+        if self.model_trainer is None:
+            from .model_trainer import FailurePredictionTrainer
+            self.model_trainer = FailurePredictionTrainer()
+        
+        model_path = self.model_trainer.model_path
+        
+        info = {
+            'version': '1.0',
+            'path': model_path,
+            'exists': os.path.exists(model_path),
+            'size_mb': 0
+        }
+        
+        if info['exists']:
+            size_bytes = os.path.getsize(model_path)
+            info['size_mb'] = round(size_bytes / (1024 * 1024), 2)
+        
+        return info
     
     def predict_single_asset(self, asset):
         """
