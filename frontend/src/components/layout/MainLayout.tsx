@@ -1,5 +1,6 @@
 /**
  * Main layout component with sidebar navigation
+ * Updated: 2025-12-02 - Role-based menu filtering
  */
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
