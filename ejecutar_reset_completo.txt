@@ -1,0 +1,18 @@
+COMANDOS PARA EJECUTAR EN RAILWAY SSH
+======================================
+
+Estás conectado a Railway SSH. Ahora ejecuta estos comandos:
+
+1. cd backend
+2. python manage.py reset_and_populate --no-input
+3. exit
+
+Esto eliminará TODOS los datos incluyendo:
+- Notificaciones
+- Respuestas de checklist
+- Logs de mensajes
+- Predicciones ML
+- Historial de estado de activos
+- Y todos los demás datos
+
+Y creará datos de muestra nuevos limpios.

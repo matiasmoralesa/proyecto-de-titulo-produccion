@@ -1,0 +1,32 @@
+INSTRUCCIONES PARA EJECUTAR EN RAILWAY
+========================================
+
+El comando "railway run" ejecuta localmente, pero necesitamos ejecutar EN el servidor.
+
+OPCIÓN 1: Usar Railway Shell (RECOMENDADO)
+-------------------------------------------
+1. Abre una terminal nueva
+2. Ejecuta: railway shell
+3. Espera a que se conecte
+4. Ejecuta: cd backend
+5. Ejecuta: python manage.py reset_and_populate --no-input
+6. Espera a que termine
+7. Escribe: exit
+
+OPCIÓN 2: Usar el Dashboard de Railway (MÁS FÁCIL)
+---------------------------------------------------
+1. Ve a: https://railway.app
+2. Abre tu proyecto "vibrant-vitality"
+3. Haz clic en el servicio "proyecto-de-titulo-produccion"
+4. Busca el botón "Shell" o "Terminal" en la parte superior
+5. Se abrirá una terminal web
+6. Ejecuta: cd backend && python manage.py reset_and_populate --no-input
+
+OPCIÓN 3: Crear un Job en Railway
+----------------------------------
+1. Ve al dashboard de Railway
+2. Crea un nuevo "Job" o "One-off Command"
+3. Comando: cd backend && python manage.py reset_and_populate --no-input
+4. Ejecuta el job
+
+La opción 2 (Dashboard) es la más fácil y visual.
