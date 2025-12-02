@@ -45,7 +45,7 @@ def main():
         print(f"  • Accuracy:  {metrics['accuracy']:.3f}")
         print(f"  • Precision: {metrics['precision']:.3f}")
         print(f"  • Recall:    {metrics['recall']:.3f}")
-        print(f"  • F1 Score:  {metrics['f1']:.3f}")
+        print(f"  • F1 Score:  {metrics['f1_score']:.3f}")
         
         print(f"\n💾 Modelo guardado en:")
         print(f"  {trainer.model_path}")
