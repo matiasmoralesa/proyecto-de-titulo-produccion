@@ -23,30 +23,67 @@ logger = logging.getLogger(__name__)
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
     """
-    Get dashboard statistics (cached for 5 minutes)
+    Get dashboard statistics filtered by user role.
+    
+    - ADMIN: See all system data
+    - SUPERVISOR: See team data (currently all data, can be filtered by department)
+    - OPERADOR: See only their own assigned data
     """
-    # Try to get from cache
-    cache_key = 'dashboard_stats'
+    user = request.user
+    
+    # Cache key includes user role and ID for role-based caching
+    cache_key = f'dashboard_stats_{user.role.name}_{user.id}'
     cached_data = cache.get(cache_key)
     
     if cached_data is not None:
         return Response(cached_data)
     
+    # Get role name for filtering
+    from apps.authentication.models import Role
+    role_name = user.role.name
+    
+    # Filter querysets based on role
+    if role_name == Role.ADMIN:
+        # Admins see everything
+        assets_qs = Asset.objects.all()
+        work_orders_qs = WorkOrder.objects.all()
+        predictions_qs = FailurePrediction.objects.all()
+    elif role_name == Role.SUPERVISOR:
+        # Supervisors see all (can be filtered by department/area in production)
+        assets_qs = Asset.objects.all()
+        work_orders_qs = WorkOrder.objects.all()
+        predictions_qs = FailurePrediction.objects.all()
+    elif role_name == Role.OPERADOR:
+        # Operators only see their assigned work orders and related assets
+        work_orders_qs = WorkOrder.objects.filter(assigned_to=user)
+        
+        # Get assets from assigned work orders
+        assigned_asset_ids = work_orders_qs.values_list('asset_id', flat=True).distinct()
+        assets_qs = Asset.objects.filter(id__in=assigned_asset_ids)
+        
+        # Get predictions for accessible assets
+        predictions_qs = FailurePrediction.objects.filter(asset_id__in=assigned_asset_ids)
+    else:
+        # Unknown role - return empty data
+        assets_qs = Asset.objects.none()
+        work_orders_qs = WorkOrder.objects.none()
+        predictions_qs = FailurePrediction.objects.none()
+    
     # Asset stats
-    total_assets = Asset.objects.count()
-    operational_assets = Asset.objects.filter(status='OPERATIONAL').count()
-    maintenance_assets = Asset.objects.filter(status='MAINTENANCE').count()
-    stopped_assets = Asset.objects.filter(status='OUT_OF_SERVICE').count()
+    total_assets = assets_qs.count()
+    operational_assets = assets_qs.filter(status='OPERATIONAL').count()
+    maintenance_assets = assets_qs.filter(status='MAINTENANCE').count()
+    stopped_assets = assets_qs.filter(status='OUT_OF_SERVICE').count()
     
     # Work Order stats
-    total_work_orders = WorkOrder.objects.count()
-    pending_work_orders = WorkOrder.objects.filter(status='Pendiente').count()
-    in_progress_work_orders = WorkOrder.objects.filter(status='En Progreso').count()
-    completed_work_orders = WorkOrder.objects.filter(status='Completada').count()
+    total_work_orders = work_orders_qs.count()
+    pending_work_orders = work_orders_qs.filter(status='Pendiente').count()
+    in_progress_work_orders = work_orders_qs.filter(status='En Progreso').count()
+    completed_work_orders = work_orders_qs.filter(status='Completada').count()
     
     # ML Predictions stats
-    total_predictions = FailurePrediction.objects.count()
-    high_risk_predictions = FailurePrediction.objects.filter(
+    total_predictions = predictions_qs.count()
+    high_risk_predictions = predictions_qs.filter(
         risk_level__in=['HIGH', 'CRITICAL']
     ).count()
     
@@ -58,7 +95,7 @@ def dashboard_stats(request):
     completion_rate = (completed_work_orders / total_work_orders * 100) if total_work_orders > 0 else 0
     
     # 3. Average Work Order Duration (for completed orders)
-    completed_orders = WorkOrder.objects.filter(status='Completada', completed_date__isnull=False)
+    completed_orders = work_orders_qs.filter(status='Completada', completed_date__isnull=False)
     avg_duration_days = 0
     if completed_orders.exists():
         valid_durations = []
@@ -101,8 +138,8 @@ def dashboard_stats(request):
     # 4. Preventive vs Corrective Maintenance Ratio
     # Since work_order_type field doesn't exist, we'll estimate based on priority
     # Low/Medium priority are likely preventive, High/Urgent are likely corrective
-    preventive_orders = WorkOrder.objects.filter(priority__in=['Baja', 'Media']).count()
-    corrective_orders = WorkOrder.objects.filter(priority__in=['Alta', 'Urgente']).count()
+    preventive_orders = work_orders_qs.filter(priority__in=['Baja', 'Media']).count()
+    corrective_orders = work_orders_qs.filter(priority__in=['Alta', 'Urgente']).count()
     preventive_ratio = (preventive_orders / (preventive_orders + corrective_orders) * 100) if (preventive_orders + corrective_orders) > 0 else 0
     
     # 5. Maintenance Backlog (pending + in progress)
@@ -113,10 +150,10 @@ def dashboard_stats(request):
     
     # 7. Work Orders This Month
     first_day_of_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    work_orders_this_month = WorkOrder.objects.filter(created_at__gte=first_day_of_month).count()
+    work_orders_this_month = work_orders_qs.filter(created_at__gte=first_day_of_month).count()
     
     # 8. Prediction Accuracy (if we have actual failure data)
-    predictions_with_outcome = FailurePrediction.objects.filter(actual_failure_occurred__isnull=False)
+    predictions_with_outcome = predictions_qs.filter(actual_failure_occurred__isnull=False)
     prediction_accuracy = 0
     if predictions_with_outcome.exists():
         accurate_predictions = predictions_with_outcome.filter(
