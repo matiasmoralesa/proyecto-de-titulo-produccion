@@ -43,21 +43,26 @@ export default function MainLayout({ children }: MainLayoutProps) {
   };
 
   // Menu items with role requirements
-  // Validates: Requirements 10.4
+  // Validates: Requirements 10.1, 10.2, 10.3, 10.4
   const allMenuItems = [
+    // Todos los roles pueden ver estas opciones
     { icon: FiHome, label: 'Dashboard', path: '/dashboard', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
     { icon: FiTruck, label: 'Activos', path: '/assets', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
     { icon: FiClipboard, label: 'Órdenes de Trabajo', path: '/work-orders', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FiTool, label: 'Mantenimiento', path: '/maintenance', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FiPackage, label: 'Inventario', path: '/inventory', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FiCheckSquare, label: 'Checklists', path: '/checklists', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FiActivity, label: 'Estado de Máquinas', path: '/machine-status', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FaRobot, label: 'Predicciones ML', path: '/ml-predictions', roles: ['ADMIN', 'SUPERVISOR'] },
-    { icon: FaClock, label: 'Monitor Celery', path: '/celery-monitor', roles: ['ADMIN'] },
     { icon: FiBell, label: 'Notificaciones', path: '/notifications', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
-    { icon: FiBarChart2, label: 'Reportes', path: '/reports', roles: ['ADMIN', 'SUPERVISOR', 'OPERADOR'] },
+    
+    // Solo ADMIN y SUPERVISOR
+    { icon: FiTool, label: 'Mantenimiento', path: '/maintenance', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiPackage, label: 'Inventario', path: '/inventory', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiCheckSquare, label: 'Checklists', path: '/checklists', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiActivity, label: 'Estado de Máquinas', path: '/machine-status', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FaRobot, label: 'Predicciones ML', path: '/ml-predictions', roles: ['ADMIN', 'SUPERVISOR'] },
+    { icon: FiBarChart2, label: 'Reportes', path: '/reports', roles: ['ADMIN', 'SUPERVISOR'] },
     { icon: FiMapPin, label: 'Ubicaciones', path: '/locations', roles: ['ADMIN', 'SUPERVISOR'] },
     { icon: FiUsers, label: 'Usuarios', path: '/users', roles: ['ADMIN', 'SUPERVISOR'] },
+    
+    // Solo ADMIN
+    { icon: FaClock, label: 'Monitor Celery', path: '/celery-monitor', roles: ['ADMIN'] },
     { icon: FiSettings, label: 'Configuración', path: '/configuration', roles: ['ADMIN'] },
   ];
 
