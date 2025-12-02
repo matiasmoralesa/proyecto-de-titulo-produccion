@@ -12,10 +12,18 @@ import {
   AuditLog,
 } from '../types/configuration';
 import { FiEdit2, FiTrash2, FiPlus } from 'react-icons/fi';
+import toast from 'react-hot-toast';
+import CategoryForm from '../components/configuration/CategoryForm';
+import PriorityForm from '../components/configuration/PriorityForm';
+import WorkOrderTypeForm from '../components/configuration/WorkOrderTypeForm';
+import ParameterForm from '../components/configuration/ParameterForm';
+
+type TabType = 'categories' | 'priorities' | 'types' | 'parameters' | 'audit';
 
 const ConfigurationPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'categories' | 'priorities' | 'types' | 'parameters' | 'audit'>('categories');
+  const [activeTab, setActiveTab] = useState<TabType>('categories');
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Data states
   const [categories, setCategories] = useState<AssetCategory[]>([]);
@@ -59,6 +67,7 @@ const ConfigurationPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      toast.error('Error al cargar datos');
     } finally {
       setLoading(false);
     }
@@ -73,20 +82,25 @@ const ConfigurationPage: React.FC = () => {
       switch (type) {
         case 'category':
           await configurationService.deleteAssetCategory(id);
+          toast.success('Categoría eliminada exitosamente');
           break;
         case 'priority':
           await configurationService.deletePriority(id);
+          toast.success('Prioridad eliminada exitosamente');
           break;
         case 'type':
           await configurationService.deleteWorkOrderType(id);
+          toast.success('Tipo eliminado exitosamente');
           break;
         case 'parameter':
           await configurationService.deleteSystemParameter(id);
+          toast.success('Parámetro eliminado exitosamente');
           break;
       }
       fetchData();
     } catch (error: any) {
-      alert(error.response?.data?.detail || 'Error al eliminar el elemento');
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al eliminar el elemento';
+      toast.error(message);
     }
   };
 
@@ -105,11 +119,57 @@ const ConfigurationPage: React.FC = () => {
     setEditingItem(null);
   };
 
-  const handleSave = async () => {
-    // TODO: Implement save logic based on activeTab and editingItem
-    alert('Funcionalidad de guardado en desarrollo');
-    handleCloseModal();
-    fetchData();
+  const handleSave = async (data: any) => {
+    setSaving(true);
+    try {
+      switch (activeTab) {
+        case 'categories':
+          if (editingItem) {
+            await configurationService.updateAssetCategory(editingItem.id, data);
+            toast.success('Categoría actualizada exitosamente');
+          } else {
+            await configurationService.createAssetCategory(data);
+            toast.success('Categoría creada exitosamente');
+          }
+          break;
+        case 'priorities':
+          if (editingItem) {
+            await configurationService.updatePriority(editingItem.id, data);
+            toast.success('Prioridad actualizada exitosamente');
+          } else {
+            await configurationService.createPriority(data);
+            toast.success('Prioridad creada exitosamente');
+          }
+          break;
+        case 'types':
+          if (editingItem) {
+            await configurationService.updateWorkOrderType(editingItem.id, data);
+            toast.success('Tipo actualizado exitosamente');
+          } else {
+            await configurationService.createWorkOrderType(data);
+            toast.success('Tipo creado exitosamente');
+          }
+          break;
+        case 'parameters':
+          if (editingItem) {
+            await configurationService.updateSystemParameter(editingItem.id, data);
+            toast.success('Parámetro actualizado exitosamente');
+          }
+          break;
+      }
+      handleCloseModal();
+      fetchData();
+    } catch (error: any) {
+      console.error('Error saving:', error);
+      const message = error.response?.data?.detail || 
+                     error.response?.data?.message ||
+                     Object.values(error.response?.data || {}).flat().join(', ') ||
+                     'Error al guardar';
+      toast.error(message);
+      // Don't close modal on error
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -135,7 +195,7 @@ const ConfigurationPage: React.FC = () => {
             ].map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
+                onClick={() => setActiveTab(tab.key as TabType)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.key
                     ? 'border-blue-500 text-blue-600'
@@ -351,13 +411,6 @@ const ConfigurationPage: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Parámetros del Sistema</h2>
-                  <button 
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2"
-                  >
-                    <FiPlus />
-                    <span>Nuevo Parámetro</span>
-                  </button>
                 </div>
                 <div className="bg-white rounded-lg shadow overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -384,15 +437,13 @@ const ConfigurationPage: React.FC = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
-                            {param.is_editable && (
-                              <button 
-                                onClick={() => handleEdit(param)}
-                                className="text-blue-600 hover:text-blue-900 mr-3"
-                                title="Editar"
-                              >
-                                <FiEdit2 />
-                              </button>
-                            )}
+                            <button 
+                              onClick={() => handleEdit(param)}
+                              className="text-blue-600 hover:text-blue-900 mr-3"
+                              title={param.is_editable ? 'Editar' : 'Ver'}
+                            >
+                              <FiEdit2 />
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -448,7 +499,7 @@ const ConfigurationPage: React.FC = () => {
         {/* Edit/Create Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
               <h3 className="text-lg font-semibold mb-4">
                 {editingItem ? 'Editar' : 'Crear'} {
                   activeTab === 'categories' ? 'Categoría' :
@@ -458,32 +509,41 @@ const ConfigurationPage: React.FC = () => {
                 }
               </h3>
               
-              <div className="mb-4">
-                <p className="text-sm text-gray-600">
-                  Funcionalidad de edición/creación en desarrollo.
-                </p>
-                {editingItem && (
-                  <div className="mt-3 p-3 bg-gray-50 rounded">
-                    <p className="text-xs text-gray-500">Editando:</p>
-                    <p className="text-sm font-medium">{editingItem.name || editingItem.key}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={handleCloseModal}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Guardar
-                </button>
-              </div>
+              {activeTab === 'categories' && (
+                <CategoryForm
+                  category={editingItem}
+                  onSubmit={handleSave}
+                  onCancel={handleCloseModal}
+                  loading={saving}
+                />
+              )}
+              
+              {activeTab === 'priorities' && (
+                <PriorityForm
+                  priority={editingItem}
+                  onSubmit={handleSave}
+                  onCancel={handleCloseModal}
+                  loading={saving}
+                />
+              )}
+              
+              {activeTab === 'types' && (
+                <WorkOrderTypeForm
+                  workOrderType={editingItem}
+                  onSubmit={handleSave}
+                  onCancel={handleCloseModal}
+                  loading={saving}
+                />
+              )}
+              
+              {activeTab === 'parameters' && editingItem && (
+                <ParameterForm
+                  parameter={editingItem}
+                  onSubmit={handleSave}
+                  onCancel={handleCloseModal}
+                  loading={saving}
+                />
+              )}
             </div>
           </div>
         )}

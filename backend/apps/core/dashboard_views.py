@@ -1,6 +1,7 @@
 """
 Dashboard views for providing system statistics
 """
+import logging
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,6 +15,8 @@ from apps.ml_predictions.models import FailurePrediction
 
 
 from django.core.cache import cache
+
+logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
@@ -58,12 +61,42 @@ def dashboard_stats(request):
     completed_orders = WorkOrder.objects.filter(status='Completada', completed_date__isnull=False)
     avg_duration_days = 0
     if completed_orders.exists():
-        durations = []
+        valid_durations = []
         for order in completed_orders:
-            if order.completed_date and order.created_at:
-                duration = (order.completed_date - order.created_at).days
-                durations.append(duration)
-        avg_duration_days = sum(durations) / len(durations) if durations else 0
+            # Validate that both dates exist
+            if not order.completed_date or not order.created_at:
+                logger.warning(
+                    f"Work Order {order.work_order_number} (ID: {order.id}) has missing dates: "
+                    f"completed_date={order.completed_date}, created_at={order.created_at}"
+                )
+                continue
+            
+            # Validate that completed_date is after created_at
+            if order.completed_date < order.created_at:
+                logger.warning(
+                    f"Work Order {order.work_order_number} (ID: {order.id}) has invalid dates: "
+                    f"completed_date ({order.completed_date}) is before created_at ({order.created_at})"
+                )
+                continue
+            
+            # Calculate duration and ensure it's non-negative
+            duration = (order.completed_date - order.created_at).days
+            if duration >= 0:
+                valid_durations.append(duration)
+            else:
+                logger.warning(
+                    f"Work Order {order.work_order_number} (ID: {order.id}) calculated negative duration: {duration} days"
+                )
+        
+        # Calculate average only from valid durations
+        avg_duration_days = sum(valid_durations) / len(valid_durations) if valid_durations else 0
+        
+        # Log data quality summary
+        if completed_orders.count() > len(valid_durations):
+            logger.info(
+                f"KPI Calculation: {completed_orders.count() - len(valid_durations)} out of "
+                f"{completed_orders.count()} completed work orders excluded due to invalid dates"
+            )
     
     # 4. Preventive vs Corrective Maintenance Ratio
     # Since work_order_type field doesn't exist, we'll estimate based on priority

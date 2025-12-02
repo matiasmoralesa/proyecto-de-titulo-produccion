@@ -4,6 +4,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNotificationStore } from '../../stores/notificationStore';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
+import toast from 'react-hot-toast';
 
 const NotificationBell: React.FC = () => {
   const navigate = useNavigate();
@@ -52,15 +54,41 @@ const NotificationBell: React.FC = () => {
     };
   }, [isOpen]);
 
-  const handleNotificationClick = (notification: any) => {
-    markAsRead(notification.id);
+  const handleNotificationClick = async (notification: any) => {
     setIsOpen(false);
     
-    // Navigate based on notification type
-    if (notification.related_object_type === 'work_order' && notification.related_object_id) {
-      navigate(`/work-orders/${notification.related_object_id}`);
-    } else if (notification.related_object_type === 'asset' && notification.related_object_id) {
-      navigate(`/assets/${notification.related_object_id}`);
+    // If no related object, just mark as read
+    if (!notification.related_object_type || !notification.related_object_id) {
+      markAsRead(notification.id);
+      return;
+    }
+
+    try {
+      // Verify object exists before navigating
+      if (notification.related_object_type === 'work_order') {
+        await api.get(`/work-orders/${notification.related_object_id}/`);
+        markAsRead(notification.id);
+        navigate(`/work-orders/${notification.related_object_id}`);
+      } else if (notification.related_object_type === 'asset') {
+        await api.get(`/assets/${notification.related_object_id}/`);
+        markAsRead(notification.id);
+        navigate(`/assets/${notification.related_object_id}`);
+      } else {
+        // Unknown type, just mark as read
+        markAsRead(notification.id);
+      }
+    } catch (error: any) {
+      // Object doesn't exist or API error
+      console.error('Error navigating from notification:', error);
+      
+      if (error.response?.status === 404) {
+        toast.error('El objeto relacionado ya no existe');
+      } else {
+        toast.error('Error al cargar el objeto relacionado');
+      }
+      
+      // Mark as read even if navigation fails
+      markAsRead(notification.id);
     }
   };
 
