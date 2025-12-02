@@ -28,15 +28,15 @@ def main():
         
         print(f"  ✓ {len(data)} muestras generadas")
         
-        # Convertir a DataFrame
+        # Convertir a DataFrame para análisis
         df = pd.DataFrame(data)
         print(f"\n📋 Tipos de vehículos en los datos:")
         print(df['vehicle_type'].value_counts())
         
-        # Entrenar modelo
+        # Entrenar modelo (pasando la lista de diccionarios, no el DataFrame)
         print("\n🤖 Entrenando modelo...")
         trainer = FailurePredictionTrainer()
-        metrics = trainer.train(df)
+        metrics = trainer.train(data)
         
         print("\n" + "=" * 60)
         print("  ✅ ENTRENAMIENTO COMPLETADO")
