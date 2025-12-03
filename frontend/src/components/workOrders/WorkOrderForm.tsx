@@ -47,9 +47,9 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
 
   // Role-based permissions
   // Validates: Requirements 10.5
-  const isOperador = user?.role?.name === 'OPERADOR';
-  const isSupervisor = user?.role?.name === 'SUPERVISOR';
-  const isAdmin = user?.role?.name === 'ADMIN';
+  const isOperador = user?.role_name === 'OPERADOR';
+  const isSupervisor = user?.role_name === 'SUPERVISOR';
+  const isAdmin = user?.role_name === 'ADMIN';
 
   // Field permissions
   const canEditPriority = isSupervisor || isAdmin;
