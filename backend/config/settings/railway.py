@@ -25,19 +25,45 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # CORS Settings
-# Use environment variable if set, otherwise use defaults
-CORS_ALLOWED_ORIGINS_ENV = os.getenv('CORS_ALLOWED_ORIGINS', '')
-if CORS_ALLOWED_ORIGINS_ENV:
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_ENV.split(',') if origin.strip()]
+# Check if we should allow all origins (for debugging)
+CORS_ALLOW_ALL_ORIGINS_ENV = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False')
+if CORS_ALLOW_ALL_ORIGINS_ENV.lower() in ['true', '1', 'yes']:
+    CORS_ALLOW_ALL_ORIGINS = True
+    print("⚠️  WARNING: CORS_ALLOW_ALL_ORIGINS is enabled!")
 else:
-    CORS_ALLOWED_ORIGINS = [
-        'https://proyecto-de-titulo-produccion.vercel.app',
-        'https://proyecto-de-titulo-produccion-production.up.railway.app',
-    ]
+    CORS_ALLOW_ALL_ORIGINS = False
+    # Use environment variable if set, otherwise use defaults
+    CORS_ALLOWED_ORIGINS_ENV = os.getenv('CORS_ALLOWED_ORIGINS', '')
+    if CORS_ALLOWED_ORIGINS_ENV:
+        CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_ENV.split(',') if origin.strip()]
+        print(f"✓ CORS_ALLOWED_ORIGINS from env: {CORS_ALLOWED_ORIGINS}")
+    else:
+        CORS_ALLOWED_ORIGINS = [
+            'https://proyecto-de-titulo-produccion.vercel.app',
+            'https://proyecto-de-titulo-produccion-production.up.railway.app',
+        ]
+        print(f"✓ CORS_ALLOWED_ORIGINS default: {CORS_ALLOWED_ORIGINS}")
 
-# Allow all origins if explicitly set (for debugging only)
-CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 # Database
 # Railway provides DATABASE_URL automatically
