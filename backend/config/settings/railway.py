@@ -10,7 +10,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'proyecto-de-titulo-produccion-production.up.railway.app',
     '*.railway.app',
-    'proyecto-de-titulo-produccion-btez6tjht.vercel.app',
+    'proyecto-de-titulo-produccion.vercel.app',
     '*.vercel.app',
     'localhost',
     '127.0.0.1'
@@ -20,15 +20,23 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://proyecto-de-titulo-produccion-production.up.railway.app',
     'https://*.railway.app',
-    'https://proyecto-de-titulo-produccion-btez6tjht.vercel.app',
+    'https://proyecto-de-titulo-produccion.vercel.app',
     'https://*.vercel.app',
 ]
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    'https://proyecto-de-titulo-produccion-btez6tjht.vercel.app',
-    'https://proyecto-de-titulo-produccion-production.up.railway.app',
-]
+# Use environment variable if set, otherwise use defaults
+CORS_ALLOWED_ORIGINS_ENV = os.getenv('CORS_ALLOWED_ORIGINS', '')
+if CORS_ALLOWED_ORIGINS_ENV:
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_ENV.split(',') if origin.strip()]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        'https://proyecto-de-titulo-produccion.vercel.app',
+        'https://proyecto-de-titulo-produccion-production.up.railway.app',
+    ]
+
+# Allow all origins if explicitly set (for debugging only)
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
 CORS_ALLOW_CREDENTIALS = True
 
 # Database
