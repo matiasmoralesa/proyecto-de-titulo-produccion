@@ -55,25 +55,29 @@ const NotificationsPage: React.FC = () => {
   };
 
   const handleNotificationClick = async (notification: Notification) => {
-    // If no related object, just mark as read
+    // Mark as read first
+    markAsRead(notification.id);
+    
+    // If no related object, just return
     if (!notification.related_object_type || !notification.related_object_id) {
-      markAsRead(notification.id);
       return;
     }
 
     try {
-      // Verify object exists before navigating
+      // Navigate to the appropriate page
       if (notification.related_object_type === 'work_order') {
-        await api.get(`/work-orders/${notification.related_object_id}/`);
-        markAsRead(notification.id);
-        navigate(`/work-orders/${notification.related_object_id}`);
+        // Navigate to work orders page - the user can find the specific order there
+        navigate('/work-orders');
       } else if (notification.related_object_type === 'asset') {
-        await api.get(`/assets/${notification.related_object_id}/`);
-        markAsRead(notification.id);
+        // Navigate to asset detail page
+        await api.get(`/assets/assets/${notification.related_object_id}/`);
         navigate(`/assets/${notification.related_object_id}`);
+      } else if (notification.related_object_type === 'prediction') {
+        // Navigate to ML predictions page
+        navigate('/ml-predictions');
       } else {
-        // Unknown type, just mark as read
-        markAsRead(notification.id);
+        // For other types, stay on notifications page
+        return;
       }
     } catch (error: any) {
       // Object doesn't exist or API error
@@ -81,12 +85,15 @@ const NotificationsPage: React.FC = () => {
       
       if (error.response?.status === 404) {
         toast.error('El objeto relacionado ya no existe');
+        // Navigate to the general page anyway
+        if (notification.related_object_type === 'work_order') {
+          navigate('/work-orders');
+        } else if (notification.related_object_type === 'asset') {
+          navigate('/assets');
+        }
       } else {
         toast.error('Error al cargar el objeto relacionado');
       }
-      
-      // Mark as read even if navigation fails
-      markAsRead(notification.id);
     }
   };
 
