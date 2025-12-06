@@ -24,22 +24,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
 ]
 
-# CORS Settings
-# Check if we should allow all origins (for debugging)
-CORS_ALLOW_ALL_ORIGINS_ENV = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False')
-if CORS_ALLOW_ALL_ORIGINS_ENV.lower() in ['true', '1', 'yes']:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
-    CORS_ALLOW_ALL_ORIGINS = False
-    # Use environment variable if set, otherwise use defaults
-    CORS_ALLOWED_ORIGINS_ENV = os.getenv('CORS_ALLOWED_ORIGINS', '')
-    if CORS_ALLOWED_ORIGINS_ENV:
-        CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_ENV.split(',') if origin.strip()]
-    else:
-        CORS_ALLOWED_ORIGINS = [
-            'https://proyecto-de-titulo-produccion.vercel.app',
-            'https://proyecto-de-titulo-produccion-production.up.railway.app',
-        ]
+# CORS Settings - TEMPORARY: Allow all origins for debugging
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
