@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from django.db.models import Count, Q, Avg, F
 from django.utils import timezone
 from datetime import timedelta
+from calendar import month_abbr
 
 from apps.assets.models import Asset
 from apps.work_orders.models import WorkOrder
@@ -17,6 +18,114 @@ from apps.ml_predictions.models import FailurePrediction
 from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
+
+
+def get_work_orders_trend(work_orders_qs):
+    """
+    Get work orders trend for the last 6 months
+    Returns data for bar chart: completed vs pending by month
+    """
+    now = timezone.now()
+    months_data = []
+    
+    # Get Spanish month abbreviations
+    spanish_months = {
+        1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'
+    }
+    
+    for i in range(5, -1, -1):  # Last 6 months
+        month_date = now - timedelta(days=30 * i)
+        month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        # Calculate next month start
+        if month_start.month == 12:
+            month_end = month_start.replace(year=month_start.year + 1, month=1)
+        else:
+            month_end = month_start.replace(month=month_start.month + 1)
+        
+        # Count completed and pending orders for this month
+        month_orders = work_orders_qs.filter(
+            created_at__gte=month_start,
+            created_at__lt=month_end
+        )
+        
+        completed = month_orders.filter(status='Completada').count()
+        pending = month_orders.filter(status__in=['Pendiente', 'En Progreso']).count()
+        
+        months_data.append({
+            'month': spanish_months[month_start.month],
+            'completed': completed,
+            'pending': pending
+        })
+    
+    return months_data
+
+
+def get_asset_status_distribution(assets_qs):
+    """
+    Get asset status distribution for pie chart
+    """
+    operational = assets_qs.filter(status='OPERATIONAL').count()
+    maintenance = assets_qs.filter(status='MAINTENANCE').count()
+    stopped = assets_qs.filter(status='OUT_OF_SERVICE').count()
+    
+    return [
+        {'name': 'Operativo', 'value': operational},
+        {'name': 'Mantenimiento', 'value': maintenance},
+        {'name': 'Detenido', 'value': stopped}
+    ]
+
+
+def get_maintenance_types(work_orders_qs):
+    """
+    Get maintenance types distribution
+    Based on priority as proxy for maintenance type
+    """
+    # Count by priority (using as proxy for maintenance type)
+    preventive = work_orders_qs.filter(priority='Baja').count()
+    corrective = work_orders_qs.filter(priority='Media').count()
+    predictive = work_orders_qs.filter(priority='Alta').count()
+    emergency = work_orders_qs.filter(priority='Urgente').count()
+    
+    return [
+        {'type': 'Preventivo', 'count': preventive},
+        {'type': 'Correctivo', 'count': corrective},
+        {'type': 'Predictivo', 'count': predictive},
+        {'type': 'Emergencia', 'count': emergency}
+    ]
+
+
+def get_predictions_timeline(predictions_qs):
+    """
+    Get predictions timeline for the last 4 weeks
+    Returns data for area chart: high/medium/low risk by week
+    """
+    now = timezone.now()
+    weeks_data = []
+    
+    for i in range(3, -1, -1):  # Last 4 weeks
+        week_end = now - timedelta(days=7 * i)
+        week_start = week_end - timedelta(days=7)
+        
+        # Count predictions by risk level for this week
+        week_predictions = predictions_qs.filter(
+            created_at__gte=week_start,
+            created_at__lt=week_end
+        )
+        
+        high_risk = week_predictions.filter(risk_level__in=['HIGH', 'CRITICAL']).count()
+        medium_risk = week_predictions.filter(risk_level='MEDIUM').count()
+        low_risk = week_predictions.filter(risk_level='LOW').count()
+        
+        weeks_data.append({
+            'date': f'Sem {4-i}',
+            'high_risk': high_risk,
+            'medium_risk': medium_risk,
+            'low_risk': low_risk
+        })
+    
+    return weeks_data
 
 
 @api_view(['GET'])
@@ -162,6 +271,16 @@ def dashboard_stats(request):
         ).count()
         prediction_accuracy = (accurate_predictions / predictions_with_outcome.count() * 100)
     
+    # Generate chart data (only for Supervisor and Admin)
+    charts_data = None
+    if role_name in [Role.ADMIN, Role.SUPERVISOR]:
+        charts_data = {
+            'work_orders_trend': get_work_orders_trend(work_orders_qs),
+            'asset_status_distribution': get_asset_status_distribution(assets_qs),
+            'maintenance_types': get_maintenance_types(work_orders_qs),
+            'predictions_timeline': get_predictions_timeline(predictions_qs)
+        }
+    
     data = {
         'total_assets': total_assets,
         'operational_assets': operational_assets,
@@ -183,7 +302,9 @@ def dashboard_stats(request):
             'critical_assets_count': critical_assets_count,
             'work_orders_this_month': work_orders_this_month,
             'prediction_accuracy': round(prediction_accuracy, 1),
-        }
+        },
+        # Charts data (only for Supervisor and Admin)
+        'charts': charts_data
     }
     
     # Cache for 5 minutes
