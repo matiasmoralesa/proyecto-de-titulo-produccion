@@ -128,6 +128,109 @@ def get_predictions_timeline(predictions_qs):
     return weeks_data
 
 
+def get_completion_time_by_priority(work_orders_qs):
+    """
+    Get average completion time by priority
+    Returns data for bar chart showing efficiency
+    """
+    priorities = ['Baja', 'Media', 'Alta', 'Urgente']
+    completion_data = []
+    
+    for priority in priorities:
+        completed_orders = work_orders_qs.filter(
+            priority=priority,
+            status='Completada',
+            completed_date__isnull=False
+        )
+        
+        if completed_orders.exists():
+            total_days = 0
+            count = 0
+            for order in completed_orders:
+                if order.completed_date and order.created_at:
+                    days = (order.completed_date - order.created_at).days
+                    if days >= 0:
+                        total_days += days
+                        count += 1
+            
+            avg_days = round(total_days / count, 1) if count > 0 else 0
+        else:
+            avg_days = 0
+        
+        completion_data.append({
+            'priority': priority,
+            'avg_days': avg_days,
+            'count': completed_orders.count()
+        })
+    
+    return completion_data
+
+
+def get_monthly_activity(work_orders_qs):
+    """
+    Get monthly activity for the last 12 months
+    Returns data for line chart showing trends
+    """
+    now = timezone.now()
+    monthly_data = []
+    
+    spanish_months = {
+        1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'
+    }
+    
+    for i in range(11, -1, -1):  # Last 12 months
+        month_date = now - timedelta(days=30 * i)
+        month_start = month_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        
+        # Calculate next month start
+        if month_start.month == 12:
+            month_end = month_start.replace(year=month_start.year + 1, month=1)
+        else:
+            month_end = month_start.replace(month=month_start.month + 1)
+        
+        # Count orders for this month
+        month_orders = work_orders_qs.filter(
+            created_at__gte=month_start,
+            created_at__lt=month_end
+        )
+        
+        total = month_orders.count()
+        completed = month_orders.filter(status='Completada').count()
+        
+        monthly_data.append({
+            'month': spanish_months[month_start.month],
+            'total': total,
+            'completed': completed,
+            'completion_rate': round((completed / total * 100) if total > 0 else 0, 1)
+        })
+    
+    return monthly_data
+
+
+def get_asset_utilization(assets_qs, work_orders_qs):
+    """
+    Get asset utilization metrics
+    Returns data showing which assets are most used
+    """
+    utilization_data = []
+    
+    for asset in assets_qs[:10]:  # Top 10 assets
+        # Count work orders for this asset
+        asset_orders = work_orders_qs.filter(asset=asset)
+        total_orders = asset_orders.count()
+        completed_orders = asset_orders.filter(status='Completada').count()
+        
+        utilization_data.append({
+            'asset_name': asset.name[:20],  # Truncate long names
+            'total_orders': total_orders,
+            'completed_orders': completed_orders,
+            'utilization': round((total_orders / 10) * 100) if total_orders > 0 else 0  # Normalize to 100
+        })
+    
+    return utilization_data
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
@@ -280,7 +383,10 @@ def dashboard_stats(request):
             'work_orders_trend': get_work_orders_trend(work_orders_qs),
             'asset_status_distribution': get_asset_status_distribution(assets_qs),
             'maintenance_types': get_maintenance_types(work_orders_qs),
-            'predictions_timeline': get_predictions_timeline(predictions_qs)
+            'predictions_timeline': get_predictions_timeline(predictions_qs),
+            'completion_time_by_priority': get_completion_time_by_priority(work_orders_qs),
+            'monthly_activity': get_monthly_activity(work_orders_qs),
+            'asset_utilization': get_asset_utilization(assets_qs, work_orders_qs)
         }
     
     data = {

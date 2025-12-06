@@ -44,6 +44,9 @@ interface DashboardStats {
     asset_status_distribution?: Array<{ name: string; value: number }>;
     maintenance_types?: Array<{ type: string; count: number }>;
     predictions_timeline?: Array<{ date: string; high_risk: number; medium_risk: number; low_risk: number }>;
+    completion_time_by_priority?: Array<{ priority: string; avg_days: number; count: number }>;
+    monthly_activity?: Array<{ month: string; total: number; completed: number; completion_rate: number }>;
+    asset_utilization?: Array<{ asset_name: string; total_orders: number; completed_orders: number; utilization: number }>;
   };
 }
 
@@ -121,6 +124,9 @@ export default function Dashboard() {
   const assetStatusData = stats?.charts?.asset_status_distribution || [];
   const maintenanceTypes = stats?.charts?.maintenance_types || [];
   const predictionsTimeline = stats?.charts?.predictions_timeline || [];
+  const completionTimeByPriority = stats?.charts?.completion_time_by_priority || [];
+  const monthlyActivity = stats?.charts?.monthly_activity || [];
+  const assetUtilization = stats?.charts?.asset_utilization || [];
 
   return (
     <MainLayout>
@@ -516,6 +522,134 @@ export default function Dashboard() {
                 <div className="flex items-center justify-center h-[300px] text-gray-400">
                   <div className="text-center">
                     <FaRobot className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No hay datos disponibles</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Completion Time by Priority Chart */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Tiempo de Resolución por Prioridad</h3>
+                <FiClock className="text-gray-400" />
+              </div>
+              {completionTimeByPriority.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={completionTimeByPriority}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="priority" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                    <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} label={{ value: 'Días', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#fff', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value: any, name: string) => {
+                        if (name === 'avg_days') return [`${value} días`, 'Promedio'];
+                        if (name === 'count') return [`${value} órdenes`, 'Completadas'];
+                        return [value, name];
+                      }}
+                    />
+                    <Legend formatter={(value) => value === 'avg_days' ? 'Días Promedio' : 'Órdenes'} />
+                    <Bar dataKey="avg_days" fill={COLORS.primary} name="avg_days" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-gray-400">
+                  <div className="text-center">
+                    <FiClock className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No hay datos disponibles</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Monthly Activity Line Chart */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Actividad Mensual (12 meses)</h3>
+                <FiTrendingUp className="text-gray-400" />
+              </div>
+              {monthlyActivity.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={monthlyActivity}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="month" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                    <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#fff', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value: any, name: string) => {
+                        if (name === 'completion_rate') return [`${value}%`, 'Tasa de Completitud'];
+                        return [value, name === 'total' ? 'Total' : 'Completadas'];
+                      }}
+                    />
+                    <Legend formatter={(value) => {
+                      if (value === 'total') return 'Total Órdenes';
+                      if (value === 'completed') return 'Completadas';
+                      if (value === 'completion_rate') return 'Tasa de Completitud (%)';
+                      return value;
+                    }} />
+                    <Line type="monotone" dataKey="total" stroke={COLORS.primary} strokeWidth={2} dot={{ r: 4 }} name="total" />
+                    <Line type="monotone" dataKey="completed" stroke={COLORS.success} strokeWidth={2} dot={{ r: 4 }} name="completed" />
+                    <Line type="monotone" dataKey="completion_rate" stroke={COLORS.purple} strokeWidth={2} dot={{ r: 4 }} strokeDasharray="5 5" name="completion_rate" />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-gray-400">
+                  <div className="text-center">
+                    <FiTrendingUp className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No hay datos disponibles</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Asset Utilization Chart */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Utilización de Activos (Top 10)</h3>
+                <FiTruck className="text-gray-400" />
+              </div>
+              {assetUtilization.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={assetUtilization} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis type="number" stroke="#6b7280" style={{ fontSize: '12px' }} />
+                    <YAxis dataKey="asset_name" type="category" stroke="#6b7280" style={{ fontSize: '11px' }} width={120} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#fff', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value: any, name: string) => {
+                        if (name === 'total_orders') return [`${value} órdenes`, 'Total'];
+                        if (name === 'completed_orders') return [`${value} órdenes`, 'Completadas'];
+                        return [value, name];
+                      }}
+                    />
+                    <Legend formatter={(value) => {
+                      if (value === 'total_orders') return 'Total Órdenes';
+                      if (value === 'completed_orders') return 'Completadas';
+                      return value;
+                    }} />
+                    <Bar dataKey="total_orders" fill={COLORS.primary} name="total_orders" radius={[0, 8, 8, 0]} />
+                    <Bar dataKey="completed_orders" fill={COLORS.success} name="completed_orders" radius={[0, 8, 8, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-gray-400">
+                  <div className="text-center">
+                    <FiTruck className="w-12 h-12 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No hay datos disponibles</p>
                   </div>
                 </div>
