@@ -108,9 +108,10 @@ def get_predictions_timeline(predictions_qs):
         week_start = week_end - timedelta(days=7)
         
         # Count predictions by risk level for this week
+        # Note: FailurePrediction uses 'prediction_date' not 'created_at'
         week_predictions = predictions_qs.filter(
-            created_at__gte=week_start,
-            created_at__lt=week_end
+            prediction_date__gte=week_start,
+            prediction_date__lt=week_end
         )
         
         high_risk = week_predictions.filter(risk_level__in=['HIGH', 'CRITICAL']).count()
