@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from django.db.models import Count, Q, Avg, F
 from django.utils import timezone
 from datetime import timedelta
-from calendar import month_abbr
 
 from apps.assets.models import Asset
 from apps.work_orders.models import WorkOrder
