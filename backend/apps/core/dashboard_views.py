@@ -146,21 +146,24 @@ def dashboard_stats(request):
     if cached_data is not None:
         return Response(cached_data)
     
+    # Import Role model
+    from apps.authentication.models import Role
+    
     # Get role name for filtering
     role_name = user.role.name
     
     # Filter querysets based on role
-    if role_name == 'ADMIN':
+    if role_name == Role.ADMIN:
         # Admins see everything
         assets_qs = Asset.objects.all()
         work_orders_qs = WorkOrder.objects.all()
         predictions_qs = FailurePrediction.objects.all()
-    elif role_name == 'SUPERVISOR':
+    elif role_name == Role.SUPERVISOR:
         # Supervisors see all (can be filtered by department/area in production)
         assets_qs = Asset.objects.all()
         work_orders_qs = WorkOrder.objects.all()
         predictions_qs = FailurePrediction.objects.all()
-    elif role_name == 'OPERADOR':
+    elif role_name == Role.OPERADOR:
         # Operators only see their assigned work orders and related assets
         work_orders_qs = WorkOrder.objects.filter(assigned_to=user)
         
@@ -271,7 +274,7 @@ def dashboard_stats(request):
     
     # Generate chart data (only for Supervisor and Admin)
     charts_data = None
-    if role_name in ['ADMIN', 'SUPERVISOR']:
+    if role_name in [Role.ADMIN, Role.SUPERVISOR]:
         charts_data = {
             'work_orders_trend': get_work_orders_trend(work_orders_qs),
             'asset_status_distribution': get_asset_status_distribution(assets_qs),
