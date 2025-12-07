@@ -215,6 +215,7 @@ class Command(BaseCommand):
                             asset=asset,
                             completed_by=random.choice(operator_users) if operator_users else admin_user,
                             completed_at=checklist_date,
+                            status='COMPLETED',  # Todos completados
                             notes=random.choice([
                                 'Inspección completada sin novedades',
                                 'Todo en orden',
@@ -232,19 +233,28 @@ class Command(BaseCommand):
                         # Crear respuestas para cada item del checklist
                         items = ChecklistTemplateItem.objects.filter(template=template)
                         for item in items:
-                            # 90% de probabilidad de estar OK
-                            is_ok = random.random() < 0.9
-                            
-                            ChecklistItemResponse.objects.create(
-                                checklist_response=checklist_response,
-                                checklist_item=item,
-                                is_checked=is_ok,
-                                observations='' if is_ok else random.choice([
+                            # 90% de probabilidad de estar OK (yes), 5% no, 5% na
+                            rand = random.random()
+                            if rand < 0.90:
+                                response_value = 'yes'
+                                observations = ''
+                            elif rand < 0.95:
+                                response_value = 'no'
+                                observations = random.choice([
                                     'Requiere atención',
                                     'Nivel bajo',
                                     'Desgaste visible',
                                     'Necesita ajuste'
                                 ])
+                            else:
+                                response_value = 'na'
+                                observations = 'No aplica'
+                            
+                            ChecklistItemResponse.objects.create(
+                                checklist_response=checklist_response,
+                                template_item=item,
+                                response_value=response_value,
+                                observations=observations
                             )
                         
                         checklists_completed += 1
