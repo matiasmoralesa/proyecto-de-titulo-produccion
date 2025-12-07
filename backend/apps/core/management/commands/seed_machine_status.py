@@ -4,7 +4,8 @@ Management command to seed machine status data
 from django.core.management.base import BaseCommand
 from apps.assets.models import Asset, Location
 from apps.authentication.models import User
-from apps.machine_status.models import AssetStatus
+from apps.machine_status.models import AssetStatus, AssetStatusHistory
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -55,6 +56,8 @@ class Command(BaseCommand):
             return
         
         created_count = 0
+        history_count = 0
+        
         for asset in assets:
             try:
                 # Crear o verificar estado
@@ -72,8 +75,41 @@ class Command(BaseCommand):
                 if status_created:
                     self.stdout.write(self.style.SUCCESS(f"✅ {asset.name}: Estado creado"))
                     created_count += 1
+                    
+                    # Crear registro de historial inicial
+                    try:
+                        AssetStatusHistory.objects.create(
+                            asset=asset,
+                            status_type=status.status_type,
+                            odometer_reading=status.odometer_reading,
+                            fuel_level=status.fuel_level,
+                            condition_notes=status.condition_notes,
+                            updated_by=admin_user,
+                            timestamp=timezone.now()
+                        )
+                        history_count += 1
+                        self.stdout.write(f"   📜 Historial creado")
+                    except Exception as hist_error:
+                        self.stdout.write(self.style.WARNING(f"   ⚠️  Error creando historial: {hist_error}"))
                 else:
                     self.stdout.write(f"ℹ️  {asset.name}: Estado ya existe")
+                    
+                    # Verificar si tiene historial
+                    if not AssetStatusHistory.objects.filter(asset=asset).exists():
+                        try:
+                            AssetStatusHistory.objects.create(
+                                asset=asset,
+                                status_type=status.status_type,
+                                odometer_reading=status.odometer_reading,
+                                fuel_level=status.fuel_level,
+                                condition_notes=status.condition_notes,
+                                updated_by=admin_user,
+                                timestamp=status.created_at
+                            )
+                            history_count += 1
+                            self.stdout.write(f"   📜 Historial creado")
+                        except Exception as hist_error:
+                            self.stdout.write(self.style.WARNING(f"   ⚠️  Error creando historial: {hist_error}"))
                     
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"❌ Error con {asset.name}: {e}"))
@@ -82,8 +118,10 @@ class Command(BaseCommand):
         self.stdout.write("\n" + "=" * 60)
         self.stdout.write(self.style.SUCCESS("✅ PROCESO COMPLETADO"))
         self.stdout.write(f"   Estados creados: {created_count}")
+        self.stdout.write(f"   Historiales creados: {history_count}")
         self.stdout.write(f"   Total activos: {Asset.objects.count()}")
         self.stdout.write(f"   Total estados: {AssetStatus.objects.count()}")
+        self.stdout.write(f"   Total historiales: {AssetStatusHistory.objects.count()}")
         self.stdout.write("=" * 60)
 
         # Mostrar resumen
