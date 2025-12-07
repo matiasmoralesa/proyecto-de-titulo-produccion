@@ -65,14 +65,16 @@ def get_asset_status_distribution(assets_qs):
     """
     Get asset status distribution for pie chart
     """
-    operational = assets_qs.filter(status='OPERATIONAL').count()
-    maintenance = assets_qs.filter(status='MAINTENANCE').count()
-    stopped = assets_qs.filter(status='OUT_OF_SERVICE').count()
+    operational = assets_qs.filter(status='Operando').count()
+    maintenance = assets_qs.filter(status='En Mantenimiento').count()
+    stopped = assets_qs.filter(status='Fuera de Servicio').count()
+    detenida = assets_qs.filter(status='Detenida').count()
     
     return [
-        {'name': 'Operativo', 'value': operational},
-        {'name': 'Mantenimiento', 'value': maintenance},
-        {'name': 'Detenido', 'value': stopped}
+        {'name': 'Operando', 'value': operational},
+        {'name': 'En Mantenimiento', 'value': maintenance},
+        {'name': 'Detenida', 'value': detenida},
+        {'name': 'Fuera de Servicio', 'value': stopped}
     ]
 
 
@@ -285,9 +287,10 @@ def dashboard_stats(request):
     
     # Asset stats
     total_assets = assets_qs.count()
-    operational_assets = assets_qs.filter(status='OPERATIONAL').count()
-    maintenance_assets = assets_qs.filter(status='MAINTENANCE').count()
-    stopped_assets = assets_qs.filter(status='OUT_OF_SERVICE').count()
+    operational_assets = assets_qs.filter(status='Operando').count()
+    maintenance_assets = assets_qs.filter(status='En Mantenimiento').count()
+    stopped_assets = assets_qs.filter(status='Fuera de Servicio').count()
+    active_assets = assets_qs.filter(is_archived=False).count()
     
     # Work Order stats
     total_work_orders = work_orders_qs.count()
@@ -391,6 +394,7 @@ def dashboard_stats(request):
     
     data = {
         'total_assets': total_assets,
+        'active_assets': active_assets,
         'operational_assets': operational_assets,
         'maintenance_assets': maintenance_assets,
         'stopped_assets': stopped_assets,
