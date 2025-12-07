@@ -41,6 +41,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"❌ Error: {e}"))
             return
 
+        # Fechas
+        end_date = timezone.now()
+        start_date = end_date - timedelta(days=365)
+        
         # Crear más activos si es necesario
         self.stdout.write("\n🚗 Verificando activos...")
         location = Location.objects.first()
@@ -78,11 +82,6 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.SUCCESS(f"✅ Activo creado: {asset.name}"))
 
         self.stdout.write(f"📦 Total activos: {len(assets)}")
-
-        # Fechas
-        end_date = timezone.now()
-        start_date = end_date - timedelta(days=365)
-        
         self.stdout.write(f"\n📅 Período: {start_date.date()} a {end_date.date()}")
 
         # Contadores
