@@ -362,7 +362,6 @@ class AssetHistoryViewSet(viewsets.ViewSet):
         # 5. Spare part usage
         if not activity_type or activity_type == 'spare_part':
             from apps.inventory.models import StockMovement
-            from apps.work_orders.models import WorkOrder
             
             # Get work orders for this asset
             work_order_ids = WorkOrder.objects.filter(asset=asset).values_list('id', flat=True)
