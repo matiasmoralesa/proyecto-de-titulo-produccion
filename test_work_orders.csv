@@ -1,0 +1,21 @@
+Work Order Summary Report
+Date Range,2025-11-07 to 2025-12-07
+
+Metric,Value
+Total Work Orders,52
+Total Hours Worked,7.5
+Avg Completion Time (hours),-276.0
+
+Status,Count
+Pendiente,39
+En Progreso,9
+Completada,4
+Cancelada,0
+
+Priority,Count
+Baja,1
+Media,41
+Alta,9
+Urgente,1
+
+Type,Count
