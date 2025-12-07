@@ -69,7 +69,8 @@ class Command(BaseCommand):
                     defaults={
                         **asset_data,
                         'location': location,
-                        'status': 'ACTIVE'
+                        'status': 'ACTIVE',
+                        'installation_date': start_date.date()
                     }
                 )
                 if created:
