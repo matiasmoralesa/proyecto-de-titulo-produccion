@@ -37,7 +37,7 @@ def get_admin_token():
 
 def create_spare_parts_movements(token):
     """Crear movimientos de repuestos"""
-    url = f"{BACKEND_URL}/api/v1/inventory/seed-spare-parts-usage/"
+    url = f"{BACKEND_URL}/api/v1/inventory/spare-parts/seed-spare-parts-usage/"
     
     headers = {
         "Authorization": f"Bearer {token}",
