@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
     """Serializer for User model."""
     role_name = serializers.CharField(source='role.name', read_only=True)
     role_display = serializers.CharField(source='role.get_name_display', read_only=True)
+    role = serializers.SerializerMethodField()
     
     class Meta:
         model = User
@@ -31,6 +32,13 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
         extra_kwargs = {
             'password': {'write_only': True}
+        }
+    
+    def get_role(self, obj):
+        """Return role as object with name and display."""
+        return {
+            'name': obj.role.name,
+            'display': obj.role.get_name_display(),
         }
 
 
@@ -88,7 +96,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'email': self.user.email,
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
-            'role': self.user.role.name,
+            'role': {
+                'name': self.user.role.name,
+                'display': self.user.role.get_name_display(),
+            },
             'role_name': self.user.role.name,
             'role_display': self.user.role.get_name_display(),
             'must_change_password': self.user.must_change_password,

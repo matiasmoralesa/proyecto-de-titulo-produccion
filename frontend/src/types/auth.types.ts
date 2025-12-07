@@ -9,9 +9,12 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string;
-  role: string;
-  role_name: string;
-  role_display: string;
+  role: {
+    name: string; // Role name (e.g., 'ADMIN', 'SUPERVISOR', 'OPERADOR')
+    display: string; // Display name (e.g., 'Administrador')
+  };
+  role_name: string; // Deprecated: use role.name
+  role_display: string; // Deprecated: use role.display
   is_active: boolean;
   must_change_password: boolean;
   created_at: string;
@@ -32,7 +35,10 @@ export interface LoginResponse {
     email: string;
     first_name: string;
     last_name: string;
-    role: string;
+    role: {
+      name: string;
+      display: string;
+    };
     role_name?: string;
     role_display: string;
     must_change_password: boolean;
