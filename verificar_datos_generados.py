@@ -24,19 +24,29 @@ try:
         headers = {'Authorization': f'Bearer {token}'}
         
         # Verificar activos
-        assets_url = f'{BASE_URL}/api/v1/assets/'
+        assets_url = f'{BASE_URL}/api/v1/assets/assets/'
         assets_response = requests.get(assets_url, headers=headers)
         if assets_response.status_code == 200:
-            assets_count = len(assets_response.json())
+            assets_data = assets_response.json()
+            assets_count = assets_data.get('count', len(assets_data))
             print(f"\n✅ Activos: {assets_count}")
         
         # Verificar órdenes de trabajo
-        wo_url = f'{BASE_URL}/api/v1/work-orders/'
+        wo_url = f'{BASE_URL}/api/v1/work-orders/?page_size=1000'
         wo_response = requests.get(wo_url, headers=headers)
         if wo_response.status_code == 200:
             wo_data = wo_response.json()
             wo_count = wo_data.get('count', len(wo_data))
             print(f"✅ Órdenes de trabajo: {wo_count}")
+            
+            # Contar por estado
+            if 'results' in wo_data:
+                completed = sum(1 for wo in wo_data['results'] if wo.get('status') == 'Completada')
+                pending = sum(1 for wo in wo_data['results'] if wo.get('status') == 'Pendiente')
+                in_progress = sum(1 for wo in wo_data['results'] if wo.get('status') == 'En Progreso')
+                print(f"   - Completadas: {completed}")
+                print(f"   - Pendientes: {pending}")
+                print(f"   - En Progreso: {in_progress}")
         
         # Verificar dashboard
         dashboard_url = f'{BASE_URL}/api/v1/dashboard/'

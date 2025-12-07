@@ -40,11 +40,16 @@ class Command(BaseCommand):
         self.stdout.write("\n📦 Agregando stock inicial...")
         for part in spare_parts:
             initial_stock = random.randint(50, 200)
+            old_quantity = part.quantity
+            part.quantity = initial_stock
+            part.save()
             
             StockMovement.objects.create(
                 spare_part=part,
                 movement_type='IN',
                 quantity=initial_stock,
+                quantity_before=old_quantity,
+                quantity_after=initial_stock,
                 unit_cost=Decimal(str(random.uniform(10, 500))),
                 user=admin_user,
                 notes='Stock inicial - Compra de repuestos'
@@ -65,10 +70,19 @@ class Command(BaseCommand):
                 quantity = random.randint(1, 5)
                 
                 try:
+                    # Refrescar el repuesto para obtener la cantidad actual
+                    part.refresh_from_db()
+                    old_quantity = part.quantity
+                    new_quantity = max(0, old_quantity - quantity)
+                    part.quantity = new_quantity
+                    part.save()
+                    
                     StockMovement.objects.create(
                         spare_part=part,
                         movement_type='OUT',
                         quantity=quantity,
+                        quantity_before=old_quantity,
+                        quantity_after=new_quantity,
                         unit_cost=Decimal(str(random.uniform(10, 500))),
                         user=admin_user,
                         reference_type='work_order',

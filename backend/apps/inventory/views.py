@@ -181,6 +181,33 @@ class SparePartViewSet(viewsets.ModelViewSet):
             'total_inventory_value': float(total_value),
             'categories': list(categories),
         })
+    
+    @action(detail=False, methods=['post'], url_path='seed-spare-parts-usage', permission_classes=[IsSupervisorOrAdmin])
+    def seed_spare_parts_usage(self, request):
+        """
+        Seed spare parts usage data for testing/demo purposes.
+        
+        POST /api/v1/inventory/spare-parts/seed-spare-parts-usage/
+        """
+        from django.core.management import call_command
+        from io import StringIO
+        
+        # Capture command output
+        out = StringIO()
+        
+        try:
+            call_command('seed_spare_parts_usage', stdout=out)
+            output = out.getvalue()
+            
+            return Response({
+                'message': 'Datos de uso de repuestos generados exitosamente',
+                'output': output
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'message': 'Error al generar datos de uso de repuestos'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class StockMovementViewSet(viewsets.ReadOnlyModelViewSet):
