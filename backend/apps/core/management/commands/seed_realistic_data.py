@@ -74,7 +74,8 @@ class Command(BaseCommand):
                         **asset_data,
                         'location': location,
                         'status': 'ACTIVE',
-                        'installation_date': start_date.date()
+                        'installation_date': start_date.date(),
+                        'created_by': admin_user
                     }
                 )
                 if created:
