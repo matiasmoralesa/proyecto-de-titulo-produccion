@@ -139,14 +139,14 @@ class Command(BaseCommand):
                     
                     # Tipo de trabajo
                     work_types = [
-                        ('Mantenimiento Preventivo', 'MEDIUM', 4),
-                        ('Reparación Menor', 'LOW', 2),
-                        ('Inspección', 'LOW', 1),
-                        ('Mantenimiento Correctivo', 'HIGH', 6),
-                        ('Cambio de Aceite', 'MEDIUM', 2),
-                        ('Revisión de Frenos', 'HIGH', 3),
-                        ('Cambio de Filtros', 'LOW', 1),
-                        ('Reparación de Motor', 'CRITICAL', 12),
+                        ('Mantenimiento Preventivo', 'Media', 4),
+                        ('Reparación Menor', 'Baja', 2),
+                        ('Inspección', 'Baja', 1),
+                        ('Mantenimiento Correctivo', 'Alta', 6),
+                        ('Cambio de Aceite', 'Media', 2),
+                        ('Revisión de Frenos', 'Alta', 3),
+                        ('Cambio de Filtros', 'Baja', 1),
+                        ('Reparación de Motor', 'Urgente', 12),
                     ]
                     
                     work_type = random.choice(work_types)
@@ -158,13 +158,12 @@ class Command(BaseCommand):
                         title=f"{title} - {asset.name}",
                         description=f"Trabajo de {title.lower()} programado",
                         priority=priority,
-                        status='COMPLETED',  # Todas completadas
+                        status='Completada',  # Todas completadas
                         assigned_to=assigned_user,
                         created_by=supervisor_users[0] if supervisor_users else admin_user,
-                        estimated_hours=Decimal(str(hours)),
+                        scheduled_date=wo_created_date,
                         actual_hours=Decimal(str(hours + random.uniform(-0.5, 1.0))),
                         created_at=wo_created_date,
-                        due_date=wo_created_date + timedelta(days=random.randint(1, 7)),
                         completed_date=wo_created_date + timedelta(days=random.randint(1, 5)),
                         completion_notes=f"Trabajo completado satisfactoriamente. {random.choice(['Sin novedades.', 'Se reemplazaron componentes.', 'Todo en orden.'])}"
                     )
