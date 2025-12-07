@@ -32,9 +32,8 @@ class Command(BaseCommand):
             location, created = Location.objects.get_or_create(
                 name="Sede Principal",
                 defaults={
-                    'address': 'Av. Principal 123',
-                    'city': 'Santiago',
-                    'country': 'Chile'
+                    'address': 'Av. Principal 123, Santiago, Chile',
+                    'description': 'Ubicación principal de operaciones'
                 }
             )
             if created:
