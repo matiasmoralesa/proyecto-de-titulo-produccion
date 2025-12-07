@@ -102,9 +102,7 @@ export default function Dashboard() {
   // Validates: Requirements 10.1, 10.2, 10.3
   const hasRole = (roles: string[]) => {
     if (!user || !user.role) return false;
-    // user.role is a string (role name), not an object
-    const roleName = typeof user.role === 'string' ? user.role : (user.role as any).name;
-    return roles.includes(roleName);
+    return roles.includes(user.role.name);
   };
 
   const isOperador = hasRole(['OPERADOR']);
