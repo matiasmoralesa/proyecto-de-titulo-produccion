@@ -200,13 +200,11 @@ class ReportViewSet(viewsets.ViewSet):
         Validates: Requirements 4.5
         """
         start_date, end_date, asset_id = self._parse_date_params(request)
-        user_filter = self._get_user_filter()
         
         summary = ReportService.get_work_order_summary(
             start_date=start_date,
             end_date=end_date,
-            asset_id=asset_id,
-            user_id=user_filter
+            asset_id=asset_id
         )
         
         # Create CSV response
