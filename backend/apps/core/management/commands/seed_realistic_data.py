@@ -63,6 +63,13 @@ class Command(BaseCommand):
                 {'name': 'Camión Volvo FH16', 'vehicle_type': 'Camión', 'model': 'FH16', 'serial_number': 'CAM-VLV-001', 'license_plate': 'ABCD-12'},
                 {'name': 'Grúa Liebherr LTM', 'vehicle_type': 'Grúa', 'model': 'LTM 1100', 'serial_number': 'GRU-LBH-001', 'license_plate': 'EFGH-34'},
                 {'name': 'Excavadora CAT 320', 'vehicle_type': 'Excavadora', 'model': '320D', 'serial_number': 'EXC-CAT-001', 'license_plate': 'IJKL-56'},
+                {'name': 'Retroexcavadora JCB 3CX', 'vehicle_type': 'Retroexcavadora', 'model': '3CX', 'serial_number': 'RET-JCB-001', 'license_plate': 'MNOP-78'},
+                {'name': 'Camión Mercedes Actros', 'vehicle_type': 'Camión', 'model': 'Actros 2546', 'serial_number': 'CAM-MER-001', 'license_plate': 'QRST-90'},
+                {'name': 'Montacargas Toyota 8FD', 'vehicle_type': 'Montacargas', 'model': '8FD25', 'serial_number': 'MON-TOY-001', 'license_plate': 'UVWX-11'},
+                {'name': 'Bulldozer CAT D6', 'vehicle_type': 'Bulldozer', 'model': 'D6T', 'serial_number': 'BUL-CAT-001', 'license_plate': 'YZAB-22'},
+                {'name': 'Camión Scania R450', 'vehicle_type': 'Camión', 'model': 'R450', 'serial_number': 'CAM-SCA-001', 'license_plate': 'CDEF-33'},
+                {'name': 'Cargador Frontal CAT 950', 'vehicle_type': 'Cargador', 'model': '950M', 'serial_number': 'CAR-CAT-001', 'license_plate': 'GHIJ-44'},
+                {'name': 'Compactadora Bomag BW', 'vehicle_type': 'Compactadora', 'model': 'BW 213', 'serial_number': 'COM-BOM-001', 'license_plate': 'KLMN-55'},
             ]
             
             for asset_data in additional_assets:
