@@ -12,6 +12,7 @@ from apps.authentication.models import User, Role
 from apps.machine_status.models import AssetStatus, AssetStatusHistory
 from apps.work_orders.models import WorkOrder
 from apps.maintenance.models import MaintenancePlan
+from apps.checklists.models import ChecklistTemplate, ChecklistItem, ChecklistResponse, ChecklistItemResponse
 
 
 class Command(BaseCommand):
@@ -96,10 +97,89 @@ class Command(BaseCommand):
         self.stdout.write(f"📦 Total activos: {len(assets)}")
         self.stdout.write(f"\n📅 Período: {start_date.date()} a {end_date.date()}")
 
+        # Crear plantillas de checklist
+        self.stdout.write("\n📋 Creando plantillas de checklist...")
+        checklist_templates = []
+        
+        template_configs = [
+            {
+                'name': 'Inspección Diaria de Vehículo',
+                'code': 'INSP-DIARIA',
+                'description': 'Checklist de inspección diaria antes de operar el vehículo',
+                'items': [
+                    {'text': 'Verificar nivel de aceite del motor', 'order': 1},
+                    {'text': 'Verificar nivel de líquido de frenos', 'order': 2},
+                    {'text': 'Verificar presión de neumáticos', 'order': 3},
+                    {'text': 'Verificar luces (delanteras, traseras, direccionales)', 'order': 4},
+                    {'text': 'Verificar estado de frenos', 'order': 5},
+                    {'text': 'Verificar limpieza de parabrisas y espejos', 'order': 6},
+                    {'text': 'Verificar nivel de combustible', 'order': 7},
+                    {'text': 'Verificar funcionamiento de bocina', 'order': 8},
+                ]
+            },
+            {
+                'name': 'Mantenimiento Preventivo Mensual',
+                'code': 'MANT-MENSUAL',
+                'description': 'Checklist de mantenimiento preventivo mensual',
+                'items': [
+                    {'text': 'Cambio de aceite y filtro', 'order': 1},
+                    {'text': 'Revisión de sistema de frenos', 'order': 2},
+                    {'text': 'Revisión de suspensión', 'order': 3},
+                    {'text': 'Revisión de sistema eléctrico', 'order': 4},
+                    {'text': 'Lubricación de componentes', 'order': 5},
+                    {'text': 'Revisión de correas y mangueras', 'order': 6},
+                    {'text': 'Limpieza de filtro de aire', 'order': 7},
+                ]
+            },
+            {
+                'name': 'Inspección de Seguridad',
+                'code': 'INSP-SEGURIDAD',
+                'description': 'Checklist de inspección de seguridad del equipo',
+                'items': [
+                    {'text': 'Verificar extintores (carga y fecha)', 'order': 1},
+                    {'text': 'Verificar botiquín de primeros auxilios', 'order': 2},
+                    {'text': 'Verificar señalización de seguridad', 'order': 3},
+                    {'text': 'Verificar cinturones de seguridad', 'order': 4},
+                    {'text': 'Verificar alarma de retroceso', 'order': 5},
+                    {'text': 'Verificar sistema de bloqueo', 'order': 6},
+                ]
+            },
+        ]
+        
+        for config in template_configs:
+            try:
+                template, created = ChecklistTemplate.objects.get_or_create(
+                    code=config['code'],
+                    defaults={
+                        'name': config['name'],
+                        'description': config['description'],
+                        'is_active': True,
+                        'created_by': admin_user
+                    }
+                )
+                
+                if created:
+                    # Crear items del checklist
+                    for item_config in config['items']:
+                        ChecklistItem.objects.create(
+                            template=template,
+                            text=item_config['text'],
+                            item_order=item_config['order'],
+                            is_required=True
+                        )
+                    checklist_templates.append(template)
+                    self.stdout.write(self.style.SUCCESS(f"   ✅ Plantilla creada: {template.name}"))
+                else:
+                    checklist_templates.append(template)
+                    self.stdout.write(f"   ℹ️  Plantilla ya existe: {template.name}")
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f"   ⚠️  Error plantilla: {e}"))
+
         # Contadores
         status_updates = 0
         work_orders_created = 0
         maintenance_plans_created = 0
+        checklists_completed = 0
 
         # Para cada activo, generar datos
         for asset in assets:
@@ -181,6 +261,62 @@ class Command(BaseCommand):
                     
                 except Exception as e:
                     self.stdout.write(self.style.WARNING(f"   ⚠️  Error WO: {e}"))
+
+            # 2.5. Generar checklists completados (1-2 por mes = 12-24 al año)
+            if checklist_templates:
+                num_checklists = random.randint(12, 24)
+                
+                for i in range(num_checklists):
+                    try:
+                        # Fecha aleatoria en el año
+                        days_ago = random.randint(0, 365)
+                        checklist_date = end_date - timedelta(days=days_ago)
+                        
+                        # Seleccionar plantilla aleatoria
+                        template = random.choice(checklist_templates)
+                        
+                        # Crear respuesta de checklist
+                        checklist_response = ChecklistResponse.objects.create(
+                            template=template,
+                            asset=asset,
+                            completed_by=random.choice(operator_users) if operator_users else admin_user,
+                            completed_at=checklist_date,
+                            notes=random.choice([
+                                'Inspección completada sin novedades',
+                                'Todo en orden',
+                                'Se detectaron observaciones menores',
+                                'Equipo en buen estado',
+                                'Requiere seguimiento en próxima inspección'
+                            ])
+                        )
+                        
+                        # Actualizar created_at
+                        ChecklistResponse.objects.filter(id=checklist_response.id).update(
+                            created_at=checklist_date
+                        )
+                        
+                        # Crear respuestas para cada item del checklist
+                        items = ChecklistItem.objects.filter(template=template)
+                        for item in items:
+                            # 90% de probabilidad de estar OK
+                            is_ok = random.random() < 0.9
+                            
+                            ChecklistItemResponse.objects.create(
+                                checklist_response=checklist_response,
+                                checklist_item=item,
+                                is_checked=is_ok,
+                                observations='' if is_ok else random.choice([
+                                    'Requiere atención',
+                                    'Nivel bajo',
+                                    'Desgaste visible',
+                                    'Necesita ajuste'
+                                ])
+                            )
+                        
+                        checklists_completed += 1
+                        
+                    except Exception as e:
+                        self.stdout.write(self.style.WARNING(f"   ⚠️  Error checklist: {e}"))
 
             # 3. Generar actualizaciones de estado (2-4 por mes = 24-48 al año)
             num_status_updates = random.randint(24, 48)
@@ -272,10 +408,12 @@ class Command(BaseCommand):
         self.stdout.write("=" * 60)
         self.stdout.write(f"\n📊 RESUMEN:")
         self.stdout.write(f"   Activos procesados: {len(assets)}")
+        self.stdout.write(f"   Plantillas de checklist: {len(checklist_templates)}")
+        self.stdout.write(f"   Checklists completados: {checklists_completed}")
         self.stdout.write(f"   Órdenes de trabajo: {work_orders_created}")
         self.stdout.write(f"   Actualizaciones de estado: {status_updates}")
         self.stdout.write(f"   Planes de mantenimiento: {maintenance_plans_created}")
-        self.stdout.write(f"\n   Total registros: {work_orders_created + status_updates + maintenance_plans_created}")
+        self.stdout.write(f"\n   Total registros: {work_orders_created + status_updates + maintenance_plans_created + checklists_completed}")
         self.stdout.write("=" * 60)
         
         # Estadísticas por activo
