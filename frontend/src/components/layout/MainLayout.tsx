@@ -64,7 +64,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
     
     // Solo ADMIN
     { icon: FaClock, label: 'Monitor Celery', path: '/celery-monitor', roles: ['ADMIN'] },
-    { icon: FiSettings, label: 'Configuración', path: '/configuration', roles: ['ADMIN'] },
+    // { icon: FiSettings, label: 'Configuración', path: '/configuration', roles: ['ADMIN'] },
   ];
 
   // Filter menu items based on user role
