@@ -12,7 +12,7 @@ from apps.authentication.models import User, Role
 from apps.machine_status.models import AssetStatus, AssetStatusHistory
 from apps.work_orders.models import WorkOrder
 from apps.maintenance.models import MaintenancePlan
-from apps.checklists.models import ChecklistTemplate, ChecklistItem, ChecklistResponse, ChecklistItemResponse
+from apps.checklists.models import ChecklistTemplate, ChecklistTemplateItem, ChecklistResponse, ChecklistItemResponse
 
 
 class Command(BaseCommand):
@@ -161,7 +161,7 @@ class Command(BaseCommand):
                 if created:
                     # Crear items del checklist
                     for item_config in config['items']:
-                        ChecklistItem.objects.create(
+                        ChecklistTemplateItem.objects.create(
                             template=template,
                             text=item_config['text'],
                             item_order=item_config['order'],
@@ -296,7 +296,7 @@ class Command(BaseCommand):
                         )
                         
                         # Crear respuestas para cada item del checklist
-                        items = ChecklistItem.objects.filter(template=template)
+                        items = ChecklistTemplateItem.objects.filter(template=template)
                         for item in items:
                             # 90% de probabilidad de estar OK
                             is_ok = random.random() < 0.9
