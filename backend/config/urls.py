@@ -6,7 +6,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from apps.core.views_admin import load_backup_data, seed_database
+from apps.core.views_admin import load_backup_data, seed_database, seed_machine_status
 
 urlpatterns = [
     # Admin
@@ -15,6 +15,7 @@ urlpatterns = [
     # Admin utilities (temporary - remove after use)
     path('api/admin/load-data/', load_backup_data, name='load-backup-data'),
     path('api/admin/seed-data/', seed_database, name='seed-database'),
+    path('api/admin/seed-machine-status/', seed_machine_status, name='seed-machine-status'),
     path('api/v1/admin/', include('apps.core.data_loader_urls')),
     
     # API v1

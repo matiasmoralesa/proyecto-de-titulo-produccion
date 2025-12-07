@@ -85,6 +85,26 @@ def seed_database(request):
 
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
+def seed_machine_status(request):
+    """
+    Seed machine status data for all assets.
+    This endpoint is public for initial setup, but should be removed after use.
+    """
+    try:
+        call_command('seed_machine_status', verbosity=2)
+        return JsonResponse({
+            'success': True,
+            'message': '✅ Machine status data seeded successfully!'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error seeding machine status: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
 def generate_checklists(request):
     """
     Generate sample checklist templates and responses.
