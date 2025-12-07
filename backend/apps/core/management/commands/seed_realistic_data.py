@@ -158,20 +158,28 @@ class Command(BaseCommand):
                     }
                 )
                 
-                if created:
-                    # Crear items del checklist
-                    for item_config in config['items']:
-                        ChecklistTemplateItem.objects.create(
-                            template=template,
-                            text=item_config['text'],
-                            item_order=item_config['order'],
-                            is_required=True
-                        )
-                    checklist_templates.append(template)
-                    self.stdout.write(self.style.SUCCESS(f"   ✅ Plantilla creada: {template.name}"))
+                # Verificar si la plantilla tiene items
+                existing_items = ChecklistTemplateItem.objects.filter(template=template).count()
+                
+                if created or existing_items == 0:
+                    # Crear items del checklist si no existen
+                    if existing_items == 0:
+                        for item_config in config['items']:
+                            ChecklistTemplateItem.objects.create(
+                                template=template,
+                                text=item_config['text'],
+                                item_order=item_config['order'],
+                                is_required=True
+                            )
+                    
+                    if created:
+                        self.stdout.write(self.style.SUCCESS(f"   ✅ Plantilla creada: {template.name}"))
+                    else:
+                        self.stdout.write(self.style.SUCCESS(f"   ✅ Items agregados a: {template.name}"))
                 else:
-                    checklist_templates.append(template)
                     self.stdout.write(f"   ℹ️  Plantilla ya existe: {template.name}")
+                
+                checklist_templates.append(template)
             except Exception as e:
                 self.stdout.write(self.style.WARNING(f"   ⚠️  Error plantilla: {e}"))
 
