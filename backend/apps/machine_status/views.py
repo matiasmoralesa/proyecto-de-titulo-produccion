@@ -448,16 +448,16 @@ class AssetHistoryViewSet(viewsets.ViewSet):
         
         # Total maintenance hours
         total_hours = work_orders.filter(
-            status='COMPLETED'
+            status='Completada'
         ).aggregate(
             total=Sum('actual_hours')
         )['total'] or 0
         
         # Number of work orders
         total_work_orders = work_orders.count()
-        completed_work_orders = work_orders.filter(status='COMPLETED').count()
-        pending_work_orders = work_orders.filter(status='PENDING').count()
-        in_progress_work_orders = work_orders.filter(status='IN_PROGRESS').count()
+        completed_work_orders = work_orders.filter(status='Completada').count()
+        pending_work_orders = work_orders.filter(status='Pendiente').count()
+        in_progress_work_orders = work_orders.filter(status='En Progreso').count()
         
         # Calculate downtime (time in DETENIDA, EN_MANTENIMIENTO, FUERA_DE_SERVICIO status)
         status_history = AssetStatusHistory.objects.filter(
