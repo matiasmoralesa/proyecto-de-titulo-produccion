@@ -85,9 +85,13 @@ class Command(BaseCommand):
                         'created_by': admin_user
                     }
                 )
-                if created:
+                # Agregar a la lista si no está (creado o ya existía)
+                if asset not in assets:
                     assets.append(asset)
+                if created:
                     self.stdout.write(self.style.SUCCESS(f"✅ Activo creado: {asset.name}"))
+                else:
+                    self.stdout.write(f"   ℹ️  Activo ya existe: {asset.name}")
 
         self.stdout.write(f"📦 Total activos: {len(assets)}")
         self.stdout.write(f"\n📅 Período: {start_date.date()} a {end_date.date()}")
