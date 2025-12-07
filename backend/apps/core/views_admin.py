@@ -105,6 +105,26 @@ def seed_machine_status(request):
 
 @csrf_exempt
 @require_http_methods(["POST", "GET"])
+def seed_realistic_data(request):
+    """
+    Seed realistic data for 1 year period.
+    This endpoint is public for initial setup, but should be removed after use.
+    """
+    try:
+        call_command('seed_realistic_data', verbosity=2)
+        return JsonResponse({
+            'success': True,
+            'message': '✅ Realistic data seeded successfully for 1 year period!'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Error seeding realistic data: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST", "GET"])
 def generate_checklists(request):
     """
     Generate sample checklist templates and responses.
