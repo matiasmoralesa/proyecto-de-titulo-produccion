@@ -91,3 +91,49 @@ class CeleryStatsView(APIView):
         }
         
         return Response(stats)
+
+
+class RunTaskManuallyView(APIView):
+    """
+    Vista para ejecutar tareas de Celery manualmente
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        task_name = request.data.get('task_name')
+        
+        if not task_name:
+            return Response({'error': 'task_name is required'}, status=400)
+        
+        # Mapeo de tareas disponibles
+        available_tasks = {
+            'check_overdue_workorders': 'apps.work_orders.tasks.check_overdue_workorders',
+            'check_critical_assets': 'apps.assets.tasks.check_critical_assets',
+            'cleanup_old_notifications': 'apps.notifications.tasks.cleanup_old_notifications',
+            'run_daily_predictions': 'apps.ml_predictions.tasks.run_daily_predictions',
+            'generate_weekly_report': 'apps.reports.tasks.generate_weekly_report',
+        }
+        
+        if task_name not in available_tasks:
+            return Response({
+                'error': 'Invalid task name',
+                'available_tasks': list(available_tasks.keys())
+            }, status=400)
+        
+        # Importar y ejecutar la tarea
+        from celery import current_app
+        
+        try:
+            task_path = available_tasks[task_name]
+            result = current_app.send_task(task_path)
+            
+            return Response({
+                'success': True,
+                'task_id': result.id,
+                'task_name': task_path,
+                'message': f'Task {task_name} queued successfully'
+            })
+        except Exception as e:
+            return Response({
+                'error': str(e)
+            }, status=500)
