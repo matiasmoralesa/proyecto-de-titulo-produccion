@@ -6,7 +6,8 @@ from .celery_views import (
     CeleryTaskResultsView, 
     CeleryPeriodicTasksView, 
     CeleryStatsView,
-    RunTaskManuallyView
+    RunTaskManuallyView,
+    GenerateSampleTasksView
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('periodic-tasks/', CeleryPeriodicTasksView.as_view(), name='celery-periodic-tasks'),
     path('stats/', CeleryStatsView.as_view(), name='celery-stats'),
     path('run-task/', RunTaskManuallyView.as_view(), name='celery-run-task'),
+    path('generate-sample-tasks/', GenerateSampleTasksView.as_view(), name='celery-generate-sample'),
 ]

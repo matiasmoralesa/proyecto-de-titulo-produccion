@@ -137,3 +137,52 @@ class RunTaskManuallyView(APIView):
             return Response({
                 'error': str(e)
             }, status=500)
+
+
+class GenerateSampleTasksView(APIView):
+    """
+    Vista para generar tareas de ejemplo en el monitor (solo para demo)
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        import uuid
+        import json
+        from datetime import datetime, timedelta
+        import random
+        
+        # Crear 10 tareas de ejemplo
+        tasks_created = []
+        
+        task_examples = [
+            ('apps.work_orders.tasks.check_overdue_workorders', 'SUCCESS', {'checked': 5, 'overdue': 0}),
+            ('apps.assets.tasks.check_critical_assets', 'SUCCESS', {'out_of_service': 0, 'high_risk': 2}),
+            ('apps.notifications.tasks.cleanup_old_notifications', 'SUCCESS', {'deleted': 15}),
+            ('apps.ml_predictions.tasks.run_daily_predictions', 'SUCCESS', {'predictions_created': 10}),
+            ('apps.reports.tasks.generate_weekly_report', 'SUCCESS', {'report_generated': True}),
+        ]
+        
+        for i in range(10):
+            task_name, status, result = random.choice(task_examples)
+            
+            # Crear resultado de tarea
+            task_result = TaskResult.objects.create(
+                task_id=str(uuid.uuid4()),
+                task_name=task_name,
+                status=status,
+                result=json.dumps(result),
+                date_created=timezone.now() - timedelta(hours=random.randint(0, 23)),
+                date_done=timezone.now() - timedelta(hours=random.randint(0, 23)),
+            )
+            
+            tasks_created.append({
+                'task_id': task_result.task_id,
+                'task_name': task_result.task_name,
+                'status': task_result.status
+            })
+        
+        return Response({
+            'success': True,
+            'message': f'{len(tasks_created)} sample tasks created',
+            'tasks': tasks_created
+        })
