@@ -9,9 +9,9 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string;
-  role: string;
-  role_name: string;
-  role_display: string;
+  role: string; // Role name as string (e.g., 'ADMIN', 'SUPERVISOR', 'OPERADOR')
+  role_name: string; // Same as role
+  role_display: string; // Display name (e.g., 'Administrador')
   is_active: boolean;
   must_change_password: boolean;
   created_at: string;
