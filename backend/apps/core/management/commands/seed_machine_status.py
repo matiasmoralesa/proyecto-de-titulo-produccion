@@ -44,66 +44,19 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"❌ Error: {e}"))
             return
 
-        # Crear activos
-        self.stdout.write("\n🚗 Creando activos...")
-        assets_data = [
-            {
-                'name': 'Camión Volvo 1',
-                'vehicle_type': 'Camión',
-                'model': 'Volvo FH16',
-                'serial_number': 'CAM001',
-                'license_plate': 'ABC-123'
-            },
-            {
-                'name': 'Grúa Liebherr 1',
-                'vehicle_type': 'Grúa',
-                'model': 'Liebherr LTM 1100',
-                'serial_number': 'GRU001',
-                'license_plate': 'DEF-456'
-            },
-            {
-                'name': 'Excavadora CAT 1',
-                'vehicle_type': 'Excavadora',
-                'model': 'CAT 320',
-                'serial_number': 'EXC001',
-                'license_plate': 'GHI-789'
-            },
-            {
-                'name': 'Retroexcavadora JCB 1',
-                'vehicle_type': 'Retroexcavadora',
-                'model': 'JCB 3CX',
-                'serial_number': 'RET001',
-                'license_plate': 'JKL-012'
-            },
-            {
-                'name': 'Montacargas Toyota 1',
-                'vehicle_type': 'Montacargas',
-                'model': 'Toyota 8FG25',
-                'serial_number': 'MON001',
-                'license_plate': 'MNO-345'
-            }
-        ]
-
+        # Crear estados para activos existentes
+        self.stdout.write("\n🚗 Creando estados para activos existentes...")
+        
+        # Obtener todos los activos
+        assets = Asset.objects.all()
+        
+        if not assets.exists():
+            self.stdout.write(self.style.WARNING("⚠️  No hay activos en la base de datos"))
+            return
+        
         created_count = 0
-        for asset_data in assets_data:
+        for asset in assets:
             try:
-                asset, created = Asset.objects.get_or_create(
-                    serial_number=asset_data['serial_number'],
-                    defaults={
-                        **asset_data,
-                        'location': location,
-                        'status': 'ACTIVE',
-                        'purchase_date': '2023-01-01',
-                        'manufacturer': asset_data['model'].split()[0]
-                    }
-                )
-                
-                if created:
-                    self.stdout.write(self.style.SUCCESS(f"✅ Activo creado: {asset.name}"))
-                    created_count += 1
-                else:
-                    self.stdout.write(f"ℹ️  Activo ya existe: {asset.name}")
-                
                 # Crear o verificar estado
                 status, status_created = AssetStatus.objects.get_or_create(
                     asset=asset,
@@ -117,17 +70,18 @@ class Command(BaseCommand):
                 )
                 
                 if status_created:
-                    self.stdout.write(f"   ✅ Estado creado: OPERANDO (100% combustible)")
+                    self.stdout.write(self.style.SUCCESS(f"✅ {asset.name}: Estado creado"))
+                    created_count += 1
                 else:
-                    self.stdout.write(f"   ℹ️  Estado ya existe")
+                    self.stdout.write(f"ℹ️  {asset.name}: Estado ya existe")
                     
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"❌ Error con {asset_data['name']}: {e}"))
+                self.stdout.write(self.style.ERROR(f"❌ Error con {asset.name}: {e}"))
 
         # Resumen
         self.stdout.write("\n" + "=" * 60)
         self.stdout.write(self.style.SUCCESS("✅ PROCESO COMPLETADO"))
-        self.stdout.write(f"   Activos nuevos: {created_count}")
+        self.stdout.write(f"   Estados creados: {created_count}")
         self.stdout.write(f"   Total activos: {Asset.objects.count()}")
         self.stdout.write(f"   Total estados: {AssetStatus.objects.count()}")
         self.stdout.write("=" * 60)
