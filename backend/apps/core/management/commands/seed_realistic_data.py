@@ -97,91 +97,17 @@ class Command(BaseCommand):
         self.stdout.write(f"📦 Total activos: {len(assets)}")
         self.stdout.write(f"\n📅 Período: {start_date.date()} a {end_date.date()}")
 
-        # Crear plantillas de checklist
-        self.stdout.write("\n📋 Creando plantillas de checklist...")
-        checklist_templates = []
+        # Obtener plantillas de checklist existentes
+        self.stdout.write("\n📋 Obteniendo plantillas de checklist...")
+        checklist_templates = list(ChecklistTemplate.objects.filter(is_active=True))
         
-        template_configs = [
-            {
-                'name': 'Inspección Diaria de Vehículo',
-                'code': 'INSP-DIARIA',
-                'description': 'Checklist de inspección diaria antes de operar el vehículo',
-                'items': [
-                    {'text': 'Verificar nivel de aceite del motor', 'order': 1},
-                    {'text': 'Verificar nivel de líquido de frenos', 'order': 2},
-                    {'text': 'Verificar presión de neumáticos', 'order': 3},
-                    {'text': 'Verificar luces (delanteras, traseras, direccionales)', 'order': 4},
-                    {'text': 'Verificar estado de frenos', 'order': 5},
-                    {'text': 'Verificar limpieza de parabrisas y espejos', 'order': 6},
-                    {'text': 'Verificar nivel de combustible', 'order': 7},
-                    {'text': 'Verificar funcionamiento de bocina', 'order': 8},
-                ]
-            },
-            {
-                'name': 'Mantenimiento Preventivo Mensual',
-                'code': 'MANT-MENSUAL',
-                'description': 'Checklist de mantenimiento preventivo mensual',
-                'items': [
-                    {'text': 'Cambio de aceite y filtro', 'order': 1},
-                    {'text': 'Revisión de sistema de frenos', 'order': 2},
-                    {'text': 'Revisión de suspensión', 'order': 3},
-                    {'text': 'Revisión de sistema eléctrico', 'order': 4},
-                    {'text': 'Lubricación de componentes', 'order': 5},
-                    {'text': 'Revisión de correas y mangueras', 'order': 6},
-                    {'text': 'Limpieza de filtro de aire', 'order': 7},
-                ]
-            },
-            {
-                'name': 'Inspección de Seguridad',
-                'code': 'INSP-SEGURIDAD',
-                'description': 'Checklist de inspección de seguridad del equipo',
-                'items': [
-                    {'text': 'Verificar extintores (carga y fecha)', 'order': 1},
-                    {'text': 'Verificar botiquín de primeros auxilios', 'order': 2},
-                    {'text': 'Verificar señalización de seguridad', 'order': 3},
-                    {'text': 'Verificar cinturones de seguridad', 'order': 4},
-                    {'text': 'Verificar alarma de retroceso', 'order': 5},
-                    {'text': 'Verificar sistema de bloqueo', 'order': 6},
-                ]
-            },
-        ]
-        
-        for config in template_configs:
-            try:
-                template, created = ChecklistTemplate.objects.get_or_create(
-                    code=config['code'],
-                    defaults={
-                        'name': config['name'],
-                        'description': config['description'],
-                        'is_active': True,
-                        'created_by': admin_user
-                    }
-                )
-                
-                # Verificar si la plantilla tiene items
-                existing_items = ChecklistTemplateItem.objects.filter(template=template).count()
-                
-                if created or existing_items == 0:
-                    # Crear items del checklist si no existen
-                    if existing_items == 0:
-                        for item_config in config['items']:
-                            ChecklistTemplateItem.objects.create(
-                                template=template,
-                                text=item_config['text'],
-                                item_order=item_config['order'],
-                                is_required=True
-                            )
-                    
-                    if created:
-                        self.stdout.write(self.style.SUCCESS(f"   ✅ Plantilla creada: {template.name}"))
-                    else:
-                        self.stdout.write(self.style.SUCCESS(f"   ✅ Items agregados a: {template.name}"))
-                else:
-                    self.stdout.write(f"   ℹ️  Plantilla ya existe: {template.name}")
-                
-                checklist_templates.append(template)
-            except Exception as e:
-                self.stdout.write(self.style.WARNING(f"   ⚠️  Error plantilla: {e}"))
+        if checklist_templates:
+            self.stdout.write(self.style.SUCCESS(f"   ✅ Encontradas {len(checklist_templates)} plantillas activas"))
+            for template in checklist_templates:
+                items_count = ChecklistTemplateItem.objects.filter(template=template).count()
+                self.stdout.write(f"      • {template.name} ({template.code}) - {items_count} items")
+        else:
+            self.stdout.write(self.style.WARNING("   ⚠️  No se encontraron plantillas activas"))
 
         # Contadores
         status_updates = 0
