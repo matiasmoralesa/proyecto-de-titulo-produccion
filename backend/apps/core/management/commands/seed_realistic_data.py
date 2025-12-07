@@ -152,6 +152,10 @@ class Command(BaseCommand):
                     work_type = random.choice(work_types)
                     title, priority, hours = work_type
                     
+                    # Calcular fechas
+                    completion_days = random.randint(1, 5)
+                    wo_completed_date = wo_created_date + timedelta(days=completion_days)
+                    
                     # Crear orden de trabajo
                     wo = WorkOrder.objects.create(
                         asset=asset,
@@ -163,9 +167,14 @@ class Command(BaseCommand):
                         created_by=supervisor_users[0] if supervisor_users else admin_user,
                         scheduled_date=wo_created_date,
                         actual_hours=Decimal(str(hours + random.uniform(-0.5, 1.0))),
-                        created_at=wo_created_date,
-                        completed_date=wo_created_date + timedelta(days=random.randint(1, 5)),
+                        completed_date=wo_completed_date,
                         completion_notes=f"Trabajo completado satisfactoriamente. {random.choice(['Sin novedades.', 'Se reemplazaron componentes.', 'Todo en orden.'])}"
+                    )
+                    
+                    # Actualizar created_at manualmente (Django lo establece automáticamente)
+                    WorkOrder.objects.filter(id=wo.id).update(
+                        created_at=wo_created_date,
+                        updated_at=wo_completed_date
                     )
                     
                     work_orders_created += 1
