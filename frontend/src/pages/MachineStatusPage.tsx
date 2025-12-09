@@ -92,8 +92,8 @@ const MachineStatusPage: React.FC = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Estado de Máquinas</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Estado de Máquinas</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             {user?.role === 'OPERADOR'
               ? 'Actualiza el estado de tus activos asignados'
               : 'Monitorea y actualiza el estado de todos los activos'}
@@ -102,8 +102,8 @@ const MachineStatusPage: React.FC = () => {
 
         {/* Form or Dashboard */}
         {showForm ? (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+            <h2 className="text-xl font-bold mb-4 dark:text-white">
               Actualizar Estado - {selectedStatus?.asset_name}
             </h2>
             <StatusUpdateForm
