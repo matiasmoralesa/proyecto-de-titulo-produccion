@@ -181,15 +181,15 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             {plan ? 'Editar Plan de Mantenimiento' : 'Nuevo Plan de Mantenimiento'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           >
             <FiX className="w-6 h-6" />
           </button>
@@ -200,7 +200,7 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
           {/* Name and Asset */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Nombre <span className="text-red-500">*</span>
               </label>
               <input
@@ -208,24 +208,24 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="Ej: Cambio de aceite"
               />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Activo <span className="text-red-500">*</span>
               </label>
               <select
                 name="asset"
                 value={formData.asset}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.asset ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.asset ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
               >
                 <option value="">Seleccionar activo...</option>
@@ -235,13 +235,13 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                   </option>
                 ))}
               </select>
-              {errors.asset && <p className="text-red-500 text-sm mt-1">{errors.asset}</p>}
+              {errors.asset && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.asset}</p>}
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Descripción <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -249,27 +249,27 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                errors.description ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                errors.description ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
               }`}
               placeholder="Describe el mantenimiento a realizar..."
             />
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.description}</p>
             )}
           </div>
 
           {/* Recurrence Type and Interval */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Tipo de Recurrencia <span className="text-red-500">*</span>
               </label>
               <select
                 name="recurrence_type"
                 value={formData.recurrence_type}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 {recurrenceTypes.map((type) => (
                   <option key={type} value={type}>
@@ -280,7 +280,7 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Intervalo <span className="text-red-500">*</span>
               </label>
               <input
@@ -289,13 +289,13 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                 value={formData.recurrence_interval}
                 onChange={handleChange}
                 min="1"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.recurrence_interval ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.recurrence_interval ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="Ej: 1"
               />
               {errors.recurrence_interval && (
-                <p className="text-red-500 text-sm mt-1">{errors.recurrence_interval}</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.recurrence_interval}</p>
               )}
             </div>
           </div>
@@ -303,7 +303,7 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
           {/* Start Date and Usage Threshold */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Fecha de Inicio <span className="text-red-500">*</span>
               </label>
               <input
@@ -311,18 +311,18 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                 name="start_date"
                 value={formData.start_date}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.start_date ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.start_date ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.start_date && (
-                <p className="text-red-500 text-sm mt-1">{errors.start_date}</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.start_date}</p>
               )}
             </div>
 
             {isUsageBased && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Umbral de Uso <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -331,15 +331,15 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                   value={formData.usage_threshold || ''}
                   onChange={handleChange}
                   min="1"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                    errors.usage_threshold ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                    errors.usage_threshold ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder={
                     formData.recurrence_type === 'Por Horas' ? 'Ej: 100 horas' : 'Ej: 5000 km'
                   }
                 />
                 {errors.usage_threshold && (
-                  <p className="text-red-500 text-sm mt-1">{errors.usage_threshold}</p>
+                  <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.usage_threshold}</p>
                 )}
               </div>
             )}
@@ -348,7 +348,7 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
           {/* Duration and Assigned To */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Duración Estimada (horas)
               </label>
               <input
@@ -358,18 +358,18 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
                 onChange={handleChange}
                 step="0.5"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 placeholder="Ej: 2.5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Asignado a</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asignado a</label>
               <select
                 name="assigned_to"
                 value={formData.assigned_to}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
                 <option value="">Sin asignar</option>
                 {users.map((user) => (
@@ -383,12 +383,12 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado</label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             >
               {statusOptions.map((status) => (
                 <option key={status} value={status}>
@@ -399,11 +399,11 @@ export default function MaintenancePlanForm({ plan, onClose, onSuccess }: Mainte
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
             >
               Cancelar
             </button>

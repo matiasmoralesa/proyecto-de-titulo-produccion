@@ -217,10 +217,10 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
           {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Prioridad <span className="text-red-500">*</span>
                 {!canEditPriority && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -228,8 +228,8 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                 value={formData.priority}
                 onChange={handleChange}
                 disabled={!canEditPriority}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  !canEditPriority ? 'bg-gray-100 cursor-not-allowed' : ''
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  !canEditPriority ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : 'border-gray-300 dark:border-gray-600'
                 }`}
               >
                 <option value="Baja">Baja</option>
@@ -240,7 +240,7 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
               {!canEditPriority && (
                 <div className="flex items-start space-x-1 mt-1">
                   <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-600">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
                     Solo supervisores y administradores pueden cambiar la prioridad
                   </p>
                 </div>
@@ -248,10 +248,10 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Fecha Programada <span className="text-red-500">*</span>
                 {!canEditScheduledDate && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <input
@@ -260,17 +260,17 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                 value={formData.scheduled_date}
                 onChange={handleChange}
                 disabled={!canEditScheduledDate}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.scheduled_date ? 'border-red-500' : 'border-gray-300'
-                } ${!canEditScheduledDate ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.scheduled_date ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } ${!canEditScheduledDate ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}`}
               />
               {errors.scheduled_date && (
-                <p className="text-red-500 text-sm mt-1">{errors.scheduled_date}</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.scheduled_date}</p>
               )}
               {!canEditScheduledDate && (
                 <div className="flex items-start space-x-1 mt-1">
                   <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-600">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
                     Solo supervisores y administradores pueden cambiar la fecha
                   </p>
                 </div>
@@ -282,10 +282,10 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
           {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Activo <span className="text-red-500">*</span>
                 {!canEditAsset && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -293,9 +293,9 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                 value={formData.asset}
                 onChange={handleChange}
                 disabled={!canEditAsset}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.asset ? 'border-red-500' : 'border-gray-300'
-                } ${!canEditAsset ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.asset ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } ${!canEditAsset ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}`}
               >
                 <option value="">Seleccionar activo...</option>
                 {assets.map((asset) => (
@@ -304,11 +304,11 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                   </option>
                 ))}
               </select>
-              {errors.asset && <p className="text-red-500 text-sm mt-1">{errors.asset}</p>}
+              {errors.asset && <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.asset}</p>}
               {!canEditAsset && (
                 <div className="flex items-start space-x-1 mt-1">
                   <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-600">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
                     Solo supervisores y administradores pueden cambiar el activo
                   </p>
                 </div>
@@ -316,10 +316,10 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Asignado a <span className="text-red-500">*</span>
                 {!canEditAssignedTo && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -327,9 +327,9 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                 value={formData.assigned_to}
                 onChange={handleChange}
                 disabled={!canEditAssignedTo}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.assigned_to ? 'border-red-500' : 'border-gray-300'
-                } ${!canEditAssignedTo ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.assigned_to ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } ${!canEditAssignedTo ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}`}
               >
                 <option value="">Seleccionar usuario...</option>
                 {users.map((user) => (
@@ -339,12 +339,12 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
                 ))}
               </select>
               {errors.assigned_to && (
-                <p className="text-red-500 text-sm mt-1">{errors.assigned_to}</p>
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.assigned_to}</p>
               )}
               {!canEditAssignedTo && (
                 <div className="flex items-start space-x-1 mt-1">
                   <FiInfo className="w-3 h-3 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-600">
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
                     Solo supervisores y administradores pueden reasignar órdenes
                   </p>
                 </div>
@@ -353,11 +353,11 @@ export default function WorkOrderForm({ workOrder, onClose, onSuccess }: WorkOrd
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
             >
               Cancelar
             </button>

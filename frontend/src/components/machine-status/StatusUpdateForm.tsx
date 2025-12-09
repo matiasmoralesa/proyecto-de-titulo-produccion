@@ -139,14 +139,14 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       {/* Asset Selection (only for new status) */}
       {!statusId && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Activo *
           </label>
           <select
             value={selectedAsset}
             onChange={(e) => setSelectedAsset(e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.asset ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.asset ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           >
             <option value="">Seleccione un activo</option>
@@ -157,22 +157,22 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
             ))}
           </select>
           {errors.asset && (
-            <p className="mt-1 text-sm text-red-600">{errors.asset}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.asset}</p>
           )}
         </div>
       )}
 
       {/* Status Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Estado *
         </label>
         <select
           name="status_type"
           value={formData.status_type}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.status_type ? 'border-red-500' : 'border-gray-300'
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+            errors.status_type ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
           }`}
         >
           <option value="OPERANDO">Operando</option>
@@ -181,13 +181,13 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           <option value="FUERA_DE_SERVICIO">Fuera de Servicio</option>
         </select>
         {errors.status_type && (
-          <p className="mt-1 text-sm text-red-600">{errors.status_type}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.status_type}</p>
         )}
       </div>
 
       {/* Odometer Reading */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Lectura de Odómetro / Horómetro
         </label>
         <input
@@ -196,14 +196,14 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           value={formData.odometer_reading || ''}
           onChange={handleChange}
           step="0.01"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           placeholder="Ej: 1000.50"
         />
       </div>
 
       {/* Fuel Level Slider */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Nivel de Combustible: {formData.fuel_level || 0}%
         </label>
         <input
@@ -213,9 +213,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           onChange={handleChange}
           min="0"
           max="100"
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
         />
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
+        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
           <span>0%</span>
           <span>25%</span>
           <span>50%</span>
@@ -223,13 +223,13 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           <span>100%</span>
         </div>
         {errors.fuel_level && (
-          <p className="mt-1 text-sm text-red-600">{errors.fuel_level}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.fuel_level}</p>
         )}
       </div>
 
       {/* Condition Notes */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Notas de Condición
         </label>
         <textarea
@@ -237,7 +237,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           value={formData.condition_notes}
           onChange={handleChange}
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           placeholder="Describa la condición del activo..."
         />
       </div>
@@ -247,7 +247,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium"
+          className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium"
           disabled={loading}
         >
           Cancelar

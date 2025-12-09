@@ -61,7 +61,7 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
       {/* Code Field */}
       <div>
-        <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Código <span className="text-red-500">*</span>
         </label>
         <input
@@ -78,20 +78,20 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
               message: 'El código solo puede contener letras mayúsculas, números, guiones y guiones bajos',
             },
           })}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.code ? 'border-red-500' : 'border-gray-300'
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+            errors.code ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
           }`}
           placeholder="Ej: PREV001"
           disabled={loading}
         />
         {errors.code && (
-          <p className="mt-1 text-sm text-red-600">{errors.code.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.code.message}</p>
         )}
       </div>
 
       {/* Name Field */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Nombre <span className="text-red-500">*</span>
         </label>
         <input
@@ -104,27 +104,27 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
               message: 'El nombre no puede exceder 100 caracteres',
             },
           })}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.name ? 'border-red-500' : 'border-gray-300'
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+            errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
           }`}
           placeholder="Ej: Mantenimiento Preventivo"
           disabled={loading}
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
         )}
       </div>
 
       {/* Description Field */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Descripción
         </label>
         <textarea
           id="description"
           {...register('description')}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
           placeholder="Descripción del tipo de orden..."
           disabled={loading}
         />
@@ -136,10 +136,10 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
           id="requires_approval"
           type="checkbox"
           {...register('requires_approval')}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
           disabled={loading}
         />
-        <label htmlFor="requires_approval" className="ml-2 block text-sm text-gray-700">
+        <label htmlFor="requires_approval" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
           Requiere Aprobación
         </label>
       </div>
@@ -150,10 +150,10 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
           id="is_active"
           type="checkbox"
           {...register('is_active')}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
           disabled={loading}
         />
-        <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+        <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
           Activo
         </label>
       </div>
@@ -163,7 +163,7 @@ const WorkOrderTypeForm: React.FC<WorkOrderTypeFormProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           disabled={loading}
         >
           Cancelar

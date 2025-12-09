@@ -76,7 +76,7 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
       {/* Level Field */}
       <div>
-        <label htmlFor="level" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="level" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Nivel <span className="text-red-500">*</span>
         </label>
         <input
@@ -94,21 +94,21 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
             },
             valueAsNumber: true,
           })}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.level ? 'border-red-500' : 'border-gray-300'
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+            errors.level ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
           }`}
           placeholder="1-10"
           disabled={loading}
         />
         {errors.level && (
-          <p className="mt-1 text-sm text-red-600">{errors.level.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.level.message}</p>
         )}
-        <p className="mt-1 text-xs text-gray-500">1 = Más alta, 10 = Más baja</p>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">1 = Más alta, 10 = Más baja</p>
       </div>
 
       {/* Name Field */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Nombre <span className="text-red-500">*</span>
         </label>
         <input
@@ -121,20 +121,20 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
               message: 'El nombre no puede exceder 50 caracteres',
             },
           })}
-          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.name ? 'border-red-500' : 'border-gray-300'
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+            errors.name ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
           }`}
           placeholder="Ej: Urgente"
           disabled={loading}
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
         )}
       </div>
 
       {/* Color Code Field */}
       <div>
-        <label htmlFor="color_code" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="color_code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Color <span className="text-red-500">*</span>
         </label>
         <div className="flex items-center space-x-3">
@@ -148,31 +148,31 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
                 message: 'El código de color debe estar en formato hexadecimal (#RRGGBB)',
               },
             })}
-            className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.color_code ? 'border-red-500' : 'border-gray-300'
+            className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.color_code ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
             placeholder="#000000"
             disabled={loading}
           />
           <div
-            className="w-12 h-10 rounded-lg border-2 border-gray-300"
+            className="w-12 h-10 rounded-lg border-2 border-gray-300 dark:border-gray-600"
             style={{ backgroundColor: colorCode }}
           />
         </div>
         {errors.color_code && (
-          <p className="mt-1 text-sm text-red-600">{errors.color_code.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.color_code.message}</p>
         )}
         
         {/* Preset Colors */}
         <div className="mt-2">
-          <p className="text-xs text-gray-500 mb-2">Colores predefinidos:</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Colores predefinidos:</p>
           <div className="flex flex-wrap gap-2">
             {presetColors.map((color) => (
               <button
                 key={color}
                 type="button"
                 onClick={() => setValue('color_code', color)}
-                className="w-8 h-8 rounded border-2 border-gray-300 hover:border-blue-500 transition-colors"
+                className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 transition-colors"
                 style={{ backgroundColor: color }}
                 disabled={loading}
                 title={color}
@@ -184,14 +184,14 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
 
       {/* Description Field */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Descripción
         </label>
         <textarea
           id="description"
           {...register('description')}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
           placeholder="Descripción de la prioridad..."
           disabled={loading}
         />
@@ -203,10 +203,10 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
           id="is_active"
           type="checkbox"
           {...register('is_active')}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
           disabled={loading}
         />
-        <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+        <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
           Activo
         </label>
       </div>
@@ -216,7 +216,7 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           disabled={loading}
         >
           Cancelar
