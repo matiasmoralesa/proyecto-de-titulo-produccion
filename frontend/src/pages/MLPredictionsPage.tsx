@@ -130,10 +130,10 @@ const MLPredictionsPage = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <FaRobot className="text-3xl text-blue-600" />
+              <FaRobot className="text-3xl text-blue-600 dark:text-blue-400" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Predicciones ML</h1>
-                <p className="text-gray-600 text-sm">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Predicciones ML</h1>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
                   Sistema de predicción de fallos basado en Machine Learning
                 </p>
               </div>
@@ -150,56 +150,56 @@ const MLPredictionsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Predicciones</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Predicciones</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-white">{stats.total}</p>
             </div>
-            <FaChartLine className="text-3xl text-blue-500" />
+            <FaChartLine className="text-3xl text-blue-500 dark:text-blue-400" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Alto Riesgo</p>
-              <p className="text-2xl font-bold text-red-600">{stats.high_risk}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Alto Riesgo</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-500">{stats.high_risk}</p>
             </div>
-            <FaExclamationTriangle className="text-3xl text-red-500" />
+            <FaExclamationTriangle className="text-3xl text-red-500 dark:text-red-400" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Riesgo Medio</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.medium_risk}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Riesgo Medio</p>
+              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-500">{stats.medium_risk}</p>
             </div>
-            <FaExclamationTriangle className="text-3xl text-yellow-500" />
+            <FaExclamationTriangle className="text-3xl text-yellow-500 dark:text-yellow-400" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Bajo Riesgo</p>
-              <p className="text-2xl font-bold text-green-600">{stats.low_risk}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Bajo Riesgo</p>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-500">{stats.low_risk}</p>
             </div>
-            <FaCheckCircle className="text-3xl text-green-500" />
+            <FaCheckCircle className="text-3xl text-green-500 dark:text-green-400" />
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6 dark:border dark:border-gray-700">
         <div className="flex gap-2">
           <button
             onClick={() => setFilter('all')}
             className={`px-4 py-2 rounded-lg ${
               filter === 'all'
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             Todas
@@ -209,7 +209,7 @@ const MLPredictionsPage = () => {
             className={`px-4 py-2 rounded-lg ${
               filter === 'high_risk'
                 ? 'bg-red-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             Alto Riesgo
@@ -218,58 +218,58 @@ const MLPredictionsPage = () => {
       </div>
 
       {/* Predictions List */}
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:border dark:border-gray-700">
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Cargando predicciones...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Cargando predicciones...</p>
           </div>
         ) : predictions.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            <FaRobot className="text-6xl mx-auto mb-4 text-gray-300" />
+          <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+            <FaRobot className="text-6xl mx-auto mb-4 text-gray-300 dark:text-gray-600" />
             <p>No hay predicciones disponibles</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Activo
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Riesgo
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Probabilidad
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Días Estimados
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Fecha
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     OT Creada
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Acción Recomendada
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {predictions.map((prediction) => (
                   <tr 
                     key={prediction.id} 
-                    className="hover:bg-gray-50 cursor-pointer"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                     onClick={() => openDetailModal(prediction)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {prediction.asset.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {prediction.asset.vehicle_type}
                         </div>
                       </div>
@@ -305,10 +305,10 @@ const MLPredictionsPage = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                       {prediction.estimated_days_to_failure} días
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {new Date(prediction.prediction_date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -322,7 +322,7 @@ const MLPredictionsPage = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {prediction.recommended_action}
                     </td>
                   </tr>

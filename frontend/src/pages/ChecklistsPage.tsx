@@ -92,8 +92,8 @@ const ChecklistsPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Checklists</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Checklists</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Gestiona las plantillas y respuestas de checklists de inspección
           </p>
         </div>
@@ -107,14 +107,14 @@ const ChecklistsPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('templates')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'templates'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             📋 Plantillas
@@ -123,8 +123,8 @@ const ChecklistsPage: React.FC = () => {
             onClick={() => setActiveTab('responses')}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === 'responses'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
             }`}
           >
             📝 Respuestas
@@ -144,15 +144,15 @@ const ChecklistsPage: React.FC = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
           ) : responses.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-500">No hay checklists completados</p>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center dark:border dark:border-gray-700">
+              <p className="text-gray-500 dark:text-gray-400">No hay checklists completados</p>
             </div>
           ) : (
             <div className="grid gap-4">
               {responses.map((response) => (
                 <div
                   key={response.id}
-                  className="bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow dark:border dark:border-gray-700"
                 >
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
@@ -160,10 +160,10 @@ const ChecklistsPage: React.FC = () => {
                         className="flex-1 cursor-pointer"
                         onClick={() => setSelectedChecklistId(response.id)}
                       >
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                           {response.template.name}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           Código: {response.template.code}
                         </p>
                       </div>
@@ -200,29 +200,29 @@ const ChecklistsPage: React.FC = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-500">Activo</p>
-                        <p className="font-medium text-gray-900">{response.asset.name}</p>
+                        <p className="text-gray-500 dark:text-gray-400">Activo</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{response.asset.name}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500">Completado Por</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-gray-500 dark:text-gray-400">Completado Por</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {response.completed_by_name || 'N/A'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-500">Fecha</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-gray-500 dark:text-gray-400">Fecha</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {response.completed_at
                             ? new Date(response.completed_at).toLocaleDateString('es-ES')
                             : 'N/A'}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-500">Puntuación</p>
+                        <p className="text-gray-500 dark:text-gray-400">Puntuación</p>
                         <p className={`text-lg font-bold ${
                           response.score && response.score >= response.template.passing_score
-                            ? 'text-green-600'
-                            : 'text-red-600'
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-red-600 dark:text-red-500'
                         }`}>
                           {response.score ? `${response.score}%` : 'N/A'}
                         </p>
