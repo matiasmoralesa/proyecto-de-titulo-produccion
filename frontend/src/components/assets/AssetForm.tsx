@@ -162,15 +162,15 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             {asset ? 'Editar Activo' : 'Nuevo Activo'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           >
             <FiX className="w-6 h-6" />
           </button>
@@ -181,7 +181,7 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           {/* Name and Model */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Nombre <span className="text-red-500">*</span>
               </label>
               <input
@@ -189,8 +189,8 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="Ej: Camioneta MDO 001"
               />
@@ -198,7 +198,7 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Modelo <span className="text-red-500">*</span>
               </label>
               <input
@@ -206,8 +206,8 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 name="model"
                 value={formData.model}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.model ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.model ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="Ej: Hilux 4x4"
               />
@@ -219,10 +219,10 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Tipo de Vehículo <span className="text-red-500">*</span>
                 {!canEditVehicleType && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -230,8 +230,8 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 value={formData.vehicle_type}
                 onChange={handleChange}
                 disabled={!canEditVehicleType}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  !canEditVehicleType ? 'bg-gray-100 cursor-not-allowed' : ''
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  !canEditVehicleType ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : 'border-gray-300 dark:border-gray-600'
                 }`}
               >
                 {vehicleTypes.map((type) => (
@@ -251,10 +251,10 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Estado <span className="text-red-500">*</span>
                 {!canEditStatus && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -262,8 +262,8 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 value={formData.status}
                 onChange={handleChange}
                 disabled={!canEditStatus}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  !canEditStatus ? 'bg-gray-100 cursor-not-allowed' : ''
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  !canEditStatus ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : 'border-gray-300 dark:border-gray-600'
                 }`}
               >
                 {statusOptions.map((status) => (
@@ -287,10 +287,10 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Número de Serie <span className="text-red-500">*</span>
                 {!canEditSerialNumber && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <input
@@ -299,9 +299,9 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 value={formData.serial_number}
                 onChange={handleChange}
                 disabled={!canEditSerialNumber}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.serial_number ? 'border-red-500' : 'border-gray-300'
-                } ${!canEditSerialNumber ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.serial_number ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } ${!canEditSerialNumber ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}`}
                 placeholder="Ej: SN123456789"
               />
               {errors.serial_number && (
@@ -318,7 +318,7 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Fecha de Instalación <span className="text-red-500">*</span>
               </label>
               <input
@@ -326,8 +326,8 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 name="installation_date"
                 value={formData.installation_date}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.installation_date ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.installation_date ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.installation_date && (
@@ -340,22 +340,22 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
           {/* Validates: Requirements 10.5 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Placa</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Placa</label>
               <input
                 type="text"
                 name="license_plate"
                 value={formData.license_plate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 placeholder="Ej: ABC-123"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ubicación <span className="text-red-500">*</span>
                 {!canEditLocation && (
-                  <span className="ml-2 text-xs text-gray-500">(Solo lectura)</span>
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">(Solo lectura)</span>
                 )}
               </label>
               <select
@@ -363,9 +363,9 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
                 value={formData.location}
                 onChange={handleChange}
                 disabled={!canEditLocation}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
-                  errors.location ? 'border-red-500' : 'border-gray-300'
-                } ${!canEditLocation ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.location ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                } ${!canEditLocation ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}`}
               >
                 <option value="">Seleccionar ubicación...</option>
                 {locations.map((location) => (
@@ -389,11 +389,11 @@ export default function AssetForm({ asset, onClose, onSuccess }: AssetFormProps)
 
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
             >
               Cancelar
             </button>
