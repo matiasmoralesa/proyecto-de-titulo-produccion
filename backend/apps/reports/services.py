@@ -14,7 +14,7 @@ class ReportService:
     """Service for generating reports and calculating KPIs."""
     
     @staticmethod
-    def calculate_mtbf(asset_id=None, start_date=None, end_date=None):
+    def calculate_mtbf(asset_id=None, start_date=None, end_date=None, user_id=None):
         """
         Calculate Mean Time Between Failures (MTBF).
         MTBF = Total Operating Time / Number of Failures
@@ -29,6 +29,9 @@ class ReportService:
         
         if end_date:
             filters &= Q(completed_date__lte=end_date)
+        
+        if user_id:
+            filters &= Q(assigned_to_id=user_id)
         
         # Get completed work orders (as failures proxy)
         failures = WorkOrder.objects.filter(filters).count()
@@ -48,7 +51,7 @@ class ReportService:
         return round(mtbf, 2)
     
     @staticmethod
-    def calculate_mttr(asset_id=None, start_date=None, end_date=None):
+    def calculate_mttr(asset_id=None, start_date=None, end_date=None, user_id=None):
         """
         Calculate Mean Time To Repair (MTTR).
         MTTR = Total Repair Time / Number of Repairs
@@ -57,6 +60,9 @@ class ReportService:
         
         if asset_id:
             filters &= Q(asset_id=asset_id)
+        
+        if user_id:
+            filters &= Q(assigned_to_id=user_id)
         
         if start_date:
             filters &= Q(completed_date__gte=start_date)
@@ -72,7 +78,7 @@ class ReportService:
         return round(avg_hours, 2) if avg_hours else 0
     
     @staticmethod
-    def calculate_oee(asset_id=None, start_date=None, end_date=None):
+    def calculate_oee(asset_id=None, start_date=None, end_date=None, user_id=None):
         """
         Calculate Overall Equipment Effectiveness (OEE).
         OEE = Availability × Performance × Quality
@@ -90,6 +96,9 @@ class ReportService:
         
         if end_date:
             filters &= Q(created_at__lte=end_date)
+        
+        if user_id:
+            filters &= Q(assigned_to_id=user_id)
         
         # Calculate total downtime from work orders
         downtime_hours = WorkOrder.objects.filter(
@@ -117,9 +126,12 @@ class ReportService:
         return round(oee, 2)
     
     @staticmethod
-    def get_work_order_summary(start_date=None, end_date=None, asset_id=None):
+    def get_work_order_summary(start_date=None, end_date=None, asset_id=None, user_id=None):
         """Generate work order summary report."""
         filters = Q()
+        
+        if user_id:
+            filters &= Q(assigned_to_id=user_id)
         
         if start_date:
             filters &= Q(created_at__gte=start_date)

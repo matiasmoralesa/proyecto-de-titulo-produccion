@@ -202,16 +202,16 @@ class QATester:
         # Resumen de órdenes
         passed, msg = self.test_endpoint(
             "Resumen de órdenes",
-            "/api/v1/reports/work-order-summary/"
+            "/api/v1/reports/work_order_summary/"
         )
-        self.print_test("GET /api/v1/reports/work-order-summary/", passed, msg)
+        self.print_test("GET /api/v1/reports/work_order_summary/", passed, msg)
         
         # Downtime de activos
         passed, msg = self.test_endpoint(
             "Downtime de activos",
-            "/api/v1/reports/asset-downtime/"
+            "/api/v1/reports/asset_downtime/"
         )
-        self.print_test("GET /api/v1/reports/asset-downtime/", passed, msg)
+        self.print_test("GET /api/v1/reports/asset_downtime/", passed, msg)
         
         # Consumo de repuestos
         passed, msg = self.test_endpoint(
@@ -234,9 +234,9 @@ class QATester:
         # Checklists completados
         passed, msg = self.test_endpoint(
             "Listar checklists",
-            "/api/v1/checklists/completed/"
+            "/api/v1/checklists/responses/"
         )
-        self.print_test("GET /api/v1/checklists/completed/", passed, msg)
+        self.print_test("GET /api/v1/checklists/responses/", passed, msg)
     
     def test_notifications(self):
         """Prueba endpoints de notificaciones"""
