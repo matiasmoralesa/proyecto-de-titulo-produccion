@@ -52,9 +52,11 @@ class OperatorAssignmentService:
         Returns:
             User object of the best operator, or None if no suitable operator found
         """
-        # Get all operators (users with role 'operator' or 'technician')
+        from apps.authentication.models import Role
+        
+        # Get all operators (users with OPERADOR role only)
         operators = User.objects.filter(
-            Q(role='operator') | Q(role='technician'),
+            role__name=Role.OPERADOR,
             is_active=True
         )
         

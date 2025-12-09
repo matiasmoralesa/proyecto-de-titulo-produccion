@@ -182,12 +182,19 @@ class ReportViewSet(viewsets.ViewSet):
     
     @action(detail=False, methods=['get'])
     def dashboard(self, request):
-        """Get all KPIs and summaries for dashboard."""
+        """
+        Get all KPIs and summaries for dashboard filtered by role.
+        
+        - ADMIN/SUPERVISOR: See all work orders
+        - OPERADOR: See only their assigned work orders
+        """
         start_date, end_date, _ = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
         
         dashboard_data = ReportService.get_dashboard_kpis(
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            user_id=user_filter
         )
         
         return Response(dashboard_data)

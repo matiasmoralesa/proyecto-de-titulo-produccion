@@ -282,8 +282,18 @@ class ReportService:
         }
     
     @staticmethod
-    def get_dashboard_kpis(start_date=None, end_date=None):
-        """Get all KPIs for dashboard."""
+    def get_dashboard_kpis(start_date=None, end_date=None, user_id=None):
+        """
+        Get all KPIs for dashboard filtered by user role.
+        
+        Args:
+            start_date: Start date for filtering
+            end_date: End date for filtering
+            user_id: User ID for filtering (None for ADMIN/SUPERVISOR, user_id for OPERADOR)
+        
+        Returns:
+            Dictionary with all KPIs and summaries
+        """
         if not start_date:
             start_date = timezone.now() - timedelta(days=30)
         
@@ -291,9 +301,9 @@ class ReportService:
             end_date = timezone.now()
         
         return {
-            'mtbf': ReportService.calculate_mtbf(start_date=start_date, end_date=end_date),
-            'mttr': ReportService.calculate_mttr(start_date=start_date, end_date=end_date),
-            'oee': ReportService.calculate_oee(start_date=start_date, end_date=end_date),
-            'work_order_summary': ReportService.get_work_order_summary(start_date=start_date, end_date=end_date),
+            'mtbf': ReportService.calculate_mtbf(start_date=start_date, end_date=end_date, user_id=user_id),
+            'mttr': ReportService.calculate_mttr(start_date=start_date, end_date=end_date, user_id=user_id),
+            'oee': ReportService.calculate_oee(start_date=start_date, end_date=end_date, user_id=user_id),
+            'work_order_summary': ReportService.get_work_order_summary(start_date=start_date, end_date=end_date, user_id=user_id),
             'maintenance_compliance': ReportService.get_maintenance_compliance_report(start_date=start_date, end_date=end_date),
         }
