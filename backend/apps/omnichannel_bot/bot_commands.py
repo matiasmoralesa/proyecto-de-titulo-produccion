@@ -60,13 +60,14 @@ class BotCommandHandler:
                 f'⚠️ Consultar predicciones de fallos\n'
                 f'🔧 Revisar estado de activos\n'
                 f'🔔 Recibir notificaciones en tiempo real\n\n'
-                f'💡 Usa los botones de abajo o escribe /help para ver todos los comandos.'
+                f'💡 Usa los botones de abajo o el menú de comandos.'
             ),
             'buttons': [
                 [{'text': '📋 Mis Órdenes', 'callback_data': 'cmd_workorders'}],
                 [{'text': '⚠️ Predicciones', 'callback_data': 'cmd_predictions'}],
                 [{'text': '❓ Ayuda', 'callback_data': 'cmd_help'}]
-            ]
+            ],
+            'show_menu': True  # Indicador para mostrar el menú de comandos
         }
     
     def cmd_help(self, user: Optional[User] = None) -> Dict:

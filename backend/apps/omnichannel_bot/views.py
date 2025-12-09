@@ -6,11 +6,45 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
 import logging
+import requests
 from .models import ChannelConfig, UserChannelPreference
 from .channels.telegram import TelegramChannel
 from .bot_commands import BotCommandHandler
 
 logger = logging.getLogger(__name__)
+
+
+def setup_bot_commands(bot_token: str) -> bool:
+    """
+    Configura el menú de comandos del bot de Telegram
+    """
+    try:
+        commands = [
+            {"command": "start", "description": "🏠 Iniciar el bot"},
+            {"command": "workorders", "description": "📋 Ver mis órdenes de trabajo"},
+            {"command": "predictions", "description": "⚠️ Ver predicciones de alto riesgo"},
+            {"command": "assets", "description": "🔧 Ver estado de activos"},
+            {"command": "status", "description": "📊 Estado general del sistema"},
+            {"command": "myinfo", "description": "👤 Ver mi información"},
+            {"command": "help", "description": "❓ Ver ayuda y comandos"},
+        ]
+        
+        response = requests.post(
+            f"https://api.telegram.org/bot{bot_token}/setMyCommands",
+            json={"commands": commands},
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            logger.info("Bot commands menu configured successfully")
+            return True
+        else:
+            logger.error(f"Failed to configure bot commands: {response.text}")
+            return False
+    
+    except Exception as e:
+        logger.error(f"Error configuring bot commands: {str(e)}")
+        return False
 
 
 @csrf_exempt
@@ -26,6 +60,13 @@ def telegram_webhook(request):
         # Obtener configuración del bot
         config = ChannelConfig.objects.get(channel_type='TELEGRAM', is_enabled=True)
         telegram = TelegramChannel(config.config)
+        bot_token = config.config.get('bot_token', '')
+        
+        # Configurar menú de comandos si no está configurado
+        # Esto se hace una vez cuando el bot recibe su primer mensaje
+        if bot_token and not hasattr(telegram_webhook, '_commands_configured'):
+            setup_bot_commands(bot_token)
+            telegram_webhook._commands_configured = True
         
         # Parsear el update de Telegram
         update = json.loads(request.body.decode('utf-8'))
@@ -36,7 +77,7 @@ def telegram_webhook(request):
         callback_query = update.get('callback_query')
         
         if message:
-            handle_message(message, telegram)
+            handle_message(message, telegram, bot_token)
         elif callback_query:
             handle_callback(callback_query, telegram)
         
@@ -50,7 +91,7 @@ def telegram_webhook(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-def handle_message(message: dict, telegram: TelegramChannel):
+def handle_message(message: dict, telegram: TelegramChannel, bot_token: str = None):
     """
     Procesa un mensaje recibido del usuario
     """

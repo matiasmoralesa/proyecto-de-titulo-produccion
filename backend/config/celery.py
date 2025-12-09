@@ -26,10 +26,10 @@ app.conf.beat_schedule = {
         'options': {'expires': 3600}  # Expira en 1 hora si no se ejecuta
     },
     
-    # Verificar activos críticos cada hora
+    # Verificar activos críticos cada 4 horas
     'check-critical-assets': {
         'task': 'apps.assets.tasks.check_critical_assets',
-        'schedule': crontab(minute=0),  # Cada hora en punto
+        'schedule': crontab(minute=0, hour='*/4'),  # Cada 4 horas (0, 4, 8, 12, 16, 20)
     },
     
     # Limpiar notificaciones antiguas cada día a medianoche
