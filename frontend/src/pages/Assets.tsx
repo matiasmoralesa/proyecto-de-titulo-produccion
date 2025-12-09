@@ -95,7 +95,7 @@ export default function Assets() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Cargando activos...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Cargando activos...</p>
           </div>
         </div>
       </MainLayout>
@@ -118,8 +118,8 @@ export default function Assets() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Gestión de Activos</h1>
-            <p className="text-gray-600 mt-1">Vehículos y equipos del sistema</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Activos</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Vehículos y equipos del sistema</p>
           </div>
           <button
             onClick={handleCreateNew}
@@ -131,26 +131,26 @@ export default function Assets() {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
           <div className="flex items-center space-x-2 mb-3">
-            <FiFilter className="w-5 h-5 text-gray-400" />
-            <h3 className="font-medium text-gray-900">Filtros</h3>
+            <FiFilter className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+            <h3 className="font-medium text-gray-900 dark:text-white">Filtros</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Tipo de Vehículo
               </label>
               <select
                 value={filters.vehicle_type}
                 onChange={(e) => setFilters({ ...filters, vehicle_type: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="">Todos</option>
                 {vehicleTypes.map((type) => (
@@ -161,11 +161,11 @@ export default function Assets() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado</label>
               <select
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="">Todos</option>
                 {statusOptions.map((status) => (
@@ -176,13 +176,13 @@ export default function Assets() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Buscar</label>
               <input
                 type="text"
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                 placeholder="Buscar por nombre, placa..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
           </div>
@@ -190,16 +190,16 @@ export default function Assets() {
 
         {/* Assets Grid */}
         {assets.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <FiTruck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No hay activos registrados</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center">
+            <FiTruck className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-500 dark:text-gray-400">No hay activos registrados</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {assets.map((asset) => (
               <div
                 key={asset.id}
-                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
               >
                 {/* Card Header */}
                 <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-4 text-white">
@@ -217,33 +217,33 @@ export default function Assets() {
                 {/* Card Body */}
                 <div className="p-4 space-y-3">
                   <div className="flex items-center space-x-2 text-sm">
-                    <FiTruck className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">Tipo:</span>
-                    <span className="font-medium text-gray-900">{asset.vehicle_type}</span>
+                    <FiTruck className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Tipo:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{asset.vehicle_type}</span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-sm">
-                    <FiHash className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">Serial:</span>
-                    <span className="font-mono text-gray-900">{asset.serial_number}</span>
+                    <FiHash className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Serial:</span>
+                    <span className="font-mono text-gray-900 dark:text-white">{asset.serial_number}</span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-sm">
-                    <FiCreditCard className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">Placa:</span>
-                    <span className="font-mono text-gray-900">
+                    <FiCreditCard className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Placa:</span>
+                    <span className="font-mono text-gray-900 dark:text-white">
                       {asset.license_plate || 'N/A'}
                     </span>
                   </div>
 
                   <div className="flex items-center space-x-2 text-sm">
-                    <FiMapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">Ubicación:</span>
-                    <span className="text-gray-900">{asset.location_name}</span>
+                    <FiMapPin className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-gray-600 dark:text-gray-400">Ubicación:</span>
+                    <span className="text-gray-900 dark:text-white">{asset.location_name}</span>
                   </div>
 
                   {/* Status Badge */}
-                  <div className="pt-3 border-t border-gray-100">
+                  <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
                     <span
                       className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full border ${getStatusColor(
                         asset.status
@@ -255,10 +255,10 @@ export default function Assets() {
                 </div>
 
                 {/* Card Footer */}
-                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-100 dark:border-gray-700">
                   <button
                     onClick={() => handleViewDetail(asset.id)}
-                    className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                    className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                   >
                     Ver detalles →
                   </button>
