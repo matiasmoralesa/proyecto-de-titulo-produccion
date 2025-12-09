@@ -130,7 +130,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Username */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Nombre de Usuario *
           </label>
           <input
@@ -139,18 +139,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             value={formData.username}
             onChange={handleChange}
             disabled={!!user} // Can't change username for existing users
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.username ? 'border-red-500' : 'border-gray-300'
-            } ${user ? 'bg-gray-100' : ''}`}
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.username ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
+            } ${user ? 'bg-gray-100 dark:bg-gray-600' : ''}`}
           />
           {errors.username && (
-            <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.username}</p>
           )}
         </div>
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Email *
           </label>
           <input
@@ -158,18 +158,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.email ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
           )}
         </div>
 
         {/* First Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Nombre *
           </label>
           <input
@@ -177,18 +177,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             name="first_name"
             value={formData.first_name}
             onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.first_name ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.first_name ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           />
           {errors.first_name && (
-            <p className="mt-1 text-sm text-red-600">{errors.first_name}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.first_name}</p>
           )}
         </div>
 
         {/* Last Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Apellido *
           </label>
           <input
@@ -196,18 +196,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             name="last_name"
             value={formData.last_name}
             onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.last_name ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+              errors.last_name ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           />
           {errors.last_name && (
-            <p className="mt-1 text-sm text-red-600">{errors.last_name}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.last_name}</p>
           )}
         </div>
 
         {/* Phone */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Teléfono
           </label>
           <input
@@ -215,20 +215,20 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           />
         </div>
 
         {/* Role */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Rol *
           </label>
           <select
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           >
             {/* Supervisors cannot create admin users */}
             {!isSupervisor && <option value={1}>Administrador</option>}
@@ -249,7 +249,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
         {!user && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Contraseña *
               </label>
               <input
@@ -257,17 +257,17 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.password ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirmar Contraseña *
               </label>
               <input
@@ -275,12 +275,12 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                 name="password_confirm"
                 value={formData.password_confirm}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.password_confirm ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                  errors.password_confirm ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'
                 }`}
               />
               {errors.password_confirm && (
-                <p className="mt-1 text-sm text-red-600">{errors.password_confirm}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password_confirm}</p>
               )}
             </div>
           </>
@@ -292,7 +292,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
           disabled={loading}
         >
           Cancelar
