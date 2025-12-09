@@ -49,16 +49,18 @@ class BotCommandHandler:
     
     def cmd_start(self, user: Optional[User] = None) -> Dict:
         """Comando /start"""
+        user_name = user.get_full_name() if user else "Usuario"
+        
         return {
             'text': (
-                '👋 ¡Bienvenido al Bot CMMS!\n\n'
-                'Soy tu asistente para el sistema de gestión de mantenimiento.\n\n'
-                '📋 Puedo ayudarte con:\n'
-                '• Ver tus órdenes de trabajo\n'
-                '• Consultar predicciones de fallos\n'
-                '• Revisar estado de activos\n'
-                '• Recibir notificaciones en tiempo real\n\n'
-                'Usa /help para ver todos los comandos disponibles.'
+                f'👋 *¡Bienvenido al Bot CMMS!*\n\n'
+                f'Hola {user_name}, soy tu asistente para el sistema de gestión de mantenimiento.\n\n'
+                f'📱 *¿Qué puedo hacer por ti?*\n\n'
+                f'📋 Ver tus órdenes de trabajo\n'
+                f'⚠️ Consultar predicciones de fallos\n'
+                f'🔧 Revisar estado de activos\n'
+                f'🔔 Recibir notificaciones en tiempo real\n\n'
+                f'💡 Usa los botones de abajo o escribe /help para ver todos los comandos.'
             ),
             'buttons': [
                 [{'text': '📋 Mis Órdenes', 'callback_data': 'cmd_workorders'}],
@@ -116,20 +118,24 @@ class BotCommandHandler:
         my_workorders = WorkOrder.objects.filter(
             assigned_to=user,
             status__in=['Pendiente', 'En Progreso']
-        ).order_by('-created_at')[:5]
+        ).order_by('scheduled_date', '-priority')[:5]
         
         if not my_workorders.exists():
             return {
                 'text': (
                     '✅ *Mis Órdenes de Trabajo*\n\n'
                     'No tienes órdenes de trabajo pendientes.\n\n'
-                    '¡Buen trabajo! 🎉'
-                )
+                    '¡Excelente trabajo! 🎉'
+                ),
+                'buttons': [
+                    [{'text': '« Volver al Inicio', 'callback_data': 'cmd_start'}]
+                ]
             }
         
-        text = '📋 *Mis Órdenes de Trabajo*\n\n'
+        text = f'📋 *Mis Órdenes de Trabajo*\n\n'
+        text += f'Tienes *{my_workorders.count()}* órdenes activas:\n\n'
         
-        for wo in my_workorders:
+        for i, wo in enumerate(my_workorders, 1):
             priority_emoji = {
                 'Baja': '🟢',
                 'Media': '🟡',
@@ -146,10 +152,10 @@ class BotCommandHandler:
             
             text += (
                 f'{priority_emoji} *{wo.work_order_number}*\n'
-                f'   {wo.title}\n'
-                f'   Activo: {wo.asset.name}\n'
-                f'   Estado: {status_emoji} {wo.status}\n'
-                f'   Programada: {wo.scheduled_date.strftime("%d/%m/%Y")}\n\n'
+                f'{wo.title}\n'
+                f'Activo: {wo.asset.name}\n'
+                f'Estado: {status_emoji} {wo.status}\n'
+                f'Programada: {wo.scheduled_date.strftime("%d/%m/%Y")}\n\n'
             )
         
         # Crear botones para cada OT
@@ -159,6 +165,8 @@ class BotCommandHandler:
                 'text': f'Ver {wo.work_order_number}',
                 'callback_data': f'wo_detail_{wo.id}'
             }])
+        
+        buttons.append([{'text': '« Volver', 'callback_data': 'cmd_start'}])
         
         return {'text': text, 'buttons': buttons}
     
@@ -173,15 +181,19 @@ class BotCommandHandler:
         if not predictions.exists():
             return {
                 'text': (
-                    '✅ *Predicciones de Fallos*\n\n'
+                    '✅ *Predicciones de Alto Riesgo*\n\n'
                     'No hay predicciones de alto riesgo en los últimos 7 días.\n\n'
                     '¡Todo bajo control! 🎉'
-                )
+                ),
+                'buttons': [
+                    [{'text': '« Volver al Inicio', 'callback_data': 'cmd_start'}]
+                ]
             }
         
-        text = '⚠️ *Predicciones de Alto Riesgo*\n\n'
+        text = f'⚠️ *Predicciones de Alto Riesgo*\n\n'
+        text += f'Se detectaron *{predictions.count()}* activos en riesgo:\n\n'
         
-        for pred in predictions:
+        for i, pred in enumerate(predictions, 1):
             risk_emoji = {
                 'LOW': '🟢',
                 'MEDIUM': '🟡',
@@ -191,13 +203,18 @@ class BotCommandHandler:
             
             text += (
                 f'{risk_emoji} *{pred.asset.name}*\n'
-                f'   Probabilidad: {pred.failure_probability:.1%}\n'
-                f'   Riesgo: {pred.risk_level}\n'
-                f'   Días estimados: {pred.estimated_days_to_failure}\n'
-                f'   Fecha: {pred.prediction_date.strftime("%d/%m/%Y")}\n\n'
+                f'Probabilidad: {pred.failure_probability:.1%}\n'
+                f'Riesgo: {pred.risk_level}\n'
+                f'Días estimados: {pred.estimated_days_to_failure}\n'
+                f'Fecha: {pred.prediction_date.strftime("%d/%m/%Y")}\n\n'
             )
         
-        return {'text': text}
+        return {
+            'text': text,
+            'buttons': [
+                [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+            ]
+        }
     
     def cmd_assets(self, user: Optional[User] = None) -> Dict:
         """Comando /assets - Ver estado de activos"""
@@ -296,26 +313,47 @@ class BotCommandHandler:
                 'Urgente': '🔴'
             }.get(wo.priority, '⚪')
             
+            status_emoji = {
+                'Pendiente': '⏳',
+                'En Progreso': '🔄',
+                'Completada': '✅',
+                'Cancelada': '❌'
+            }.get(wo.status, '⚪')
+            
+            # Verificar si hay predicción asociada
+            prediction_info = ''
+            if hasattr(wo, 'triggering_prediction') and wo.triggering_prediction.exists():
+                pred = wo.triggering_prediction.first()
+                prediction_info = (
+                    f'\n🤖 *Orden generada automáticamente por sistema de predicción ML*\n\n'
+                    f'📊 Probabilidad de fallo: {pred.failure_probability:.1%}\n'
+                    f'⚠️ Nivel de riesgo: {pred.risk_level}\n'
+                    f'📅 Días estimados hasta fallo: {pred.estimated_days_to_failure}\n\n'
+                    f'   Acción recomendada:\n'
+                    f'   {pred.recommended_action}\n\n'
+                )
+            
             text = (
                 f'📋 *Detalle de Orden de Trabajo*\n\n'
                 f'*{wo.work_order_number}*\n'
                 f'{wo.title}\n\n'
-                f'🔧 Activo: {wo.asset.name}\n'
-                f'{priority_emoji} Prioridad: {wo.priority}\n'
-                f'📅 Programada: {wo.scheduled_date.strftime("%d/%m/%Y %H:%M")}\n'
-                f'👤 Asignado a: {wo.assigned_to.get_full_name() or wo.assigned_to.username}\n'
-                f'📊 Estado: {wo.status}\n\n'
-                f'📝 Descripción:\n{wo.description}'
+                f'🔧 *Activo:* {wo.asset.name}\n'
+                f'{priority_emoji} *Prioridad:* {wo.priority}\n'
+                f'📅 *Programada:* {wo.scheduled_date.strftime("%d/%m/%Y %H:%M")}\n'
+                f'👤 *Asignado a:* {wo.assigned_to.get_full_name() or wo.assigned_to.username}\n'
+                f'{status_emoji} *Estado:* {wo.status}\n\n'
+                f'{prediction_info}'
+                f'📝 *Descripción:*\n{wo.description}'
             )
             
             # Botones según el estado
             buttons = []
-            if wo.status == 'Pendiente':
+            if wo.status == 'Pendiente' and wo.assigned_to == user:
                 buttons.append([
                     {'text': '✅ Aceptar', 'callback_data': f'wo_accept_{wo.id}'},
                     {'text': '🔄 Iniciar', 'callback_data': f'wo_start_{wo.id}'}
                 ])
-            elif wo.status == 'En Progreso':
+            elif wo.status == 'En Progreso' and wo.assigned_to == user:
                 buttons.append([
                     {'text': '✅ Completar', 'callback_data': f'wo_complete_{wo.id}'}
                 ])
@@ -325,7 +363,12 @@ class BotCommandHandler:
             return {'text': text, 'buttons': buttons}
         
         except WorkOrder.DoesNotExist:
-            return {'text': '❌ Orden de trabajo no encontrada'}
+            return {
+                'text': '❌ Orden de trabajo no encontrada',
+                'buttons': [
+                    [{'text': '« Volver', 'callback_data': 'cmd_workorders'}]
+                ]
+            }
     
     def accept_workorder(self, wo_id: str, user: Optional[User] = None) -> Dict:
         """Acepta una orden de trabajo"""

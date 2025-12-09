@@ -57,8 +57,9 @@ def handle_message(message: dict, telegram: TelegramChannel):
     chat_id = str(message['chat']['id'])
     text = message.get('text', '')
     from_user = message.get('from', {})
+    first_name = from_user.get('first_name', 'Usuario')
     
-    logger.info(f"Message from {chat_id}: {text}")
+    logger.info(f"Message from {chat_id} ({first_name}): {text}")
     
     try:
         # Buscar usuario del sistema asociado a este chat_id
@@ -104,20 +105,35 @@ def handle_message(message: dict, telegram: TelegramChannel):
                     chat_id=chat_id,
                     title='',
                     message=(
-                        '👋 ¡Hola!\n\n'
-                        'Para usar este bot, necesitas que un administrador configure tu cuenta.\n\n'
-                        f'Tu Chat ID es: `{chat_id}`\n\n'
-                        'Proporciona este ID al administrador para que te configure.'
-                    )
+                        f'👋 ¡Hola {first_name}!\n\n'
+                        f'Para usar este bot, primero debes vincular tu cuenta.\n\n'
+                        f'🔗 *Opciones de vinculación:*\n\n'
+                        f'*1. Con código temporal:*\n'
+                        f'   • Genera un código desde la app web\n'
+                        f'   • Envía: `/vincular CODIGO`\n\n'
+                        f'*2. Con credenciales:*\n'
+                        f'   • Envía: `/vincular usuario contraseña`\n\n'
+                        f'📱 Tu Chat ID: `{chat_id}`\n\n'
+                        f'💡 Si tienes problemas, contacta al administrador.'
+                    ),
+                    reply_markup={'inline_keyboard': [
+                        [{'text': '❓ Ayuda', 'callback_data': 'cmd_help'}]
+                    ]}
                 )
             else:
                 telegram.send_message(
                     chat_id=chat_id,
                     title='',
                     message=(
-                        'Usa /help para ver los comandos disponibles.\n\n'
-                        'O usa los botones del menú para navegar.'
-                    )
+                        f'💬 Hola {user.get_full_name() or user.username}!\n\n'
+                        f'Usa /help para ver los comandos disponibles.\n\n'
+                        f'O usa los botones del menú para navegar.'
+                    ),
+                    reply_markup={'inline_keyboard': [
+                        [{'text': '📋 Mis Órdenes', 'callback_data': 'cmd_workorders'}],
+                        [{'text': '⚠️ Predicciones', 'callback_data': 'cmd_predictions'}],
+                        [{'text': '❓ Ayuda', 'callback_data': 'cmd_help'}]
+                    ]}
                 )
     
     except Exception as e:
@@ -129,7 +145,14 @@ def handle_message(message: dict, telegram: TelegramChannel):
             telegram.send_message(
                 chat_id=chat_id,
                 title='',
-                message='❌ Error procesando tu mensaje. Por favor intenta de nuevo.'
+                message=(
+                    f'❌ *Error procesando tu mensaje*\n\n'
+                    f'Ocurrió un error inesperado. Por favor intenta de nuevo.\n\n'
+                    f'Si el problema persiste, contacta al administrador.'
+                ),
+                reply_markup={'inline_keyboard': [
+                    [{'text': '🔄 Reiniciar', 'callback_data': 'cmd_start'}]
+                ]}
             )
         except:
             pass
