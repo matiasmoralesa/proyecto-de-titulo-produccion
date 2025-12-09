@@ -219,63 +219,124 @@ class BotCommandHandler:
     
     def cmd_assets(self, user: Optional[User] = None) -> Dict:
         """Comando /assets - Ver estado de activos"""
-        # Activos por estado
-        assets_by_status = {}
-        for asset in Asset.objects.filter(is_archived=False):
-            status = asset.status
-            assets_by_status[status] = assets_by_status.get(status, 0) + 1
+        try:
+            # Activos por estado
+            assets_by_status = {}
+            for asset in Asset.objects.filter(is_archived=False):
+                status = asset.status
+                assets_by_status[status] = assets_by_status.get(status, 0) + 1
+            
+            if not assets_by_status:
+                return {
+                    'text': (
+                        '🔧 *Estado de Activos*\n\n'
+                        'No hay activos registrados en el sistema.'
+                    ),
+                    'buttons': [
+                        [{'text': '« Volver al Inicio', 'callback_data': 'cmd_start'}]
+                    ]
+                }
+            
+            text = '🔧 *Estado de Activos*\n\n'
+            
+            status_emoji = {
+                'Operando': '✅',
+                'En Mantenimiento': '🔧',
+                'Fuera de Servicio': '❌',
+                'Detenida': '⏸️',
+                'En Reparación': '🔨'
+            }
+            
+            for status, count in assets_by_status.items():
+                emoji = status_emoji.get(status, '⚪')
+                text += f'{emoji} {status}: {count}\n'
+            
+            total = sum(assets_by_status.values())
+            text += f'\n📊 Total: {total} activos'
+            
+            return {
+                'text': text,
+                'buttons': [
+                    [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+                ]
+            }
         
-        text = '🔧 *Estado de Activos*\n\n'
-        
-        status_emoji = {
-            'Operando': '✅',
-            'En Mantenimiento': '🔧',
-            'Fuera de Servicio': '❌',
-            'En Reparación': '🔨'
-        }
-        
-        for status, count in assets_by_status.items():
-            emoji = status_emoji.get(status, '⚪')
-            text += f'{emoji} {status}: {count}\n'
-        
-        total = sum(assets_by_status.values())
-        text += f'\n📊 Total: {total} activos'
-        
-        return {'text': text}
+        except Exception as e:
+            return {
+                'text': (
+                    f'❌ *Error al obtener estado de activos*\n\n'
+                    f'Ocurrió un error inesperado. Por favor intenta de nuevo.\n\n'
+                    f'Si el problema persiste, contacta al administrador.'
+                ),
+                'buttons': [
+                    [{'text': '🔄 Reintentar', 'callback_data': 'cmd_assets'}],
+                    [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+                ]
+            }
     
     def cmd_myinfo(self, user: Optional[User] = None) -> Dict:
         """Comando /myinfo - Ver información del usuario"""
         if not user:
-            return {'text': '❌ Usuario no identificado. Contacta al administrador.'}
+            return {
+                'text': '❌ Usuario no identificado. Contacta al administrador.',
+                'buttons': [
+                    [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+                ]
+            }
         
-        # Estadísticas del usuario
-        my_wo_pending = WorkOrder.objects.filter(
-            assigned_to=user,
-            status='Pendiente'
-        ).count()
+        try:
+            # Estadísticas del usuario
+            my_wo_pending = WorkOrder.objects.filter(
+                assigned_to=user,
+                status='Pendiente'
+            ).count()
+            
+            my_wo_in_progress = WorkOrder.objects.filter(
+                assigned_to=user,
+                status='En Progreso'
+            ).count()
+            
+            my_wo_completed = WorkOrder.objects.filter(
+                assigned_to=user,
+                status='Completada'
+            ).count()
+            
+            # Obtener rol de forma segura
+            role_name = 'Sin rol'
+            if hasattr(user, 'role') and user.role:
+                role_name = user.role.name if hasattr(user.role, 'name') else str(user.role)
+            
+            text = (
+                f'👤 *Mi Información*\n\n'
+                f'Nombre: {user.get_full_name() or user.username}\n'
+                f'Usuario: @{user.username}\n'
+                f'Rol: {role_name}\n\n'
+                f'📊 *Mis Estadísticas*\n\n'
+                f'⏳ Pendientes: {my_wo_pending}\n'
+                f'🔄 En progreso: {my_wo_in_progress}\n'
+                f'✅ Completadas: {my_wo_completed}\n'
+            )
+            
+            return {
+                'text': text,
+                'buttons': [
+                    [{'text': '📋 Ver Mis Órdenes', 'callback_data': 'cmd_workorders'}],
+                    [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+                ]
+            }
         
-        my_wo_in_progress = WorkOrder.objects.filter(
-            assigned_to=user,
-            status='En Progreso'
-        ).count()
-        
-        my_wo_completed = WorkOrder.objects.filter(
-            assigned_to=user,
-            status='Completada'
-        ).count()
-        
-        text = (
-            f'👤 *Mi Información*\n\n'
-            f'Nombre: {user.get_full_name() or user.username}\n'
-            f'Usuario: @{user.username}\n'
-            f'Rol: {user.role.name if user.role else "Sin rol"}\n\n'
-            f'📊 *Mis Estadísticas*\n\n'
-            f'⏳ Pendientes: {my_wo_pending}\n'
-            f'🔄 En progreso: {my_wo_in_progress}\n'
-            f'✅ Completadas: {my_wo_completed}\n'
-        )
-        
-        return {'text': text}
+        except Exception as e:
+            return {
+                'text': (
+                    f'❌ *Error al obtener tu información*\n\n'
+                    f'Ocurrió un error inesperado. Por favor intenta de nuevo.\n\n'
+                    f'Si el problema persiste, contacta al administrador.'
+                ),
+                'buttons': [
+                    [{'text': '🔄 Reintentar', 'callback_data': 'cmd_myinfo'}],
+                    [{'text': '« Volver', 'callback_data': 'cmd_start'}]
+                ]
+            }
     
     def handle_callback(self, callback_data: str, user: Optional[User] = None) -> Dict:
         """
