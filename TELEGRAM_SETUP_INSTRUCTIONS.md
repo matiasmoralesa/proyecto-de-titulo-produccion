@@ -2,7 +2,14 @@
 
 ## Configuración del Menú de Comandos
 
-Para que los usuarios vean el menú de comandos cuando escriben "/" en el chat, ejecuta:
+### Método 1: Script Standalone (Recomendado para Railway)
+
+```bash
+# Desde la raíz del proyecto
+railway run python setup_telegram_menu_standalone.py
+```
+
+### Método 2: Comando de Django (Para desarrollo local)
 
 ```bash
 # Desde el directorio backend
