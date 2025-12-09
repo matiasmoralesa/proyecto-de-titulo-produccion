@@ -310,36 +310,36 @@ export default function Dashboard() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Total Work Orders */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <div className="bg-purple-100 p-3 rounded-lg">
-                  <FiActivity className="w-6 h-6 text-purple-600" />
+                <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-lg">
+                  <FiActivity className="w-6 h-6 text-purple-600 dark:text-purple-300" />
                 </div>
-                <span className="text-2xl font-bold text-purple-600">{stats?.total_work_orders || 0}</span>
+                <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats?.total_work_orders || 0}</span>
               </div>
-              <p className="text-sm font-semibold text-gray-700 mb-2">Total</p>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Total</p>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div className="bg-purple-500 h-2 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
 
             {/* Pending Work Orders */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <div className="bg-orange-100 p-3 rounded-lg">
-                  <FiClock className="w-6 h-6 text-orange-600" />
+                <div className="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg">
+                  <FiClock className="w-6 h-6 text-orange-600 dark:text-orange-300" />
                 </div>
-                <span className="text-2xl font-bold text-orange-600">{stats?.pending_work_orders || 0}</span>
+                <span className="text-2xl font-bold text-orange-600 dark:text-orange-400">{stats?.pending_work_orders || 0}</span>
               </div>
-              <p className="text-sm font-semibold text-gray-700 mb-2">Pendientes</p>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Pendientes</p>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div 
                   className="bg-orange-500 h-2 rounded-full" 
                   style={{ width: `${stats?.total_work_orders ? (stats.pending_work_orders / stats.total_work_orders) * 100 : 0}%` }}
                 ></div>
               </div>
               {isOperador && stats && stats.pending_work_orders > 0 && (
-                <p className="text-xs text-orange-600 mt-2 font-medium flex items-center">
+                <p className="text-xs text-orange-600 dark:text-orange-400 mt-2 font-medium flex items-center">
                   <FiAlertTriangle className="mr-1" />
                   ¡Tienes órdenes pendientes!
                 </p>
@@ -347,15 +347,15 @@ export default function Dashboard() {
             </div>
 
             {/* In Progress Work Orders */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <FiActivity className="w-6 h-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                  <FiActivity className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                 </div>
-                <span className="text-2xl font-bold text-blue-600">{stats?.in_progress_work_orders || 0}</span>
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats?.in_progress_work_orders || 0}</span>
               </div>
-              <p className="text-sm font-semibold text-gray-700 mb-2">En Progreso</p>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">En Progreso</p>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div 
                   className="bg-blue-500 h-2 rounded-full animate-pulse" 
                   style={{ width: `${stats?.total_work_orders ? (stats.in_progress_work_orders / stats.total_work_orders) * 100 : 0}%` }}
@@ -364,21 +364,21 @@ export default function Dashboard() {
             </div>
 
             {/* Completed Work Orders */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-shadow">
               <div className="flex items-center justify-between mb-3">
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <FiCheckCircle className="w-6 h-6 text-green-600" />
+                <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+                  <FiCheckCircle className="w-6 h-6 text-green-600 dark:text-green-300" />
                 </div>
-                <span className="text-2xl font-bold text-green-600">{stats?.completed_work_orders || 0}</span>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-400">{stats?.completed_work_orders || 0}</span>
               </div>
-              <p className="text-sm font-semibold text-gray-700 mb-2">Completadas</p>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Completadas</p>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div 
                   className="bg-green-500 h-2 rounded-full" 
                   style={{ width: `${stats?.total_work_orders ? (stats.completed_work_orders / stats.total_work_orders) * 100 : 0}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-green-600 mt-2 font-medium">
+              <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
                 {stats?.kpis?.completion_rate || 0}% tasa de completitud
               </p>
             </div>
@@ -390,10 +390,10 @@ export default function Dashboard() {
         {(isSupervisor || isAdmin) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Work Orders Trend Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Tendencia de Órdenes de Trabajo</h3>
-                <FiBarChart2 className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Tendencia de Órdenes de Trabajo</h3>
+                <FiBarChart2 className="text-gray-400 dark:text-gray-500" />
               </div>
               {workOrdersTrend.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -425,10 +425,10 @@ export default function Dashboard() {
             </div>
 
             {/* Asset Status Distribution Pie Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Distribución de Estado de Activos</h3>
-                <FiActivity className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Distribución de Estado de Activos</h3>
+                <FiActivity className="text-gray-400 dark:text-gray-500" />
               </div>
               {assetStatusData.length > 0 && assetStatusData.some(item => item.value > 0) ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -461,10 +461,10 @@ export default function Dashboard() {
             </div>
 
             {/* Maintenance Types Bar Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Tipos de Mantenimiento</h3>
-                <FiTool className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Tipos de Mantenimiento</h3>
+                <FiTool className="text-gray-400 dark:text-gray-500" />
               </div>
               {maintenanceTypes.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -494,10 +494,10 @@ export default function Dashboard() {
             </div>
 
             {/* Predictions Timeline Area Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Línea de Tiempo de Predicciones</h3>
-                <FaRobot className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Línea de Tiempo de Predicciones</h3>
+                <FaRobot className="text-gray-400 dark:text-gray-500" />
               </div>
               {predictionsTimeline.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -530,10 +530,10 @@ export default function Dashboard() {
             </div>
 
             {/* Completion Time by Priority Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Tiempo de Resolución por Prioridad</h3>
-                <FiClock className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Tiempo de Resolución por Prioridad</h3>
+                <FiClock className="text-gray-400 dark:text-gray-500" />
               </div>
               {completionTimeByPriority.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -569,10 +569,10 @@ export default function Dashboard() {
             </div>
 
             {/* Monthly Activity Line Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Actividad Mensual (12 meses)</h3>
-                <FiTrendingUp className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Actividad Mensual (12 meses)</h3>
+                <FiTrendingUp className="text-gray-400 dark:text-gray-500" />
               </div>
               {monthlyActivity.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
@@ -614,10 +614,10 @@ export default function Dashboard() {
             </div>
 
             {/* Asset Utilization Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Utilización de Activos (Top 10)</h3>
-                <FiTruck className="text-gray-400" />
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Utilización de Activos (Top 10)</h3>
+                <FiTruck className="text-gray-400 dark:text-gray-500" />
               </div>
               {assetUtilization.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
