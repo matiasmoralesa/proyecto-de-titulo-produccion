@@ -55,8 +55,12 @@ const FirstLoginPasswordChange: React.FC<FirstLoginPasswordChangeProps> = ({ onS
         new_password_confirm: formData.new_password_confirm,
       });
       
-      alert('Contraseña cambiada exitosamente');
-      onSuccess();
+      // Show success message
+      alert('Contraseña cambiada exitosamente. Por favor, inicia sesión con tu nueva contraseña.');
+      
+      // Clear auth data and redirect to login
+      authService.clearAuthData();
+      window.location.href = '/login';
     } catch (error: any) {
       console.error('Error changing password:', error);
       if (error.response?.data) {
@@ -64,7 +68,6 @@ const FirstLoginPasswordChange: React.FC<FirstLoginPasswordChangeProps> = ({ onS
       } else {
         alert('Error al cambiar la contraseña');
       }
-    } finally {
       setLoading(false);
     }
   };
