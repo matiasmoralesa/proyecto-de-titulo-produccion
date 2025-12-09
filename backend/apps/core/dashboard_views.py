@@ -369,15 +369,26 @@ def dashboard_stats(request):
     first_day_of_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     work_orders_this_month = work_orders_qs.filter(created_at__gte=first_day_of_month).count()
     
-    # 8. Prediction Accuracy (if we have actual failure data)
-    predictions_with_outcome = predictions_qs.filter(actual_failure_occurred__isnull=False)
-    prediction_accuracy = 0
-    if predictions_with_outcome.exists():
-        accurate_predictions = predictions_with_outcome.filter(
-            Q(actual_failure_occurred=True, risk_level__in=['HIGH', 'CRITICAL']) |
-            Q(actual_failure_occurred=False, risk_level__in=['LOW', 'MEDIUM'])
+    # 8. Prediction Effectiveness (based on work orders created and completed)
+    # Calculate effectiveness based on:
+    # - Predictions that generated work orders
+    # - Work orders that were completed successfully
+    predictions_with_wo = predictions_qs.filter(work_order_created__isnull=False)
+    prediction_effectiveness = 0
+    
+    if predictions_with_wo.exists():
+        # Count predictions where the work order was completed
+        effective_predictions = predictions_with_wo.filter(
+            work_order_created__status='Completada'
         ).count()
-        prediction_accuracy = (accurate_predictions / predictions_with_outcome.count() * 100)
+        prediction_effectiveness = (effective_predictions / predictions_with_wo.count() * 100)
+    
+    # Alternative: If no work orders created, show percentage of high-risk predictions
+    # This gives an idea of how many predictions are actionable
+    if predictions_qs.count() > 0:
+        high_risk_percentage = (high_risk_predictions / predictions_qs.count() * 100)
+    else:
+        high_risk_percentage = 0
     
     # Generate chart data (only for Supervisor and Admin)
     charts_data = None
@@ -413,7 +424,8 @@ def dashboard_stats(request):
             'maintenance_backlog': maintenance_backlog,
             'critical_assets_count': critical_assets_count,
             'work_orders_this_month': work_orders_this_month,
-            'prediction_accuracy': round(prediction_accuracy, 1),
+            'prediction_effectiveness': round(prediction_effectiveness, 1),
+            'high_risk_percentage': round(high_risk_percentage, 1),
         },
         # Charts data (only for Supervisor and Admin)
         'charts': charts_data

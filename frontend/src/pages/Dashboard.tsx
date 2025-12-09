@@ -37,7 +37,8 @@ interface DashboardStats {
     maintenance_backlog: number;
     critical_assets_count: number;
     work_orders_this_month: number;
-    prediction_accuracy: number;
+    prediction_effectiveness: number;
+    high_risk_percentage: number;
   };
   charts?: {
     work_orders_trend?: Array<{ month: string; completed: number; pending: number }>;
@@ -845,15 +846,15 @@ export default function Dashboard() {
                     ML
                   </span>
                 </div>
-                <p className="text-sm font-medium opacity-90 mb-1">Precisión ML</p>
-                <p className="text-4xl font-bold mb-2">{stats.kpis.prediction_accuracy}%</p>
+                <p className="text-sm font-medium opacity-90 mb-1">Efectividad ML</p>
+                <p className="text-4xl font-bold mb-2">{stats.kpis.prediction_effectiveness}%</p>
                 <div className="w-full bg-white bg-opacity-30 rounded-full h-2 mb-2">
                   <div 
                     className="bg-white h-2 rounded-full" 
-                    style={{ width: `${stats.kpis.prediction_accuracy}%` }}
+                    style={{ width: `${stats.kpis.prediction_effectiveness}%` }}
                   ></div>
                 </div>
-                <p className="text-xs opacity-80">Predicciones acertadas</p>
+                <p className="text-xs opacity-80">OT preventivas completadas</p>
               </div>
             </div>
           </div>
