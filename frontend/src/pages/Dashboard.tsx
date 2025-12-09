@@ -202,10 +202,10 @@ export default function Dashboard() {
         {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {isOperador ? 'Mis Activos' : 'Estado de Activos'}
             </h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center">
+            <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center">
               Ver detalles <FiTrendingUp className="ml-1" />
             </button>
           </div>
@@ -300,10 +300,10 @@ export default function Dashboard() {
         {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {isOperador ? 'Mis Órdenes de Trabajo' : isSupervisor ? 'Órdenes del Equipo' : 'Órdenes de Trabajo'}
             </h2>
-            <button className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center">
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex items-center">
               Ver todas <FiActivity className="ml-1" />
             </button>
           </div>

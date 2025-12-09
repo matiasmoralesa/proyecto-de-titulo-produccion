@@ -88,8 +88,8 @@ const UsersPage: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gestión de Usuarios</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gestión de Usuarios</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               Administra los usuarios del sistema y sus permisos
             </p>
           </div>
@@ -118,8 +118,8 @@ const UsersPage: React.FC = () => {
 
         {/* Form or List */}
         {showForm ? (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+            <h2 className="text-xl font-bold mb-4 dark:text-white">
               {selectedUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
             </h2>
             <UserForm

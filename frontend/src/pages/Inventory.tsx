@@ -108,65 +108,65 @@ const Inventory = () => {
       <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Inventario</h1>
-        <p className="text-gray-600">Gestión de repuestos y stock</p>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Inventario</h1>
+        <p className="text-gray-600 dark:text-gray-400">Gestión de repuestos y stock</p>
       </div>
 
       {/* Statistics Cards */}
       {statistics && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 dark:border dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Repuestos</p>
-                <p className="text-2xl font-bold text-gray-800">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Repuestos</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-white">
                   {statistics.total_parts}
                 </p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <FaSearch className="text-blue-600 text-xl" />
+              <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+                <FaSearch className="text-blue-600 dark:text-blue-400 text-xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 dark:border dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Stock Bajo</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Stock Bajo</p>
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-500">
                   {statistics.low_stock_count}
                 </p>
               </div>
-              <div className="bg-yellow-100 p-3 rounded-full">
-                <FaExclamationTriangle className="text-yellow-600 text-xl" />
+              <div className="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
+                <FaExclamationTriangle className="text-yellow-600 dark:text-yellow-400 text-xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 dark:border dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Sin Stock</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Sin Stock</p>
+                <p className="text-2xl font-bold text-red-600 dark:text-red-500">
                   {statistics.out_of_stock_count}
                 </p>
               </div>
-              <div className="bg-red-100 p-3 rounded-full">
-                <FaExclamationTriangle className="text-red-600 text-xl" />
+              <div className="bg-red-100 dark:bg-red-900 p-3 rounded-full">
+                <FaExclamationTriangle className="text-red-600 dark:text-red-400 text-xl" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 dark:border dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Valor Total</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Valor Total</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-500">
                   {formatCurrency(statistics.total_inventory_value)}
                 </p>
               </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <span className="text-green-600 text-xl font-bold">$</span>
+              <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                <span className="text-green-600 dark:text-green-400 text-xl font-bold">$</span>
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@ const Inventory = () => {
       )}
 
       {/* Filters and Actions */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6 dark:border dark:border-gray-700">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <form onSubmit={handleSearch} className="flex-1">
@@ -184,9 +184,9 @@ const Inventory = () => {
                 placeholder="Buscar por número de parte o nombre..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
               />
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
+              <FaSearch className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" />
             </div>
           </form>
 
@@ -197,7 +197,7 @@ const Inventory = () => {
               setCategoryFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
           >
             <option value="">Todas las categorías</option>
             {categories.map((category) => (
@@ -208,7 +208,7 @@ const Inventory = () => {
           </select>
 
           {/* Low Stock Filter */}
-          <label className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+          <label className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
             <input
               type="checkbox"
               checked={lowStockFilter}
@@ -218,7 +218,7 @@ const Inventory = () => {
               }}
               className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
             />
-            <span className="text-sm text-gray-700">Solo stock bajo</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300">Solo stock bajo</span>
           </label>
 
           {/* Create Button */}
@@ -234,7 +234,7 @@ const Inventory = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6">
           {error}
         </div>
       )}
@@ -254,17 +254,17 @@ const Inventory = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-white"
           >
             Anterior
           </button>
-          <span className="px-4 py-2 text-gray-700">
+          <span className="px-4 py-2 text-gray-700 dark:text-gray-300">
             Página {currentPage} de {totalPages}
           </span>
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-white"
           >
             Siguiente
           </button>

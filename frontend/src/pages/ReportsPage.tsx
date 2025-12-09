@@ -151,8 +151,8 @@ const ReportsPage: React.FC = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Reportes y Analytics</h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reportes y Analytics</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Análisis de rendimiento y KPIs del sistema
               </p>
             </div>
@@ -175,29 +175,29 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Date Range Selector */}
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 dark:border dark:border-gray-700">
             <div className="flex items-center space-x-4">
-              <FiCalendar className="text-gray-500" />
+              <FiCalendar className="text-gray-500 dark:text-gray-400" />
               <div className="flex items-center space-x-2">
-                <label className="text-sm font-medium text-gray-700">Desde:</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Desde:</label>
                 <input
                   type="date"
                   value={dateRange.start_date.split('T')[0]}
                   onChange={(e) =>
                     setDateRange({ ...dateRange, start_date: new Date(e.target.value).toISOString() })
                   }
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
               <div className="flex items-center space-x-2">
-                <label className="text-sm font-medium text-gray-700">Hasta:</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Hasta:</label>
                 <input
                   type="date"
                   value={dateRange.end_date.split('T')[0]}
                   onChange={(e) =>
                     setDateRange({ ...dateRange, end_date: new Date(e.target.value).toISOString() })
                   }
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
@@ -208,47 +208,47 @@ const ReportsPage: React.FC = () => {
         {dashboardData && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {/* MTBF Card */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-600">MTBF</h3>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">MTBF</h3>
                 <span className="text-2xl">⏱️</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">
                 {dashboardData.mtbf ? `${dashboardData.mtbf}h` : 'N/A'}
               </p>
-              <p className="text-xs text-gray-500 mt-1">Tiempo entre fallas</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Tiempo entre fallas</p>
             </div>
 
             {/* MTTR Card */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-600">MTTR</h3>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">MTTR</h3>
                 <span className="text-2xl">🔧</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">{dashboardData.mttr}h</p>
-              <p className="text-xs text-gray-500 mt-1">Tiempo de reparación</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{dashboardData.mttr}h</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Tiempo de reparación</p>
             </div>
 
             {/* OEE Card */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-600">OEE</h3>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">OEE</h3>
                 <span className="text-2xl">📊</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">{dashboardData.oee}%</p>
-              <p className="text-xs text-gray-500 mt-1">Efectividad del equipo</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{dashboardData.oee}%</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Efectividad del equipo</p>
             </div>
 
             {/* Compliance Card */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-medium text-gray-600">Cumplimiento</h3>
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Cumplimiento</h3>
                 <span className="text-2xl">✅</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">
                 {dashboardData.maintenance_compliance.compliance_rate}%
               </p>
-              <p className="text-xs text-gray-500 mt-1">Mantenimiento al día</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Mantenimiento al día</p>
             </div>
           </div>
         )}
@@ -256,8 +256,8 @@ const ReportsPage: React.FC = () => {
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Work Orders by Status */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Órdenes de Trabajo por Estado
             </h3>
             {statusChartData.length > 0 ? (
@@ -281,7 +281,7 @@ const ReportsPage: React.FC = () => {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[300px] text-gray-500">
+              <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <p className="text-4xl mb-2">📊</p>
                   <p>No hay datos disponibles</p>
@@ -291,8 +291,8 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Work Orders by Priority */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Órdenes de Trabajo por Prioridad
             </h3>
             {priorityChartData.length > 0 ? (
@@ -316,7 +316,7 @@ const ReportsPage: React.FC = () => {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[300px] text-gray-500">
+              <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <p className="text-4xl mb-2">📊</p>
                   <p>No hay datos disponibles</p>
@@ -326,8 +326,8 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Asset Downtime */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Inactividad por Activo (Top 10)
             </h3>
             {downtimeChartData.length > 0 ? (
@@ -342,7 +342,7 @@ const ReportsPage: React.FC = () => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[300px] text-gray-500">
+              <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <p className="text-4xl mb-2">📊</p>
                   <p>No hay datos disponibles</p>
@@ -352,9 +352,9 @@ const ReportsPage: React.FC = () => {
           </div>
 
           {/* Spare Part Consumption */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Consumo de Repuestos (Top 10)
               </h3>
               <button
@@ -378,7 +378,7 @@ const ReportsPage: React.FC = () => {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[300px] text-gray-500">
+              <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <p className="text-4xl mb-2">📊</p>
                   <p>No hay datos disponibles</p>
@@ -391,69 +391,69 @@ const ReportsPage: React.FC = () => {
         {/* Summary Stats */}
         {dashboardData && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Resumen de Órdenes de Trabajo
               </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total:</span>
-                  <span className="font-semibold">{dashboardData.work_order_summary.total}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Total:</span>
+                  <span className="font-semibold dark:text-white">{dashboardData.work_order_summary.total}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Horas Trabajadas:</span>
-                  <span className="font-semibold">
+                  <span className="text-gray-600 dark:text-gray-400">Horas Trabajadas:</span>
+                  <span className="font-semibold dark:text-white">
                     {dashboardData.work_order_summary.total_hours_worked}h
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tiempo Promedio:</span>
-                  <span className="font-semibold">
+                  <span className="text-gray-600 dark:text-gray-400">Tiempo Promedio:</span>
+                  <span className="font-semibold dark:text-white">
                     {dashboardData.work_order_summary.avg_completion_time}h
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Cumplimiento de Mantenimiento
               </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Planes:</span>
-                  <span className="font-semibold">
+                  <span className="text-gray-600 dark:text-gray-400">Total Planes:</span>
+                  <span className="font-semibold dark:text-white">
                     {dashboardData.maintenance_compliance.total_plans}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Al Día:</span>
-                  <span className="font-semibold text-green-600">
+                  <span className="text-gray-600 dark:text-gray-400">Al Día:</span>
+                  <span className="font-semibold text-green-600 dark:text-green-500">
                     {dashboardData.maintenance_compliance.on_schedule}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Vencidos:</span>
-                  <span className="font-semibold text-red-600">
+                  <span className="text-gray-600 dark:text-gray-400">Vencidos:</span>
+                  <span className="font-semibold text-red-600 dark:text-red-500">
                     {dashboardData.maintenance_compliance.overdue_plans}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Próximos (7 días):</span>
-                  <span className="font-semibold text-yellow-600">
+                  <span className="text-gray-600 dark:text-gray-400">Próximos (7 días):</span>
+                  <span className="font-semibold text-yellow-600 dark:text-yellow-500">
                     {dashboardData.maintenance_compliance.upcoming_plans}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Activos con Mayor Inactividad</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 dark:border dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Activos con Mayor Inactividad</h3>
               <div className="space-y-2">
                 {assetDowntime.slice(0, 5).map((item, index) => (
                   <div key={index} className="flex justify-between text-sm">
-                    <span className="text-gray-600 truncate">{item.asset__name}</span>
-                    <span className="font-semibold">{item.total_downtime}h</span>
+                    <span className="text-gray-600 dark:text-gray-400 truncate">{item.asset__name}</span>
+                    <span className="font-semibold dark:text-white">{item.total_downtime}h</span>
                   </div>
                 ))}
               </div>

@@ -106,8 +106,8 @@ const NotificationsPage: React.FC = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Notificaciones</h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notificaciones</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {unreadCount > 0 ? `${unreadCount} sin leer` : 'Todas leídas'}
               </p>
             </div>
@@ -128,7 +128,7 @@ const NotificationsPage: React.FC = () => {
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === 'all'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               Todas ({notifications.length})
@@ -138,7 +138,7 @@ const NotificationsPage: React.FC = () => {
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === 'unread'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               Sin leer ({unreadCount})
@@ -152,9 +152,9 @@ const NotificationsPage: React.FC = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         ) : filteredNotifications.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center dark:border dark:border-gray-700">
             <div className="text-6xl mb-4">🔔</div>
-            <p className="text-gray-500 text-lg">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
               {filter === 'unread' ? 'No hay notificaciones sin leer' : 'No hay notificaciones'}
             </p>
           </div>
@@ -164,7 +164,7 @@ const NotificationsPage: React.FC = () => {
               <div
                 key={notification.id}
                 onClick={() => handleNotificationClick(notification)}
-                className={`bg-white rounded-lg shadow hover:shadow-md transition-all cursor-pointer ${
+                className={`bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-all cursor-pointer dark:border dark:border-gray-700 ${
                   !notification.is_read ? 'border-l-4 border-blue-600' : ''
                 }`}
               >
@@ -175,20 +175,20 @@ const NotificationsPage: React.FC = () => {
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className={`text-lg ${!notification.is_read ? 'font-semibold' : 'font-medium'} text-gray-900`}>
+                        <h3 className={`text-lg ${!notification.is_read ? 'font-semibold' : 'font-medium'} text-gray-900 dark:text-white`}>
                           {notification.title}
                         </h3>
                         {!notification.is_read && (
                           <span className="ml-2 w-3 h-3 bg-blue-600 rounded-full flex-shrink-0"></span>
                         )}
                       </div>
-                      <p className="text-gray-700 mb-3">
+                      <p className="text-gray-700 dark:text-gray-300 mb-3">
                         {notification.message}
                       </p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                         <span>{formatDate(notification.created_at)}</span>
                         {notification.related_object_type && (
-                          <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+                          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs">
                             {notification.related_object_type}
                           </span>
                         )}
