@@ -264,12 +264,19 @@ class QATester:
         """Prueba endpoint del dashboard"""
         self.print_header("PRUEBAS DE DASHBOARD")
         
-        # Dashboard data
+        # Dashboard stats
         passed, msg = self.test_endpoint(
-            "Datos del dashboard",
-            "/api/v1/dashboard/"
+            "Estadísticas del dashboard",
+            "/api/v1/dashboard/stats/"
         )
-        self.print_test("GET /api/v1/dashboard/", passed, msg)
+        self.print_test("GET /api/v1/dashboard/stats/", passed, msg)
+        
+        # Dashboard data from reports
+        passed, msg = self.test_endpoint(
+            "Datos del dashboard (reportes)",
+            "/api/v1/reports/dashboard/"
+        )
+        self.print_test("GET /api/v1/reports/dashboard/", passed, msg)
     
     def print_summary(self):
         """Imprime resumen de resultados"""

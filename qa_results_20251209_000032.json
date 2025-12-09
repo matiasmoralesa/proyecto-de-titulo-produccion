@@ -1,0 +1,112 @@
+{
+  "timestamp": "2025-12-09T00:00:32.413123",
+  "frontend_url": "https://somacor-cmms.vercel.app",
+  "backend_url": "https://proyecto-de-titulo-produccion-production.up.railway.app",
+  "results": {
+    "passed": 20,
+    "failed": 0,
+    "warnings": 1,
+    "tests": [
+      {
+        "name": "Frontend disponible",
+        "passed": true,
+        "message": "https://somacor-cmms.vercel.app"
+      },
+      {
+        "name": "Backend disponible",
+        "passed": true,
+        "message": "https://proyecto-de-titulo-produccion-production.up.railway.app"
+      },
+      {
+        "name": "Login con credenciales correctas",
+        "passed": true,
+        "message": "Token obtenido: eyJhbGciOiJIUzI1NiIs..."
+      },
+      {
+        "name": "GET /api/v1/dashboard/stats/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/reports/dashboard/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/assets/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/work-orders/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/work-orders/?status=Completada",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/work-orders/?priority=Alta",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/inventory/spare-parts/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/inventory/stock-movements/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/inventory/spare-parts/low-stock-alerts/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/reports/kpis/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/reports/work_order_summary/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/reports/asset_downtime/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/reports/spare_part_consumption/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/checklists/templates/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/checklists/responses/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/notifications/",
+        "passed": true,
+        "message": "Status: 200"
+      },
+      {
+        "name": "GET /api/v1/machine-status/",
+        "passed": true,
+        "message": "Status: 200"
+      }
+    ]
+  }
+}
