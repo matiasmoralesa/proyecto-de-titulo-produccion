@@ -76,10 +76,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-primary-800 to-primary-900 text-white transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-primary-800 to-primary-900 dark:from-gray-800 dark:to-gray-900 text-white transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -161,11 +161,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
         }`}
       >
         {/* Top Bar */}
-        <header className="bg-white shadow-sm sticky top-0 z-40">
+        <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-40 dark:border-b dark:border-gray-700">
           <div className="flex items-center justify-between h-16 px-6">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             >
               <FiMenu className="w-6 h-6" />
             </button>
@@ -173,7 +173,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <div className="flex items-center space-x-4">
               <GlobalSearch />
               <NotificationBell />
-              <span className="hidden md:block text-sm text-gray-600">
+              <span className="hidden md:block text-sm text-gray-600 dark:text-gray-400">
                 {new Date().toLocaleDateString('es-ES', {
                   weekday: 'long',
                   year: 'numeric',

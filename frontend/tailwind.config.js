@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'media', // Activa el modo oscuro basado en la preferencia del sistema
   theme: {
     extend: {
       colors: {
