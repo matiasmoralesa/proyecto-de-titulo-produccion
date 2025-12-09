@@ -663,13 +663,13 @@ export default function Dashboard() {
         {/* Validates: Requirements 10.1, 10.2, 10.3 */}
         {(isSupervisor || isAdmin) && (
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">Predicciones ML</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Predicciones ML</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Predicciones</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{stats?.total_predictions || 0}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Predicciones</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{stats?.total_predictions || 0}</p>
                   </div>
                   <div className="bg-indigo-500 p-3 rounded-lg">
                     <FaRobot className="w-6 h-6 text-white" />
@@ -677,18 +677,18 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Alto Riesgo</p>
-                    <p className="text-3xl font-bold text-red-600 mt-2">{stats?.high_risk_predictions || 0}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Alto Riesgo</p>
+                    <p className="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">{stats?.high_risk_predictions || 0}</p>
                   </div>
                   <div className="bg-red-500 p-3 rounded-lg">
                     <FiAlertTriangle className="w-6 h-6 text-white" />
                   </div>
                 </div>
                 {stats && stats.high_risk_predictions > 0 && (
-                  <p className="text-xs text-red-600 mt-2 font-medium">
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-2 font-medium">
                     ¡Requiere atención inmediata!
                   </p>
                 )}
@@ -702,10 +702,10 @@ export default function Dashboard() {
         {(isSupervisor || isAdmin) && stats?.kpis && (
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {isSupervisor ? 'KPIs del Equipo' : 'Indicadores Clave de Desempeño'}
               </h2>
-              <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center">
+              <button className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center">
                 Ver análisis completo <FiBarChart2 className="ml-1" />
               </button>
             </div>
@@ -786,54 +786,54 @@ export default function Dashboard() {
               </div>
 
               {/* Maintenance Backlog */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-orange-200 hover:shadow-xl transition-shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-2 border-orange-200 dark:border-orange-800 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="bg-orange-100 p-3 rounded-lg">
-                    <FiAlertTriangle className="w-6 h-6 text-orange-600" />
+                  <div className="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg">
+                    <FiAlertTriangle className="w-6 h-6 text-orange-600 dark:text-orange-300" />
                   </div>
                   {stats.kpis.maintenance_backlog > 10 ? (
-                    <span className="text-xs font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-3 py-1 rounded-full">
                       Alto
                     </span>
                   ) : (
-                    <span className="text-xs font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-3 py-1 rounded-full">
                       Normal
                     </span>
                   )}
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Backlog</p>
-                <p className="text-4xl font-bold text-gray-900 mb-2">{stats.kpis.maintenance_backlog}</p>
-                <p className="text-xs text-gray-500">Órdenes pendientes</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Backlog</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{stats.kpis.maintenance_backlog}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Órdenes pendientes</p>
               </div>
 
               {/* Critical Assets */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-red-200 hover:shadow-xl transition-shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-2 border-red-200 dark:border-red-800 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="bg-red-100 p-3 rounded-lg">
-                    <FiAlertTriangle className="w-6 h-6 text-red-600" />
+                  <div className="bg-red-100 dark:bg-red-900 p-3 rounded-lg">
+                    <FiAlertTriangle className="w-6 h-6 text-red-600 dark:text-red-300" />
                   </div>
                   {stats.kpis.critical_assets_count > 0 && (
-                    <span className="text-xs font-bold text-red-600 bg-red-100 px-3 py-1 rounded-full animate-pulse">
+                    <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-3 py-1 rounded-full animate-pulse">
                       Crítico
                     </span>
                   )}
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Activos Críticos</p>
-                <p className="text-4xl font-bold text-gray-900 mb-2">{stats.kpis.critical_assets_count}</p>
-                <p className="text-xs text-gray-500">Alto riesgo de fallo</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Activos Críticos</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{stats.kpis.critical_assets_count}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Alto riesgo de fallo</p>
               </div>
 
               {/* Work Orders This Month */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-teal-200 hover:shadow-xl transition-shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-2 border-teal-200 dark:border-teal-800 hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="bg-teal-100 p-3 rounded-lg">
-                    <FiActivity className="w-6 h-6 text-teal-600" />
+                  <div className="bg-teal-100 dark:bg-teal-900 p-3 rounded-lg">
+                    <FiActivity className="w-6 h-6 text-teal-600 dark:text-teal-300" />
                   </div>
-                  <FiTrendingUp className="w-5 h-5 text-teal-600" />
+                  <FiTrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">OT Este Mes</p>
-                <p className="text-4xl font-bold text-gray-900 mb-2">{stats.kpis.work_orders_this_month}</p>
-                <p className="text-xs text-gray-500">Nuevas órdenes creadas</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">OT Este Mes</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{stats.kpis.work_orders_this_month}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Nuevas órdenes creadas</p>
               </div>
 
               {/* Prediction Accuracy */}
