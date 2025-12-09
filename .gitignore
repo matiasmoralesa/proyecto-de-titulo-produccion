@@ -82,3 +82,12 @@ logs/
 *.log.*
 .vercel
 .env*.local
+
+# Development documentation (kept in dev-docs/)
+# Uncomment if you want to ignore dev-docs completely
+# dev-docs/
+
+# Temporary files
+*.tmp
+*.temp
+repository/
