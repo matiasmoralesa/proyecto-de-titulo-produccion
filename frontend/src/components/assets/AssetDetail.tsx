@@ -51,7 +51,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
   const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('🚀 AssetDetail Component v2.2 Real Data - Loading asset:', assetId);
+    console.log('🚀 AssetDetail Component - Loading asset:', assetId);
     loadAsset();
     loadAssetStats();
   }, [assetId]);
@@ -387,9 +387,6 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
               <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 flex items-center">
                 <FiBarChart2 className="w-6 h-6 mr-2" />
                 Estadísticas del Equipo
-                <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full">
-                  v2.2 Real Data
-                </span>
               </h3>
               {statsLoading && (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
