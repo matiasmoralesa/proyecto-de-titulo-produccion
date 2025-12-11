@@ -51,7 +51,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
   const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('🚀 AssetDetail Component v2.1 - Loading asset:', assetId);
+    console.log('🚀 AssetDetail Component v2.2 Real Data - Loading asset:', assetId);
     loadAsset();
     loadAssetStats();
   }, [assetId]);
@@ -71,36 +71,27 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
     try {
       console.log('🔍 Loading stats for asset ID:', assetId);
       
-      // Intentar diferentes endpoints para órdenes de trabajo
-      let workOrdersResponse;
+      // Obtener órdenes de trabajo del activo
       let workOrders = [];
       
       try {
-        console.log('📋 Trying endpoint: /work-orders/work-orders/?asset=' + assetId);
-        workOrdersResponse = await api.get(`/work-orders/work-orders/?asset=${assetId}`);
-        console.log('📋 Work orders response (method 1):', workOrdersResponse.data);
+        console.log('📋 Fetching work orders for asset:', assetId);
+        const workOrdersResponse = await api.get(`/work-orders/?asset=${assetId}`);
+        console.log('📋 Work orders response:', workOrdersResponse.data);
         workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
-      } catch (error1) {
-        console.log('📋 Method 1 failed, trying method 2...');
+      } catch (workOrderError) {
+        console.log('📋 Failed to fetch work orders, trying alternative endpoint...');
         try {
-          console.log('📋 Trying endpoint: /work-orders/?asset=' + assetId);
-          workOrdersResponse = await api.get(`/work-orders/?asset=${assetId}`);
-          console.log('📋 Work orders response (method 2):', workOrdersResponse.data);
-          workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
-        } catch (error2) {
-          console.log('📋 Method 2 failed, trying to get all work orders...');
-          try {
-            console.log('📋 Trying endpoint: /work-orders/work-orders/');
-            workOrdersResponse = await api.get('/work-orders/work-orders/');
-            console.log('📋 All work orders response:', workOrdersResponse.data);
-            const allWorkOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
-            // Filtrar por asset ID
-            workOrders = allWorkOrders.filter((wo: any) => wo.asset === assetId || wo.asset_id === assetId);
-            console.log('📋 Filtered work orders for asset:', workOrders);
-          } catch (error3) {
-            console.error('📋 All methods failed:', { error1, error2, error3 });
-            workOrders = [];
-          }
+          // Intentar obtener todas las órdenes y filtrar
+          const allWorkOrdersResponse = await api.get('/work-orders/');
+          const allWorkOrders = allWorkOrdersResponse.data.results || allWorkOrdersResponse.data || [];
+          workOrders = allWorkOrders.filter((wo: any) => 
+            wo.asset === parseInt(assetId) || wo.asset === assetId || wo.asset_id === parseInt(assetId)
+          );
+          console.log('📋 Filtered work orders:', workOrders);
+        } catch (error) {
+          console.error('📋 Failed to fetch work orders:', error);
+          workOrders = [];
         }
       }
       
@@ -135,14 +126,25 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
       console.log('📊 Pending:', pendingWorkOrders);
       console.log('📊 In Progress:', inProgressWorkOrders);
       
-      // Calcular horas de mantenimiento (estimado basado en órdenes completadas)
-      const totalMaintenanceHours = completedWorkOrders * 4; // Estimado: 4 horas por orden completada
+      // Calcular horas de mantenimiento reales
+      const totalMaintenanceHours = workOrders.reduce((total: number, wo: any) => {
+        // Usar actual_hours si está disponible, sino estimar
+        const hours = wo.actual_hours ? parseFloat(wo.actual_hours) : (wo.status === 'Completada' ? 4 : 0);
+        return total + hours;
+      }, 0);
       
       // Calcular fechas de mantenimiento
       const completedOrders = workOrders.filter((wo: any) => wo.status === 'Completada');
-      const lastMaintenanceDate = completedOrders.length > 0 
-        ? completedOrders.sort((a: any, b: any) => new Date(b.completed_date || b.updated_at).getTime() - new Date(a.completed_date || a.updated_at).getTime())[0].completed_date || completedOrders[0].updated_at
-        : null;
+      let lastMaintenanceDate = null;
+      if (completedOrders.length > 0) {
+        // Ordenar por fecha de completitud más reciente
+        const sortedCompleted = completedOrders.sort((a: any, b: any) => {
+          const dateA = new Date(a.completed_date || a.updated_at).getTime();
+          const dateB = new Date(b.completed_date || b.updated_at).getTime();
+          return dateB - dateA;
+        });
+        lastMaintenanceDate = sortedCompleted[0].completed_date || sortedCompleted[0].updated_at;
+      }
 
       // Próximo mantenimiento basado en planes activos
       const activePlans = maintenancePlans.filter((plan: any) => plan.status === 'Activo');
@@ -174,8 +176,9 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
         avgCompletionTime = Math.round(totalDays / completedOrdersWithDates.length);
       }
 
-      // Calcular costo total estimado (basado en órdenes completadas)
-      const totalCost = completedWorkOrders * 150000; // Estimado: $150,000 CLP por orden completada
+      // Calcular costo total basado en horas reales
+      const hourlyRate = 25000; // $25,000 CLP por hora
+      const totalCost = totalMaintenanceHours * hourlyRate;
 
       const finalStats = {
         total_work_orders: totalWorkOrders,
@@ -193,44 +196,26 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
       
       console.log('📊 Final calculated stats:', finalStats);
       
-      // Ensure we always have some stats to show
-      if (finalStats.total_work_orders === 0 && finalStats.completed_work_orders === 0) {
-        console.log('📊 API returned empty stats, using demo data instead');
-        const demoStats = {
-          total_work_orders: 12,
-          completed_work_orders: 8,
-          pending_work_orders: 2,
-          in_progress_work_orders: 2,
-          total_maintenance_hours: 156,
-          last_maintenance_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-          next_maintenance_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          total_documents: 5,
-          availability_percentage: 85,
-          total_cost: 1250000,
-          avg_completion_time: 5,
-        };
-        setStats(demoStats);
-      } else {
-        setStats(finalStats);
-      }
+      // Always use real calculated stats
+      setStats(finalStats);
     } catch (error) {
       console.error('Error loading asset stats:', error);
-      // Set realistic demo stats if API fails
-      const demoStats = {
-        total_work_orders: 12,
-        completed_work_orders: 8,
-        pending_work_orders: 2,
-        in_progress_work_orders: 2,
-        total_maintenance_hours: 156,
-        last_maintenance_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 días atrás
-        next_maintenance_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 días adelante
-        total_documents: 5,
-        availability_percentage: 85,
-        total_cost: 1250000, // $1.25M CLP
-        avg_completion_time: 5, // 5 días
+      // Set empty stats if API fails completely
+      const emptyStats = {
+        total_work_orders: 0,
+        completed_work_orders: 0,
+        pending_work_orders: 0,
+        in_progress_work_orders: 0,
+        total_maintenance_hours: 0,
+        last_maintenance_date: null,
+        next_maintenance_date: null,
+        total_documents: 0,
+        availability_percentage: 100, // Default to 100% if no data
+        total_cost: 0,
+        avg_completion_time: 0,
       };
-      console.log('📊 Using demo stats (fallback):', demoStats);
-      setStats(demoStats);
+      console.log('📊 Using empty stats (API failed):', emptyStats);
+      setStats(emptyStats);
     } finally {
       setStatsLoading(false);
     }
@@ -402,8 +387,8 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
               <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 flex items-center">
                 <FiBarChart2 className="w-6 h-6 mr-2" />
                 Estadísticas del Equipo
-                <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full">
-                  v2.1
+                <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full">
+                  v2.2 Real Data
                 </span>
               </h3>
               {statsLoading && (
@@ -413,6 +398,18 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
             
             {stats && (
               <>
+                {/* No Data Message */}
+                {stats.total_work_orders === 0 && (
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                    <div className="flex items-center">
+                      <FiAlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2" />
+                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                        No hay órdenes de trabajo registradas para este activo. Las estadísticas se mostrarán cuando se creen órdenes de trabajo.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Primary Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-100 dark:border-blue-800 hover:shadow-md transition-shadow">
