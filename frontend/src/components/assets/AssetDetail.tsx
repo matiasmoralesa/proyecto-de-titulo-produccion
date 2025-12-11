@@ -68,8 +68,80 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
 
   const loadAssetStats = async () => {
     try {
-      const response = await api.get(`/assets/assets/${assetId}/stats/`);
-      setStats(response.data);
+      // Cargar órdenes de trabajo del activo
+      const workOrdersResponse = await api.get(`/work-orders/work-orders/?asset=${assetId}`);
+      const workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
+      
+      // Cargar planes de mantenimiento del activo
+      let maintenancePlans = [];
+      try {
+        const maintenanceResponse = await api.get(`/maintenance/plans/?asset=${assetId}`);
+        maintenancePlans = maintenanceResponse.data.results || maintenanceResponse.data || [];
+      } catch (maintenanceError) {
+        console.log('Maintenance plans not available:', maintenanceError);
+      }
+
+      // Calcular estadísticas
+      const totalWorkOrders = workOrders.length;
+      const completedWorkOrders = workOrders.filter((wo: any) => wo.status === 'Completada').length;
+      const pendingWorkOrders = workOrders.filter((wo: any) => wo.status === 'Pendiente').length;
+      const inProgressWorkOrders = workOrders.filter((wo: any) => wo.status === 'En Progreso').length;
+      
+      // Calcular horas de mantenimiento (estimado basado en órdenes completadas)
+      const totalMaintenanceHours = completedWorkOrders * 4; // Estimado: 4 horas por orden completada
+      
+      // Calcular fechas de mantenimiento
+      const completedOrders = workOrders.filter((wo: any) => wo.status === 'Completada');
+      const lastMaintenanceDate = completedOrders.length > 0 
+        ? completedOrders.sort((a: any, b: any) => new Date(b.completed_date || b.updated_at).getTime() - new Date(a.completed_date || a.updated_at).getTime())[0].completed_date || completedOrders[0].updated_at
+        : null;
+
+      // Próximo mantenimiento basado en planes activos
+      const activePlans = maintenancePlans.filter((plan: any) => plan.status === 'Activo');
+      const nextMaintenanceDate = activePlans.length > 0 ? activePlans[0].next_due_date : null;
+
+      // Calcular disponibilidad (basado en estado actual y órdenes pendientes)
+      let availabilityPercentage = 100;
+      if (asset?.status === 'Fuera de Servicio') {
+        availabilityPercentage = 0;
+      } else if (asset?.status === 'En Mantenimiento') {
+        availabilityPercentage = 25;
+      } else if (asset?.status === 'Detenida') {
+        availabilityPercentage = 50;
+      } else if (pendingWorkOrders > 0) {
+        availabilityPercentage = Math.max(75, 100 - (pendingWorkOrders * 5));
+      }
+
+      // Calcular tiempo promedio de completitud
+      const completedOrdersWithDates = completedOrders.filter((wo: any) => wo.created_at && (wo.completed_date || wo.updated_at));
+      let avgCompletionTime = 0;
+      if (completedOrdersWithDates.length > 0) {
+        const totalDays = completedOrdersWithDates.reduce((sum: number, wo: any) => {
+          const startDate = new Date(wo.created_at);
+          const endDate = new Date(wo.completed_date || wo.updated_at);
+          const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return sum + diffDays;
+        }, 0);
+        avgCompletionTime = Math.round(totalDays / completedOrdersWithDates.length);
+      }
+
+      // Calcular costo total estimado (basado en órdenes completadas)
+      const totalCost = completedWorkOrders * 150000; // Estimado: $150,000 CLP por orden completada
+
+      setStats({
+        total_work_orders: totalWorkOrders,
+        completed_work_orders: completedWorkOrders,
+        pending_work_orders: pendingWorkOrders,
+        in_progress_work_orders: inProgressWorkOrders,
+        total_maintenance_hours: totalMaintenanceHours,
+        last_maintenance_date: lastMaintenanceDate,
+        next_maintenance_date: nextMaintenanceDate,
+        total_documents: 0, // Por ahora 0, se puede implementar después
+        availability_percentage: availabilityPercentage,
+        total_cost: totalCost,
+        avg_completion_time: avgCompletionTime,
+      });
     } catch (error) {
       console.error('Error loading asset stats:', error);
       // Set default stats if API fails
