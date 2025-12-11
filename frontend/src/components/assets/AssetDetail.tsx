@@ -68,24 +68,72 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
 
   const loadAssetStats = async () => {
     try {
-      // Cargar órdenes de trabajo del activo
-      const workOrdersResponse = await api.get(`/work-orders/work-orders/?asset=${assetId}`);
+      console.log('🔍 Loading stats for asset ID:', assetId);
+      
+      // Intentar diferentes endpoints para órdenes de trabajo
+      let workOrdersResponse;
+      let workOrders = [];
+      
+      try {
+        console.log('📋 Trying endpoint: /work-orders/work-orders/?asset=' + assetId);
+        workOrdersResponse = await api.get(`/work-orders/work-orders/?asset=${assetId}`);
+        console.log('📋 Work orders response (method 1):', workOrdersResponse.data);
+        workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
+      } catch (error1) {
+        console.log('📋 Method 1 failed, trying method 2...');
+        try {
+          console.log('📋 Trying endpoint: /work-orders/?asset=' + assetId);
+          workOrdersResponse = await api.get(`/work-orders/?asset=${assetId}`);
+          console.log('📋 Work orders response (method 2):', workOrdersResponse.data);
+          workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
+        } catch (error2) {
+          console.log('📋 Method 2 failed, trying to get all work orders...');
+          try {
+            console.log('📋 Trying endpoint: /work-orders/work-orders/');
+            workOrdersResponse = await api.get('/work-orders/work-orders/');
+            console.log('📋 All work orders response:', workOrdersResponse.data);
+            const allWorkOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
+            // Filtrar por asset ID
+            workOrders = allWorkOrders.filter((wo: any) => wo.asset === assetId || wo.asset_id === assetId);
+            console.log('📋 Filtered work orders for asset:', workOrders);
+          } catch (error3) {
+            console.error('📋 All methods failed:', { error1, error2, error3 });
+            workOrders = [];
+          }
+        }
+      }
+      
       const workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
+      console.log('📋 Processed work orders:', workOrders);
+      console.log('📋 Work orders count:', workOrders.length);
       
       // Cargar planes de mantenimiento del activo
       let maintenancePlans = [];
       try {
+        console.log('🔧 Fetching maintenance plans...');
         const maintenanceResponse = await api.get(`/maintenance/plans/?asset=${assetId}`);
         maintenancePlans = maintenanceResponse.data.results || maintenanceResponse.data || [];
+        console.log('🔧 Maintenance plans:', maintenancePlans);
       } catch (maintenanceError) {
-        console.log('Maintenance plans not available:', maintenanceError);
+        console.log('🔧 Maintenance plans not available:', maintenanceError);
       }
 
       // Calcular estadísticas
+      console.log('📊 Calculating statistics...');
       const totalWorkOrders = workOrders.length;
+      console.log('📊 Total work orders:', totalWorkOrders);
+      
+      // Log all work order statuses to see what we have
+      const statuses = workOrders.map((wo: any) => wo.status);
+      console.log('📊 All work order statuses:', statuses);
+      
       const completedWorkOrders = workOrders.filter((wo: any) => wo.status === 'Completada').length;
       const pendingWorkOrders = workOrders.filter((wo: any) => wo.status === 'Pendiente').length;
       const inProgressWorkOrders = workOrders.filter((wo: any) => wo.status === 'En Progreso').length;
+      
+      console.log('📊 Completed:', completedWorkOrders);
+      console.log('📊 Pending:', pendingWorkOrders);
+      console.log('📊 In Progress:', inProgressWorkOrders);
       
       // Calcular horas de mantenimiento (estimado basado en órdenes completadas)
       const totalMaintenanceHours = completedWorkOrders * 4; // Estimado: 4 horas por orden completada
@@ -129,7 +177,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
       // Calcular costo total estimado (basado en órdenes completadas)
       const totalCost = completedWorkOrders * 150000; // Estimado: $150,000 CLP por orden completada
 
-      setStats({
+      const finalStats = {
         total_work_orders: totalWorkOrders,
         completed_work_orders: completedWorkOrders,
         pending_work_orders: pendingWorkOrders,
@@ -141,7 +189,10 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
         availability_percentage: availabilityPercentage,
         total_cost: totalCost,
         avg_completion_time: avgCompletionTime,
-      });
+      };
+      
+      console.log('📊 Final calculated stats:', finalStats);
+      setStats(finalStats);
     } catch (error) {
       console.error('Error loading asset stats:', error);
       // Set default stats if API fails
