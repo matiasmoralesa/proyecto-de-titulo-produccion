@@ -17,7 +17,7 @@ import {
   FiClock,
   FiCheckCircle,
   FiAlertTriangle,
-  FiBarChart3,
+  FiBarChart2,
 } from 'react-icons/fi';
 import { Asset } from '../../types/asset.types';
 import assetService from '../../services/assetService';
@@ -104,7 +104,6 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
         }
       }
       
-      const workOrders = workOrdersResponse.data.results || workOrdersResponse.data || [];
       console.log('📋 Processed work orders:', workOrders);
       console.log('📋 Work orders count:', workOrders.length);
       
@@ -401,7 +400,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 flex items-center">
-                <FiBarChart3 className="w-6 h-6 mr-2" />
+                <FiBarChart2 className="w-6 h-6 mr-2" />
                 Estadísticas del Equipo
                 <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full">
                   v2.1
