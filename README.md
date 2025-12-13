@@ -127,6 +127,13 @@ Contraseña: admin123
 ### 📱 Bot de Telegram
 Busca `@tu_bot_name` en Telegram y usa el comando `/start` para comenzar.
 
+### 🏢 Branding SOMACOR
+El sistema incluye el logo corporativo de SOMACOR (50 años) integrado en:
+- Página de login con mensaje institucional
+- Sidebar de navegación principal
+- Header del dashboard
+- Favicon del navegador
+
 ---
 
 ## 🏗️ Arquitectura

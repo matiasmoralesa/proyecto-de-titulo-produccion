@@ -4,6 +4,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import SomacorLogo from '../components/common/SomacorLogo';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -31,9 +32,18 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-2xl">
         {/* Header */}
         <div className="text-center">
+          <div className="flex justify-center mb-6">
+            <SomacorLogo 
+              size="xl" 
+              showText={false}
+            />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">CMMS</h1>
           <p className="mt-2 text-sm text-gray-600">
             Sistema de Gestión de Mantenimiento
+          </p>
+          <p className="text-xs text-gray-500 mt-1 font-medium">
+            SOMACOR - 50 Años de Experiencia
           </p>
         </div>
 
@@ -124,7 +134,8 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center text-xs text-gray-500">
-          <p>© 2024 CMMS. Todos los derechos reservados.</p>
+          <p>© 2024 SOMACOR. Todos los derechos reservados.</p>
+          <p className="mt-1">Sistema CMMS - Gestión de Mantenimiento</p>
         </div>
       </div>
     </div>

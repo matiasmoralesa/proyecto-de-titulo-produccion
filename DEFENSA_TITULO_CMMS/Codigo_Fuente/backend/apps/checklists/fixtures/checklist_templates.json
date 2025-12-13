@@ -1,0 +1,335 @@
+[
+  {
+    "code": "SUPERSUCKER-CH01",
+    "name": "Check List Camión Supersucker",
+    "description": "Checklist diario para Camión Supersucker",
+    "vehicle_type": "CAMION_SUPERSUCKER",
+    "is_system_template": true,
+    "passing_score": 80,
+    "items": [
+      {
+        "section": "Motor",
+        "order": 1,
+        "question": "Nivel de aceite motor",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Motor",
+        "order": 2,
+        "question": "Fugas de aceite",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Motor",
+        "order": 3,
+        "question": "Nivel de líquido refrigerante",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Sistema de Vacío",
+        "order": 4,
+        "question": "Funcionamiento del sistema de vacío",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Sistema de Vacío",
+        "order": 5,
+        "question": "Estado de mangueras",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Tanque",
+        "order": 6,
+        "question": "Estado del tanque (sin fugas)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Frenos",
+        "order": 7,
+        "question": "Funcionamiento de freno de servicio",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Frenos",
+        "order": 8,
+        "question": "Funcionamiento de freno de estacionamiento",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Neumáticos",
+        "order": 9,
+        "question": "Presión de neumáticos",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Neumáticos",
+        "order": 10,
+        "question": "Estado de neumáticos",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Luces y Señalización",
+        "order": 11,
+        "question": "Luces delanteras",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Luces y Señalización",
+        "order": 12,
+        "question": "Luces traseras",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Luces y Señalización",
+        "order": 13,
+        "question": "Luces de emergencia",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Seguridad",
+        "order": 14,
+        "question": "Extintor",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "Seguridad",
+        "order": 15,
+        "question": "Botiquín",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      }
+    ]
+  },
+  {
+    "code": "F-PR-020-CH01",
+    "name": "Check List Camionetas MDO",
+    "description": "Checklist diario para Camionetas MDO",
+    "vehicle_type": "CAMIONETA_MDO",
+    "is_system_template": true,
+    "passing_score": 80,
+    "items": [
+      {
+        "section": "I - Auto Evaluación del Operador",
+        "order": 1,
+        "question": "Cumplo con descanso suficiente y condiciones para manejo seguro",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "I - Auto Evaluación del Operador",
+        "order": 2,
+        "question": "Cumplo con condiciones físicas adecuadas",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "I - Auto Evaluación del Operador",
+        "order": 3,
+        "question": "Estoy consciente de mi responsabilidad al conducir",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "II - Documentación del Operador",
+        "order": 4,
+        "question": "Licencia Municipal",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "II - Documentación del Operador",
+        "order": 5,
+        "question": "Licencia interna de Faena",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 6,
+        "question": "Permiso de Circulación",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 7,
+        "question": "Revisión Técnica",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 8,
+        "question": "Seguro Obligatorio",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 9,
+        "question": "Cinturones de Seguridad en buen estado",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 10,
+        "question": "Espejos interior y exterior en condiciones y limpios",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 11,
+        "question": "Frenos (incluye freno de mano) en condiciones operativas",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 12,
+        "question": "Neumáticos en buen estado (incluye dos repuestos)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 13,
+        "question": "Luces (Altas, Bajas, Frenos, intermitentes, retroceso)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 14,
+        "question": "Vidrios y parabrisas limpios",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "III - Requisitos",
+        "order": 15,
+        "question": "Gata y llave de rueda disponible",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 16,
+        "question": "Baliza y pértiga (funcionando y en condiciones)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 17,
+        "question": "Radio Base funciona en todos los canales",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 18,
+        "question": "Limpiaparabrisas funciona correctamente",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 19,
+        "question": "Bocina en buen estado",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 20,
+        "question": "Orden y Aseo (interior vehículo y pick up)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 21,
+        "question": "Estado de carrocería, parachoques, portalón",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 22,
+        "question": "Sello caja de operación invierno en buenas condiciones",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 23,
+        "question": "Cuñas de seguridad disponibles (2)",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      },
+      {
+        "section": "IV - Condiciones Complementarias",
+        "order": 24,
+        "question": "Aire acondicionado/calefacción",
+        "response_type": "yes_no_na",
+        "required": true,
+        "observations_allowed": true
+      }
+    ]
+  }
+]
+

@@ -27,6 +27,7 @@ import { FaRobot, FaClock } from 'react-icons/fa';
 import NotificationBell from '../notifications/NotificationBell';
 import Breadcrumbs from '../common/Breadcrumbs';
 import GlobalSearch from '../common/GlobalSearch';
+import SomacorLogo from '../common/SomacorLogo';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -85,9 +86,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
       >
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-6 bg-primary-900">
-          <div className="flex items-center space-x-3">
-            <FiTool className="w-8 h-8" />
-            <span className="text-xl font-bold">CMMS</span>
+          <div className="text-white">
+            <SomacorLogo 
+              size="sm" 
+              showText={true} 
+              showSubtext={true}
+              className="text-white"
+            />
           </div>
           <button
             onClick={() => setSidebarOpen(false)}

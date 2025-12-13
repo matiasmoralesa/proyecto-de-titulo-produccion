@@ -1,0 +1,277 @@
+"""
+Views for reports app.
+"""
+import csv
+from datetime import datetime, timedelta
+from django.http import HttpResponse
+from django.utils import timezone
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from apps.core.permissions import IsOperadorOrAbove
+from apps.authentication.models import Role
+from apps.reports.services import ReportService
+from apps.reports.serializers import (
+    DateRangeSerializer,
+    KPISerializer,
+    WorkOrderSummarySerializer,
+    AssetDowntimeSerializer,
+    SparePartConsumptionSerializer,
+    MaintenanceComplianceSerializer
+)
+
+
+class ReportViewSet(viewsets.ViewSet):
+    """
+    ViewSet for report generation and KPI calculations with role-based access.
+    
+    - ADMIN: Ve estadísticas globales
+    - SUPERVISOR: Ve estadísticas de su equipo
+    - OPERADOR: Ve solo sus propias estadísticas
+    
+    Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5
+    """
+    permission_classes = [IsAuthenticated, IsOperadorOrAbove]
+    
+    def _get_user_filter(self):
+        """
+        Get user filter based on role.
+        
+        Returns user_id for operators, None for supervisors/admins.
+        Validates: Requirements 4.1, 4.2, 4.3
+        """
+        user = self.request.user
+        
+        if user.role.name == Role.OPERADOR:
+            # Operators only see their own statistics
+            return user.id
+        elif user.role.name == Role.SUPERVISOR:
+            # Supervisors see team statistics (all for now)
+            # TODO: Filter by team when team structure is implemented
+            return None
+        elif user.role.name == Role.ADMIN:
+            # Admins see global statistics
+            return None
+        
+        return user.id  # Default to user's own data
+    
+    def _parse_date_params(self, request):
+        """Parse and validate date parameters from request."""
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+        asset_id = request.query_params.get('asset_id')
+        
+        start_date = None
+        end_date = None
+        
+        if start_date_str:
+            try:
+                start_date = datetime.fromisoformat(start_date_str.replace('Z', '+00:00'))
+            except ValueError:
+                pass
+        
+        if end_date_str:
+            try:
+                end_date = datetime.fromisoformat(end_date_str.replace('Z', '+00:00'))
+            except ValueError:
+                pass
+        
+        # Default to last 30 days if not specified
+        if not start_date:
+            start_date = timezone.now() - timedelta(days=30)
+        
+        if not end_date:
+            end_date = timezone.now()
+        
+        return start_date, end_date, asset_id
+    
+    @action(detail=False, methods=['get'])
+    def kpis(self, request):
+        """
+        Get all KPIs (MTBF, MTTR, OEE) filtered by role.
+        
+        Validates: Requirements 4.1, 4.2, 4.3
+        """
+        start_date, end_date, asset_id = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
+        
+        kpis = {
+            'mtbf': ReportService.calculate_mtbf(
+                asset_id=asset_id,
+                start_date=start_date,
+                end_date=end_date,
+                user_id=user_filter
+            ),
+            'mttr': ReportService.calculate_mttr(
+                asset_id=asset_id,
+                start_date=start_date,
+                end_date=end_date,
+                user_id=user_filter
+            ),
+            'oee': ReportService.calculate_oee(
+                asset_id=asset_id,
+                start_date=start_date,
+                end_date=end_date,
+                user_id=user_filter
+            ),
+        }
+        
+        serializer = KPISerializer(kpis)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def work_order_summary(self, request):
+        """
+        Get work order summary report filtered by role.
+        
+        Validates: Requirements 4.1, 4.2, 4.3, 4.4
+        """
+        start_date, end_date, asset_id = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
+        
+        summary = ReportService.get_work_order_summary(
+            start_date=start_date,
+            end_date=end_date,
+            asset_id=asset_id,
+            user_id=user_filter
+        )
+        
+        serializer = WorkOrderSummarySerializer(summary)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def asset_downtime(self, request):
+        """Get asset downtime report."""
+        start_date, end_date, _ = self._parse_date_params(request)
+        
+        downtime_data = ReportService.get_asset_downtime_report(
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        serializer = AssetDowntimeSerializer(downtime_data, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def spare_part_consumption(self, request):
+        """Get spare part consumption report."""
+        start_date, end_date, _ = self._parse_date_params(request)
+        
+        consumption_data = ReportService.get_spare_part_consumption_report(
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        serializer = SparePartConsumptionSerializer(consumption_data, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def maintenance_compliance(self, request):
+        """Get maintenance compliance report."""
+        start_date, end_date, _ = self._parse_date_params(request)
+        
+        compliance_data = ReportService.get_maintenance_compliance_report(
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        serializer = MaintenanceComplianceSerializer(compliance_data)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def dashboard(self, request):
+        """
+        Get all KPIs and summaries for dashboard filtered by role.
+        
+        - ADMIN/SUPERVISOR: See all work orders
+        - OPERADOR: See only their assigned work orders
+        """
+        start_date, end_date, _ = self._parse_date_params(request)
+        user_filter = self._get_user_filter()
+        
+        dashboard_data = ReportService.get_dashboard_kpis(
+            start_date=start_date,
+            end_date=end_date,
+            user_id=user_filter
+        )
+        
+        return Response(dashboard_data)
+    
+    @action(detail=False, methods=['get'])
+    def export_work_orders(self, request):
+        """
+        Export work order summary as CSV filtered by role.
+        
+        Validates: Requirements 4.5
+        """
+        start_date, end_date, asset_id = self._parse_date_params(request)
+        
+        summary = ReportService.get_work_order_summary(
+            start_date=start_date,
+            end_date=end_date,
+            asset_id=asset_id
+        )
+        
+        # Create CSV response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="work_orders_{start_date.date()}_{end_date.date()}.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Work Order Summary Report'])
+        writer.writerow(['Date Range', f'{start_date.date()} to {end_date.date()}'])
+        writer.writerow([])
+        
+        writer.writerow(['Metric', 'Value'])
+        writer.writerow(['Total Work Orders', summary['total']])
+        writer.writerow(['Total Hours Worked', summary['total_hours_worked']])
+        writer.writerow(['Avg Completion Time (hours)', summary['avg_completion_time']])
+        writer.writerow([])
+        
+        writer.writerow(['Status', 'Count'])
+        for status, data in summary['by_status'].items():
+            writer.writerow([data['label'], data['count']])
+        writer.writerow([])
+        
+        writer.writerow(['Priority', 'Count'])
+        for priority, data in summary['by_priority'].items():
+            writer.writerow([data['label'], data['count']])
+        writer.writerow([])
+        
+        writer.writerow(['Type', 'Count'])
+        for wo_type, data in summary['by_type'].items():
+            writer.writerow([data['label'], data['count']])
+        
+        return response
+    
+    @action(detail=False, methods=['get'])
+    def export_asset_downtime(self, request):
+        """Export asset downtime report as CSV."""
+        start_date, end_date, _ = self._parse_date_params(request)
+        
+        downtime_data = ReportService.get_asset_downtime_report(
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        # Create CSV response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="asset_downtime_{start_date.date()}_{end_date.date()}.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Asset Downtime Report'])
+        writer.writerow(['Date Range', f'{start_date.date()} to {end_date.date()}'])
+        writer.writerow([])
+        
+        writer.writerow(['Asset ID', 'Asset Name', 'Vehicle Type', 'Total Downtime (hours)', 'Work Order Count'])
+        for item in downtime_data:
+            writer.writerow([
+                item['asset__id'],
+                item['asset__name'],
+                item['asset__vehicle_type'],
+                item['total_downtime'],
+                item['work_order_count']
+            ])
+        
+        return response

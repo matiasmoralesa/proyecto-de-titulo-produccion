@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import SomacorLogo from '../components/common/SomacorLogo';
 
 interface DashboardStats {
   total_assets: number;
@@ -147,9 +148,14 @@ export default function Dashboard() {
                   Sistema de Gestión de Mantenimiento Computarizado (CMMS)
                 </p>
               </div>
-              <div className="hidden md:flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur-sm">
-                <FiUser className="w-5 h-5" />
-                <span className="font-medium">{user?.role_display}</span>
+              <div className="hidden md:flex items-center space-x-4">
+                <div className="flex items-center space-x-2 bg-white bg-opacity-20 px-4 py-2 rounded-lg backdrop-blur-sm">
+                  <FiUser className="w-5 h-5" />
+                  <span className="font-medium">{user?.role_display}</span>
+                </div>
+                <div className="bg-white bg-opacity-20 p-2 rounded-lg backdrop-blur-sm">
+                  <SomacorLogo size="sm" showText={false} />
+                </div>
               </div>
             </div>
             

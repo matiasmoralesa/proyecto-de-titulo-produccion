@@ -1,0 +1,111 @@
+[
+  {
+    "code": "SUPERSUCKER-CH01",
+    "name": "Check List Camión Supersucker",
+    "description": "Checklist diario para Camión Supersucker",
+    "vehicle_type": "Camión Supersucker",
+    "is_system_template": true,
+    "passing_score": 80,
+    "sections": [
+      {
+        "name": "Motor",
+        "items": [
+          "Nivel de aceite motor",
+          "Fugas de aceite",
+          "Nivel de líquido refrigerante"
+        ]
+      },
+      {
+        "name": "Sistema de Vacío",
+        "items": [
+          "Funcionamiento del sistema de vacío",
+          "Estado de mangueras"
+        ]
+      },
+      {
+        "name": "Tanque",
+        "items": ["Estado del tanque (sin fugas)"]
+      },
+      {
+        "name": "Frenos",
+        "items": [
+          "Funcionamiento de freno de servicio",
+          "Funcionamiento de freno de estacionamiento"
+        ]
+      },
+      {
+        "name": "Neumáticos",
+        "items": [
+          "Presión de neumáticos",
+          "Estado de neumáticos"
+        ]
+      },
+      {
+        "name": "Luces y Señalización",
+        "items": [
+          "Luces delanteras",
+          "Luces traseras",
+          "Luces de emergencia"
+        ]
+      },
+      {
+        "name": "Seguridad",
+        "items": ["Extintor", "Botiquín"]
+      }
+    ]
+  },
+  {
+    "code": "F-PR-020-CH01",
+    "name": "Check List Camionetas MDO",
+    "description": "Checklist diario para Camionetas MDO",
+    "vehicle_type": "Camioneta MDO",
+    "is_system_template": true,
+    "passing_score": 80,
+    "sections": [
+      {
+        "name": "I - Auto Evaluación del Operador",
+        "items": [
+          "Cumplo con descanso suficiente y condiciones para manejo seguro",
+          "Cumplo con condiciones físicas adecuadas",
+          "Estoy consciente de mi responsabilidad al conducir"
+        ]
+      },
+      {
+        "name": "II - Documentación del Operador",
+        "items": [
+          "Licencia Municipal",
+          "Licencia interna de Faena"
+        ]
+      },
+      {
+        "name": "III - Requisitos",
+        "items": [
+          "Permiso de Circulación",
+          "Revisión Técnica",
+          "Seguro Obligatorio",
+          "Cinturones de Seguridad en buen estado",
+          "Espejos interior y exterior en condiciones y limpios",
+          "Frenos (incluye freno de mano) en condiciones operativas",
+          "Neumáticos en buen estado (incluye dos repuestos)",
+          "Luces (Altas, Bajas, Frenos, intermitentes, retroceso)",
+          "Vidrios y parabrisas limpios",
+          "Gata y llave de rueda disponible"
+        ]
+      },
+      {
+        "name": "IV - Condiciones Complementarias",
+        "items": [
+          "Baliza y pértiga (funcionando y en condiciones)",
+          "Radio Base funciona en todos los canales",
+          "Limpiaparabrisas funciona correctamente",
+          "Bocina en buen estado",
+          "Orden y Aseo (interior vehículo y pick up)",
+          "Estado de carrocería, parachoques, portalón",
+          "Sello caja de operación invierno en buenas condiciones",
+          "Cuñas de seguridad disponibles (2)",
+          "Aire acondicionado/calefacción"
+        ]
+      }
+    ]
+  }
+]
