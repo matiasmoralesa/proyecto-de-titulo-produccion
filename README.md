@@ -632,7 +632,7 @@ Desarrollado para gestión de mantenimiento industrial.
 
 Para soporte técnico o consultas:
 - 📧 Email: soporte@ejemplo.com
-- 💬 Telegram: @tu_bot_name
+- 💬 Telegram: @Somacorbot
 - 🐛 Issues: [GitHub Issues](https://github.com/tu-usuario/proyecto-de-titulo-produccion/issues)
 
 ---
