@@ -38,7 +38,6 @@ interface AssetStats {
   total_maintenance_hours: number;
   last_maintenance_date: string | null;
   next_maintenance_date: string | null;
-  total_documents: number;
   availability_percentage: number;
   total_cost: number;
   avg_completion_time: number;
@@ -188,7 +187,6 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
         total_maintenance_hours: totalMaintenanceHours,
         last_maintenance_date: lastMaintenanceDate,
         next_maintenance_date: nextMaintenanceDate,
-        total_documents: 0, // Por ahora 0, se puede implementar después
         availability_percentage: availabilityPercentage,
         total_cost: totalCost,
         avg_completion_time: avgCompletionTime,
@@ -209,7 +207,6 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
         total_maintenance_hours: 0,
         last_maintenance_date: null,
         next_maintenance_date: null,
-        total_documents: 0,
         availability_percentage: 100, // Default to 100% if no data
         total_cost: 0,
         avg_completion_time: 0,
@@ -367,19 +364,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
             </div>
           )}
 
-          {/* Documents Section */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Documentos</h3>
-              <button className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-                + Subir Documento
-              </button>
-            </div>
-            <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 text-center">
-              <FiFileText className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No hay documentos adjuntos</p>
-            </div>
-          </div>
+
 
           {/* Enhanced Statistics */}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
@@ -408,7 +393,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
                 )}
 
                 {/* Primary Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
                   <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-100 dark:border-blue-800 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-2">
                       <FiActivity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -442,16 +427,7 @@ export default function AssetDetail({ assetId, onClose, onEdit, onDelete }: Asse
                     <p className="text-sm text-gray-600 dark:text-gray-400">Horas de Mantenimiento</p>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-100 dark:border-orange-800 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                      <FiFileText className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-xs font-medium text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded-full">
-                        Docs
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total_documents}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Documentos</p>
-                  </div>
+
                 </div>
 
                 {/* Secondary Stats */}

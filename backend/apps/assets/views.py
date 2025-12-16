@@ -7,13 +7,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import IsAdmin, IsSupervisorOrAdmin
-from .models import Location, Asset, AssetDocument
+from .models import Location, Asset  # AssetDocument comentado
 from .serializers import (
     LocationSerializer,
     AssetListSerializer,
     AssetDetailSerializer,
     AssetCreateUpdateSerializer,
-    AssetDocumentSerializer,
+    # AssetDocumentSerializer,  # Comentado - funcionalidad removida
 )
 from .filters import AssetFilter, LocationFilter
 
@@ -179,19 +179,20 @@ class AssetViewSet(viewsets.ModelViewSet):
         return Response(stats)
 
 
-class AssetDocumentViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for AssetDocument model.
-    """
-    queryset = AssetDocument.objects.select_related('asset', 'uploaded_by')
-    serializer_class = AssetDocumentSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['asset', 'document_type']
-    search_fields = ['title', 'description']
-    ordering_fields = ['created_at', 'title']
-    ordering = ['-created_at']
-    
-    def perform_create(self, serializer):
-        """Set uploaded_by on creation."""
-        serializer.save(uploaded_by=self.request.user)
+# AssetDocumentViewSet comentado - funcionalidad de documentos removida
+# class AssetDocumentViewSet(viewsets.ModelViewSet):
+#     """
+#     ViewSet for AssetDocument model.
+#     """
+#     queryset = AssetDocument.objects.select_related('asset', 'uploaded_by')
+#     serializer_class = AssetDocumentSerializer
+#     permission_classes = [IsAuthenticated]
+#     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+#     filterset_fields = ['asset', 'document_type']
+#     search_fields = ['title', 'description']
+#     ordering_fields = ['created_at', 'title']
+#     ordering = ['-created_at']
+#     
+#     def perform_create(self, serializer):
+#         """Set uploaded_by on creation."""
+#         serializer.save(uploaded_by=self.request.user)
