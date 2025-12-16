@@ -34,224 +34,224 @@ def generate_checklist_pdf(checklist_response):
     """
     try:
         buffer = BytesIO()
-    
-    # Create the PDF document
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=letter,
-        rightMargin=0.5*inch,
-        leftMargin=0.5*inch,
-        topMargin=0.75*inch,
-        bottomMargin=0.75*inch
-    )
-    
-    # Container for the 'Flowable' objects
-    elements = []
-    
-    # Define styles
-    styles = getSampleStyleSheet()
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=16,
-        textColor=colors.HexColor('#1a1a1a'),
-        spaceAfter=12,
-        alignment=TA_CENTER,
-        fontName='Helvetica-Bold'
-    )
-    
-    heading_style = ParagraphStyle(
-        'CustomHeading',
-        parent=styles['Heading2'],
-        fontSize=12,
-        textColor=colors.HexColor('#333333'),
-        spaceAfter=6,
-        spaceBefore=12,
-        fontName='Helvetica-Bold'
-    )
-    
-    normal_style = ParagraphStyle(
-        'CustomNormal',
-        parent=styles['Normal'],
-        fontSize=10,
-        textColor=colors.HexColor('#1a1a1a'),
-        spaceAfter=6
-    )
-    
-    # Title
-    title = Paragraph(
-        f"<b>{checklist_response.template.name}</b>",
-        title_style
-    )
-    elements.append(title)
-    elements.append(Spacer(1, 0.2*inch))
-    
-    # Header Information Table
-    header_data = [
-        ['Código:', checklist_response.template.code, 'Fecha:', checklist_response.created_at.strftime('%d/%m/%Y %H:%M')],
-        ['Activo:', checklist_response.asset.name, 'Patente:', checklist_response.asset.license_plate or 'N/A'],
-        ['Operador:', checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A', 
-         'Estado:', checklist_response.get_status_display()],
-        ['Puntuación:', f"{checklist_response.score}%" if checklist_response.score else 'N/A', 
-         'Mínimo Requerido:', f"{checklist_response.template.passing_score}%"],
-    ]
-    
-    header_table = Table(header_data, colWidths=[1.5*inch, 2.5*inch, 1.5*inch, 2*inch])
-    header_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
-        ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#f0f0f0')),
-        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-        ('FONTNAME', (2, 0), (2, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 9),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-    ]))
-    elements.append(header_table)
-    elements.append(Spacer(1, 0.3*inch))
-    
-    # Checklist Items by Section
-    item_responses = checklist_response.item_responses.select_related('template_item').order_by('template_item__order')
-    
-    current_section = None
-    section_items = []
-    
-    for item_response in item_responses:
-        template_item = item_response.template_item
         
-        # Add section header if new section
-        if current_section != template_item.section:
-            # Add previous section table if exists
-            if section_items:
-                _add_section_table(elements, section_items)
-                section_items = []
-            
-            current_section = template_item.section
-            section_heading = Paragraph(f"<b>{current_section}</b>", heading_style)
-            elements.append(section_heading)
+        # Create the PDF document
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=0.5*inch,
+            leftMargin=0.5*inch,
+            topMargin=0.75*inch,
+            bottomMargin=0.75*inch
+        )
         
-        # Add item to section
-        response_display = _format_response_value(item_response.response_value)
-        observations = item_response.observations or '-'
+        # Container for the 'Flowable' objects
+        elements = []
         
-        section_items.append([
-            str(template_item.order),
-            template_item.question,
-            response_display,
-            observations[:50] + '...' if len(observations) > 50 else observations
-        ])
-    
-    # Add last section table
-    if section_items:
-        _add_section_table(elements, section_items)
-    
-    # Signature Section
-    if checklist_response.signature_data:
+        # Define styles
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.HexColor('#1a1a1a'),
+            spaceAfter=12,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold'
+        )
+        
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=12,
+            textColor=colors.HexColor('#333333'),
+            spaceAfter=6,
+            spaceBefore=12,
+            fontName='Helvetica-Bold'
+        )
+        
+        normal_style = ParagraphStyle(
+            'CustomNormal',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=colors.HexColor('#1a1a1a'),
+            spaceAfter=6
+        )
+        
+        # Title
+        title = Paragraph(
+            f"<b>{checklist_response.template.name}</b>",
+            title_style
+        )
+        elements.append(title)
+        elements.append(Spacer(1, 0.2*inch))
+        
+        # Header Information Table
+        header_data = [
+            ['Código:', checklist_response.template.code, 'Fecha:', checklist_response.created_at.strftime('%d/%m/%Y %H:%M')],
+            ['Activo:', checklist_response.asset.name, 'Patente:', checklist_response.asset.license_plate or 'N/A'],
+            ['Operador:', checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A', 
+             'Estado:', checklist_response.get_status_display()],
+            ['Puntuación:', f"{checklist_response.score}%" if checklist_response.score else 'N/A', 
+             'Mínimo Requerido:', f"{checklist_response.template.passing_score}%"],
+        ]
+        
+        header_table = Table(header_data, colWidths=[1.5*inch, 2.5*inch, 1.5*inch, 2*inch])
+        header_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
+            ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#f0f0f0')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (2, 0), (2, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        elements.append(header_table)
         elements.append(Spacer(1, 0.3*inch))
-        signature_heading = Paragraph("<b>Firma Digital</b>", heading_style)
-        elements.append(signature_heading)
-        elements.append(Spacer(1, 0.1*inch))
         
-        try:
-            # signature_data is a base64 image string (data:image/png;base64,...)
-            import base64
-            from PIL import Image as PILImage
+        # Checklist Items by Section
+        item_responses = checklist_response.item_responses.select_related('template_item').order_by('template_item__order')
+        
+        current_section = None
+        section_items = []
+        
+        for item_response in item_responses:
+            template_item = item_response.template_item
             
-            # Extract base64 data
-            if ',' in checklist_response.signature_data:
-                base64_data = checklist_response.signature_data.split(',')[1]
-            else:
-                base64_data = checklist_response.signature_data
+            # Add section header if new section
+            if current_section != template_item.section:
+                # Add previous section table if exists
+                if section_items:
+                    _add_section_table(elements, section_items)
+                    section_items = []
+                
+                current_section = template_item.section
+                section_heading = Paragraph(f"<b>{current_section}</b>", heading_style)
+                elements.append(section_heading)
             
-            # Decode base64 to image
-            image_data = base64.b64decode(base64_data)
-            image_buffer = BytesIO(image_data)
+            # Add item to section
+            response_display = _format_response_value(item_response.response_value)
+            observations = item_response.observations or '-'
             
-            # Load image with PIL to check dimensions
-            pil_img = PILImage.open(BytesIO(image_data))
-            img_width, img_height = pil_img.size
+            section_items.append([
+                str(template_item.order),
+                template_item.question,
+                response_display,
+                observations[:50] + '...' if len(observations) > 50 else observations
+            ])
+        
+        # Add last section table
+        if section_items:
+            _add_section_table(elements, section_items)
+        
+        # Signature Section
+        if checklist_response.signature_data:
+            elements.append(Spacer(1, 0.3*inch))
+            signature_heading = Paragraph("<b>Firma Digital</b>", heading_style)
+            elements.append(signature_heading)
+            elements.append(Spacer(1, 0.1*inch))
             
-            # Only show image if it's larger than 10x10 (not a placeholder)
-            if img_width > 10 and img_height > 10:
-                # Reset buffer position
-                image_buffer.seek(0)
+            try:
+                # signature_data is a base64 image string (data:image/png;base64,...)
+                import base64
+                from PIL import Image as PILImage
                 
-                # Calculate aspect ratio
-                aspect = img_width / img_height
-                display_height = 1*inch
-                display_width = display_height * aspect
+                # Extract base64 data
+                if ',' in checklist_response.signature_data:
+                    base64_data = checklist_response.signature_data.split(',')[1]
+                else:
+                    base64_data = checklist_response.signature_data
                 
-                # Limit width to 3 inches
-                if display_width > 3*inch:
-                    display_width = 3*inch
-                    display_height = display_width / aspect
+                # Decode base64 to image
+                image_data = base64.b64decode(base64_data)
+                image_buffer = BytesIO(image_data)
                 
-                # Create image for PDF
-                signature_img = Image(image_buffer, width=display_width, height=display_height)
+                # Load image with PIL to check dimensions
+                pil_img = PILImage.open(BytesIO(image_data))
+                img_width, img_height = pil_img.size
                 
-                # Create signature table
-                signature_data = [
-                    ['Firma del Operador:'],
-                    [signature_img],
-                    [checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A']
-                ]
+                # Only show image if it's larger than 10x10 (not a placeholder)
+                if img_width > 10 and img_height > 10:
+                    # Reset buffer position
+                    image_buffer.seek(0)
+                    
+                    # Calculate aspect ratio
+                    aspect = img_width / img_height
+                    display_height = 1*inch
+                    display_width = display_height * aspect
+                    
+                    # Limit width to 3 inches
+                    if display_width > 3*inch:
+                        display_width = 3*inch
+                        display_height = display_width / aspect
+                    
+                    # Create image for PDF
+                    signature_img = Image(image_buffer, width=display_width, height=display_height)
+                    
+                    # Create signature table
+                    signature_data = [
+                        ['Firma del Operador:'],
+                        [signature_img],
+                        [checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A']
+                    ]
+                    
+                    signature_table = Table(signature_data, colWidths=[4*inch])
+                    signature_table.setStyle(TableStyle([
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ('FONTNAME', (0, 0), (0, 0), 'Helvetica-Bold'),
+                        ('FONTSIZE', (0, 0), (0, 0), 10),
+                        ('FONTSIZE', (0, 2), (0, 2), 9),
+                        ('TOPPADDING', (0, 0), (-1, -1), 6),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                        ('LINEABOVE', (0, 2), (0, 2), 1, colors.black),
+                    ]))
+                    
+                    elements.append(signature_table)
+                else:
+                    # Placeholder signature - show text instead
+                    signature_text = Paragraph(
+                        f"<b>Firmado digitalmente por:</b><br/>{checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A'}",
+                        normal_style
+                    )
+                    elements.append(signature_text)
                 
-                signature_table = Table(signature_data, colWidths=[4*inch])
-                signature_table.setStyle(TableStyle([
-                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                    ('FONTNAME', (0, 0), (0, 0), 'Helvetica-Bold'),
-                    ('FONTSIZE', (0, 0), (0, 0), 10),
-                    ('FONTSIZE', (0, 2), (0, 2), 9),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                    ('LINEABOVE', (0, 2), (0, 2), 1, colors.black),
-                ]))
-                
-                elements.append(signature_table)
-            else:
-                # Placeholder signature - show text instead
+            except Exception as e:
+                # Fallback if signature image cannot be processed
                 signature_text = Paragraph(
                     f"<b>Firmado digitalmente por:</b><br/>{checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A'}",
                     normal_style
                 )
                 elements.append(signature_text)
-            
-        except Exception as e:
-            # Fallback if signature image cannot be processed
-            signature_text = Paragraph(
-                f"<b>Firmado digitalmente por:</b><br/>{checklist_response.completed_by.get_full_name() if checklist_response.completed_by else 'N/A'}",
-                normal_style
-            )
-            elements.append(signature_text)
-    
-    # Footer with generation date
-    elements.append(Spacer(1, 0.3*inch))
-    footer_style = ParagraphStyle(
-        'Footer',
-        parent=styles['Normal'],
-        fontSize=8,
-        textColor=colors.grey,
-        alignment=TA_CENTER
-    )
-    footer_text = Paragraph(
-        f"Documento generado el {datetime.now().strftime('%d/%m/%Y %H:%M')} - Sistema CMMS",
-        footer_style
-    )
-    elements.append(footer_text)
-    
-    # Build PDF
-    doc.build(elements)
-    
-    # Get PDF content
-    pdf_content = buffer.getvalue()
-    buffer.close()
-    
+        
+        # Footer with generation date
+        elements.append(Spacer(1, 0.3*inch))
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontSize=8,
+            textColor=colors.grey,
+            alignment=TA_CENTER
+        )
+        footer_text = Paragraph(
+            f"Documento generado el {datetime.now().strftime('%d/%m/%Y %H:%M')} - Sistema CMMS",
+            footer_style
+        )
+        elements.append(footer_text)
+        
+        # Build PDF
+        doc.build(elements)
+        
+        # Get PDF content
+        pdf_content = buffer.getvalue()
+        buffer.close()
+        
         # Save PDF to file
         filename = f"checklist_{checklist_response.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         pdf_file = ContentFile(pdf_content, name=filename)
