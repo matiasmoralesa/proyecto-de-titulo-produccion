@@ -11,6 +11,10 @@ python manage.py migrate --noinput
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
+# Crear directorios de media necesarios
+echo "Setting up media directories..."
+python setup_media_dirs.py
+
 # Iniciar Celery Worker en segundo plano
 echo "Starting Celery Worker..."
 celery -A config worker -l info --pool=solo &

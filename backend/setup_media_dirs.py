@@ -1,32 +1,32 @@
+#!/usr/bin/env python3
 """
-Script to create media directories for file storage.
+Script para crear directorios de media necesarios
 """
 import os
 from pathlib import Path
 
-# Get base directory
-BASE_DIR = Path(__file__).resolve().parent
-
-# Media directories to create
-MEDIA_DIRS = [
-    'media/assets/documents',
-    'media/assets/photos',
-    'media/checklists/pdfs',
-    'media/checklists/photos',
-]
-
-def create_media_directories():
-    """Create all media directories."""
-    for dir_path in MEDIA_DIRS:
-        full_path = BASE_DIR / dir_path
-        full_path.mkdir(parents=True, exist_ok=True)
-        print(f'✓ Created directory: {dir_path}')
-        
-        # Create .gitkeep file
-        gitkeep_path = full_path / '.gitkeep'
-        gitkeep_path.touch(exist_ok=True)
+def setup_media_directories():
+    """Create necessary media directories."""
+    base_dir = Path(__file__).resolve().parent
+    media_root = base_dir / 'media'
     
-    print('\n✓ All media directories created successfully!')
+    # Create media directories
+    directories = [
+        media_root / 'checklists' / 'pdfs',
+        media_root / 'checklists' / 'photos',
+        media_root / 'assets' / 'documents',
+        media_root / 'work_orders' / 'attachments',
+    ]
+    
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)
+        print(f"Created directory: {directory}")
+        
+        # Create .gitkeep file to ensure directory exists in git
+        gitkeep_file = directory / '.gitkeep'
+        if not gitkeep_file.exists():
+            gitkeep_file.touch()
+            print(f"Created .gitkeep in: {directory}")
 
 if __name__ == '__main__':
-    create_media_directories()
+    setup_media_directories()

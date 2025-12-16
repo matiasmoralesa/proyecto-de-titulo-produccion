@@ -153,6 +153,8 @@ class ChecklistResponseViewSet(viewsets.ModelViewSet):
             import logging
             logger = logging.getLogger(__name__)
             logger.error(f"Error generating PDF for checklist {checklist_response.id}: {str(e)}")
+            # Add error info to response but don't fail
+            pass
         
         # Return the created checklist response
         response_serializer = ChecklistResponseDetailSerializer(
@@ -248,16 +250,52 @@ class ChecklistResponseViewSet(viewsets.ModelViewSet):
         checklist_response = self.get_object()
         
         if not checklist_response.pdf_file:
-            return Response(
-                {'error': 'PDF no disponible para este checklist.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            # Try to generate PDF if it doesn't exist
+            try:
+                from apps.checklists.services import generate_checklist_pdf
+                pdf_file = generate_checklist_pdf(checklist_response)
+                checklist_response.pdf_file = pdf_file
+                checklist_response.save()
+            except Exception as e:
+                return Response(
+                    {'error': f'Error generando PDF: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
         
-        return FileResponse(
-            checklist_response.pdf_file.open('rb'),
-            as_attachment=True,
-            filename=f'checklist_{checklist_response.id}.pdf'
-        )
+        try:
+            return FileResponse(
+                checklist_response.pdf_file.open('rb'),
+                as_attachment=True,
+                filename=f'checklist_{checklist_response.id}.pdf'
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Error descargando PDF: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=True, methods=['post'])
+    def regenerate_pdf(self, request, pk=None):
+        """Regenerate PDF for a checklist."""
+        checklist_response = self.get_object()
+        
+        try:
+            from apps.checklists.services import generate_checklist_pdf
+            pdf_file = generate_checklist_pdf(checklist_response)
+            checklist_response.pdf_file = pdf_file
+            checklist_response.save()
+            
+            serializer = ChecklistResponseDetailSerializer(
+                checklist_response,
+                context={'request': request}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response(
+                {'error': f'Error regenerando PDF: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=False, methods=['get'])
     def my_checklists(self, request):

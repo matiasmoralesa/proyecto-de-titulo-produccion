@@ -32,7 +32,8 @@ def generate_checklist_pdf(checklist_response):
     Returns:
         File path to the generated PDF
     """
-    buffer = BytesIO()
+    try:
+        buffer = BytesIO()
     
     # Create the PDF document
     doc = SimpleDocTemplate(
@@ -251,11 +252,20 @@ def generate_checklist_pdf(checklist_response):
     pdf_content = buffer.getvalue()
     buffer.close()
     
-    # Save PDF to file
-    filename = f"checklist_{checklist_response.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-    pdf_file = ContentFile(pdf_content, name=filename)
-    
-    return pdf_file
+        # Save PDF to file
+        filename = f"checklist_{checklist_response.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        pdf_file = ContentFile(pdf_content, name=filename)
+        
+        return pdf_file
+        
+    except Exception as e:
+        # Log the error for debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error generating PDF for checklist {checklist_response.id}: {str(e)}")
+        
+        # Re-raise the exception so it can be handled by the caller
+        raise Exception(f"Error generando PDF: {str(e)}")
 
 
 def _add_section_table(elements, section_items):
