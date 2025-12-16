@@ -14,12 +14,12 @@ class ChecklistTemplate(models.Model):
     Model representing a checklist template.
     System templates are predefined and cannot be modified or deleted.
     """
-    # Vehicle Types (matching Asset model)
-    VEHICLE_TYPE_SUPERSUCKER = 'CAMION_SUPERSUCKER'
-    VEHICLE_TYPE_CAMIONETA = 'CAMIONETA_MDO'
-    VEHICLE_TYPE_RETROEXCAVADORA = 'RETROEXCAVADORA_MDO'
-    VEHICLE_TYPE_CARGADOR = 'CARGADOR_FRONTAL_MDO'
-    VEHICLE_TYPE_MINICARGADOR = 'MINICARGADOR_MDO'
+    # Vehicle Types (matching Asset model exactly)
+    VEHICLE_TYPE_SUPERSUCKER = 'Camión Supersucker'
+    VEHICLE_TYPE_CAMIONETA = 'Camioneta MDO'
+    VEHICLE_TYPE_RETROEXCAVADORA = 'Retroexcavadora MDO'
+    VEHICLE_TYPE_CARGADOR = 'Cargador Frontal MDO'
+    VEHICLE_TYPE_MINICARGADOR = 'Minicargador MDO'
     
     VEHICLE_TYPES = [
         (VEHICLE_TYPE_SUPERSUCKER, 'Camión Supersucker'),

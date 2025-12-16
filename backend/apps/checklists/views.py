@@ -18,11 +18,13 @@ from apps.checklists.models import (
 )
 from apps.checklists.serializers import (
     ChecklistTemplateSerializer,
+    ChecklistTemplateItemSerializer,
     ChecklistResponseSerializer,
     ChecklistResponseDetailSerializer,
     ChecklistItemResponseSerializer,
     ChecklistCompletionSerializer
 )
+from apps.checklists.models import ChecklistTemplateItem
 from apps.authentication.permissions import IsAdmin, IsSupervisorOrAdmin, IsOperadorOrAbove
 
 
@@ -139,6 +141,18 @@ class ChecklistResponseViewSet(viewsets.ModelViewSet):
         
         # Update score and status
         checklist_response.update_score_and_status()
+        
+        # Generate PDF automatically when completing checklist
+        from apps.checklists.services import generate_checklist_pdf
+        try:
+            pdf_file = generate_checklist_pdf(checklist_response)
+            checklist_response.pdf_file = pdf_file
+            checklist_response.save()
+        except Exception as e:
+            # Log the error but don't fail the completion
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error generating PDF for checklist {checklist_response.id}: {str(e)}")
         
         # Return the created checklist response
         response_serializer = ChecklistResponseDetailSerializer(
