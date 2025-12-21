@@ -26,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'phone', 'role', 'role_name', 'role_display',
+            'phone', 'rut', 'role', 'role_name', 'role_display',
             'is_active', 'must_change_password', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
@@ -51,7 +51,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'username', 'email', 'password', 'password_confirm',
-            'first_name', 'last_name', 'phone', 'role'
+            'first_name', 'last_name', 'phone', 'rut', 'role'
         ]
     
     def validate(self, attrs):
@@ -154,6 +154,8 @@ class UserManagementSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'phone',
+            'rut',
             'role',
             'role_display',
             'is_active',

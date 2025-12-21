@@ -7,6 +7,7 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string;
+  rut?: string;
   role: number;
   role_name: string;
   role_display: string;
@@ -24,6 +25,7 @@ export interface CreateUserData {
   first_name: string;
   last_name: string;
   phone?: string;
+  rut?: string;
   role: number;
 }
 
@@ -33,6 +35,7 @@ export interface UpdateUserData {
   first_name?: string;
   last_name?: string;
   phone?: string;
+  rut?: string;
   role?: number;
   is_active?: boolean;
 }

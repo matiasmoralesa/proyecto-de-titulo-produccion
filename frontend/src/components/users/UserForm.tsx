@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, CreateUserData, UpdateUserData } from '../../services/userManagementService';
 import { useAuthStore } from '../../store/authStore';
 import { FiInfo } from 'react-icons/fi';
+import RutInput from '../common/RutInput';
 
 interface UserFormProps {
   user?: User | null;
@@ -19,11 +20,13 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
     first_name: '',
     last_name: '',
     phone: '',
+    rut: '',
     role: 3, // Default to OPERADOR
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [rutValid, setRutValid] = useState(true);
 
   // Check if current user is supervisor
   const isSupervisor = currentUser?.role?.name === 'SUPERVISOR';
@@ -39,6 +42,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
         first_name: user.first_name,
         last_name: user.last_name,
         phone: user.phone || '',
+        rut: user.rut || '',
         role: user.role,
       });
     }
@@ -76,6 +80,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
 
     if (!formData.last_name.trim()) {
       newErrors.last_name = 'El apellido es requerido';
+    }
+
+    if (!rutValid) {
+      newErrors.rut = 'El RUT ingresado no es válido';
     }
 
     setErrors(newErrors);
@@ -123,6 +131,22 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
         return newErrors;
       });
     }
+  };
+
+  const handleRutChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, rut: value }));
+    // Clear RUT error
+    if (errors.rut) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.rut;
+        return newErrors;
+      });
+    }
+  };
+
+  const handleRutValidation = (isValid: boolean) => {
+    setRutValid(isValid);
   };
 
   return (
@@ -216,6 +240,20 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
             value={formData.phone}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+          />
+        </div>
+
+        {/* RUT */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            RUT
+          </label>
+          <RutInput
+            value={formData.rut}
+            onChange={handleRutChange}
+            onValidationChange={handleRutValidation}
+            placeholder="Ej: 12.345.678-9"
+            error={errors.rut}
           />
         </div>
 

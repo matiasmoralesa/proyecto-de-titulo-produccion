@@ -76,6 +76,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     role = models.ForeignKey(Role, on_delete=models.PROTECT, related_name='users')
     phone = models.CharField(max_length=20, blank=True)
+    rut = models.CharField(max_length=12, blank=True, help_text='RUT chileno sin puntos ni guión')
     must_change_password = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
