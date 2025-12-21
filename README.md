@@ -653,3 +653,5 @@ Para soporte técnico o consultas:
 Hecho con ❤️ para la gestión de mantenimiento industrial
 
 </div>
+#   F o r c e   d e p l o y m e n t  
+ 
