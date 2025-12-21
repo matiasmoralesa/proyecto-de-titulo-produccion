@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test RUT Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-case {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .valid { border-color: #28a745; background-color: #d4edda; }
+        .invalid { border-color: #dc3545; background-color: #f8d7da; }
+        input {
+            width: 200px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .error { color: #dc3545; font-size: 14px; }
+        .success { color: #28a745; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Test de Validación de RUT Chileno</h1>
+    
+    <div class="test-case">
+        <h3>Prueba Interactiva</h3>
+        <label>Ingresa un RUT:</label>
+        <input type="text" id="rutInput" placeholder="Ej: 12.345.678-9" maxlength="12">
+        <div id="result"></div>
+    </div>
+
+    <div class="test-case">
+        <h3>Casos de Prueba Automáticos</h3>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        // RUT Validation Functions (copied from rutValidator.ts)
+        const cleanRut = (rut) => {
+            return rut.replace(/[.\-\s]/g, '').toUpperCase();
+        };
+
+        const formatRut = (rut) => {
+            const cleanedRut = cleanRut(rut);
+            
+            if (cleanedRut.length < 2) {
+                return cleanedRut;
+            }
+            
+            const body = cleanedRut.slice(0, -1);
+            const dv = cleanedRut.slice(-1);
+            
+            const formattedBody = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            
+            return `${formattedBody}-${dv}`;
+        };
+
+        const calculateDV = (rutBody) => {
+            let sum = 0;
+            let multiplier = 2;
+            
+            for (let i = rutBody.length - 1; i >= 0; i--) {
+                sum += parseInt(rutBody[i]) * multiplier;
+                multiplier = multiplier === 7 ? 2 : multiplier + 1;
+            }
+            
+            const remainder = sum % 11;
+            const dv = 11 - remainder;
+            
+            if (dv === 11) return '0';
+            if (dv === 10) return 'K';
+            return dv.toString();
+        };
+
+        const validateRut = (rut) => {
+            const cleanedRut = cleanRut(rut);
+            
+            if (!/^\d{7,8}[0-9K]$/.test(cleanedRut)) {
+                return false;
+            }
+            
+            const body = cleanedRut.slice(0, -1);
+            const dv = cleanedRut.slice(-1);
+            
+            const expectedDV = calculateDV(body);
+            
+            return dv === expectedDV;
+        };
+
+        const validateRutWithMessage = (rut) => {
+            if (!rut || rut.trim() === '') {
+                return { isValid: false, message: 'El RUT es requerido' };
+            }
+            
+            const cleanedRut = cleanRut(rut);
+            
+            if (cleanedRut.length < 8 || cleanedRut.length > 9) {
+                return { isValid: false, message: 'El RUT debe tener entre 8 y 9 caracteres' };
+            }
+            
+            if (!/^\d{7,8}[0-9K]$/.test(cleanedRut)) {
+                return { isValid: false, message: 'Formato de RUT inválido. Debe contener solo números y terminar en número o K' };
+            }
+            
+            if (!validateRut(rut)) {
+                return { isValid: false, message: 'El RUT ingresado no es válido' };
+            }
+            
+            return { isValid: true };
+        };
+
+        // Interactive test
+        const rutInput = document.getElementById('rutInput');
+        const result = document.getElementById('result');
+
+        rutInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            const formatted = formatRut(value);
+            e.target.value = formatted;
+            
+            const validation = validateRutWithMessage(cleanRut(value));
+            
+            if (validation.isValid) {
+                result.innerHTML = `<div class="success">✓ RUT válido: ${formatted}</div>`;
+            } else {
+                result.innerHTML = `<div class="error">✗ ${validation.message}</div>`;
+            }
+        });
+
+        // Automatic tests
+        const testCases = [
+            { rut: '12345678-5', expected: true, description: 'RUT válido con formato completo' },
+            { rut: '123456785', expected: true, description: 'RUT válido sin formato' },
+            { rut: '12.345.678-5', expected: true, description: 'RUT válido con puntos y guión' },
+            { rut: '11111111-1', expected: true, description: 'RUT válido repetido' },
+            { rut: '12345678-9', expected: false, description: 'RUT inválido (DV incorrecto)' },
+            { rut: '1234567-8', expected: false, description: 'RUT muy corto' },
+            { rut: '123456789-0', expected: false, description: 'RUT muy largo' },
+            { rut: '12345678-A', expected: false, description: 'DV inválido (letra que no es K)' },
+            { rut: '', expected: false, description: 'RUT vacío' },
+            { rut: '7775777-K', expected: true, description: 'RUT válido con DV K' },
+        ];
+
+        const testResults = document.getElementById('testResults');
+        let html = '';
+
+        testCases.forEach((testCase, index) => {
+            const validation = validateRutWithMessage(testCase.rut);
+            const passed = validation.isValid === testCase.expected;
+            
+            html += `
+                <div class="test-case ${passed ? 'valid' : 'invalid'}">
+                    <strong>Test ${index + 1}:</strong> ${testCase.description}<br>
+                    <strong>RUT:</strong> "${testCase.rut}"<br>
+                    <strong>Esperado:</strong> ${testCase.expected ? 'Válido' : 'Inválido'}<br>
+                    <strong>Resultado:</strong> ${validation.isValid ? 'Válido' : 'Inválido'}<br>
+                    ${validation.message ? `<strong>Mensaje:</strong> ${validation.message}<br>` : ''}
+                    <strong>Estado:</strong> ${passed ? '✓ PASÓ' : '✗ FALLÓ'}
+                </div>
+            `;
+        });
+
+        testResults.innerHTML = html;
+
+        // Summary
+        const passedTests = testCases.filter((testCase, index) => {
+            const validation = validateRutWithMessage(testCase.rut);
+            return validation.isValid === testCase.expected;
+        }).length;
+
+        testResults.innerHTML += `
+            <div class="test-case" style="background-color: #e9ecef; border-color: #6c757d;">
+                <h4>Resumen de Pruebas</h4>
+                <strong>Pruebas pasadas:</strong> ${passedTests}/${testCases.length}<br>
+                <strong>Porcentaje de éxito:</strong> ${Math.round((passedTests / testCases.length) * 100)}%
+            </div>
+        `;
+    </script>
+</body>
+</html>

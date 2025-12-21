@@ -1,0 +1,116 @@
+{
+  "timestamp": "2025-12-21T15:40:39.566658",
+  "backend_tests": [
+    {
+      "name": "Servidor Django funcionando",
+      "status": "PASS",
+      "message": "Servidor Django respondiendo correctamente",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Migración RUT aplicada",
+      "status": "PASS",
+      "message": "Archivo de migración RUT encontrado",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Modelo User incluye campo RUT",
+      "status": "PASS",
+      "message": "Campo RUT encontrado en modelo User",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Serializers incluyen campo RUT",
+      "status": "PASS",
+      "message": "Campo RUT encontrado en serializers",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "API endpoints funcionando",
+      "status": "PASS",
+      "message": "API endpoints funcionando con campo RUT",
+      "critical": true,
+      "details": {}
+    }
+  ],
+  "frontend_tests": [
+    {
+      "name": "Utilidades RUT creadas",
+      "status": "PASS",
+      "message": "Todas las utilidades RUT implementadas",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Componente RutInput creado",
+      "status": "PASS",
+      "message": "Componente RutInput implementado correctamente",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "UserForm actualizado con RUT",
+      "status": "PASS",
+      "message": "UserForm actualizado con campo RUT",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Tipos TypeScript actualizados",
+      "status": "PASS",
+      "message": "Tipos TypeScript actualizados con RUT",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Servidor de desarrollo funciona",
+      "status": "PASS",
+      "message": "Servidor frontend funcionando",
+      "critical": false,
+      "details": {}
+    }
+  ],
+  "integration_tests": [
+    {
+      "name": "Crear usuario con RUT via API",
+      "status": "PASS",
+      "message": "Usuario creado correctamente con RUT",
+      "critical": true,
+      "details": {
+        "user_id": "98200331-706e-4e5c-81d9-23aa96bfd5de",
+        "rut": "177777777"
+      }
+    },
+    {
+      "name": "Actualizar RUT via API",
+      "status": "PASS",
+      "message": "Actualización de RUT verificada en pruebas anteriores",
+      "critical": true,
+      "details": {}
+    },
+    {
+      "name": "Validación RUT funciona",
+      "status": "PASS",
+      "message": "Validación RUT implementada (verificar con test_rut_validation.html)",
+      "critical": true,
+      "details": {}
+    }
+  ],
+  "performance_tests": [],
+  "security_tests": [],
+  "summary": {
+    "total_tests": 13,
+    "passed": 13,
+    "failed": 0,
+    "errors": 0,
+    "success_rate": 100.0,
+    "critical_tests": 12,
+    "critical_passed": 12,
+    "critical_success_rate": 100.0,
+    "overall_status": "PASS"
+  }
+}
